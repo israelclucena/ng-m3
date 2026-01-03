@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build
+dist/
+.angular/
+
+# NX Cache
+.nx/cache/
+.nx/workspace-data/
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Debug logs
+debug-storybook.log
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
