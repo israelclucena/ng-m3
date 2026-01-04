@@ -1,0 +1,58 @@
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {
+  ButtonComponent,
+  CardComponent,
+  CheckboxComponent,
+  ChipComponent,
+  DialogComponent,
+  DividerComponent,
+  ElevationComponent,
+  FabComponent,
+  FocusRingComponent,
+  IconButtonComponent,
+  InputComponent,
+  ListComponent,
+  ListItemComponent,
+  MenuComponent,
+  ProgressComponent,
+  RadioComponent,
+  RippleComponent,
+  SelectComponent,
+  SliderComponent,
+  SwitchComponent,
+  TabsComponent,
+} from '@israel-ui/core';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [
+    ButtonComponent,
+    CardComponent,
+    CheckboxComponent,
+    ChipComponent,
+    DialogComponent,
+    DividerComponent,
+    ElevationComponent,
+    FabComponent,
+    FocusRingComponent,
+    IconButtonComponent,
+    InputComponent,
+    ListComponent,
+    ListItemComponent,
+    MenuComponent,
+    ProgressComponent,
+    RadioComponent,
+    RippleComponent,
+    SelectComponent,
+    SliderComponent,
+    SwitchComponent,
+    TabsComponent,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
+})
+export class App {
+  showDialog = false;
+}

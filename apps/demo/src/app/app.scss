@@ -1,0 +1,72 @@
+:host {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  background: var(--md-sys-color-surface, #fef7ff);
+  color: var(--md-sys-color-on-surface, #1d1b20);
+  min-height: 100vh;
+}
+
+.catalog {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--md-sys-color-primary, #6750a4);
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+  margin-bottom: 24px;
+}
+
+section {
+  margin: 32px 0;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+.group {
+  margin-bottom: 24px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.elevation-box {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  background: var(--md-sys-color-surface, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+  }
+}
