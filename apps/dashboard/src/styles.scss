@@ -1,0 +1,315 @@
+// ══════════════════════════════════════════════════════════
+// Rayum Design System — Global Styles
+// Based on "Rayum — The Invisible CRM" by Belén del Olmo
+// ══════════════════════════════════════════════════════════
+
+:root {
+  // ── Colors - Primary ──
+  --color-mint: #70FC8E;
+  --color-mint-hover: #5CE87A;
+  --color-mint-light: rgba(112, 252, 142, 0.15);
+  --color-cobalt: #3765F6;
+  --color-cobalt-light: rgba(55, 101, 246, 0.1);
+
+  // ── Colors - Neutral ──
+  --color-obsidian: #181D25;
+  --color-obsidian-deep: #0D0F12;
+  --color-cool-mist: #C3CED7;
+  --color-ghost-grey: #F2F3F6;
+  --color-white: #FFFFFF;
+
+  // ── Colors - Text ──
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --text-inverse: #FFFFFF;
+
+  // ── Colors - Status ──
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-danger: #EF4444;
+  --color-info: #3765F6;
+
+  // ── Typography ──
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 36px;
+  --font-size-4xl: 48px;
+  --font-size-display: 64px;
+
+  // ── Spacing ──
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  // ── Radius ──
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  // ── Shadows (light mode) ──
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  // ── Transitions ──
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  // ── Layout ──
+  --sidebar-width: 240px;
+  --topbar-height: 64px;
+  --content-max-width: 1400px;
+  --content-padding: 32px;
+  --card-gap: 20px;
+
+  // ── M3 Light theme tokens (mapped to Rayum) ──
+  --md-sys-color-surface: var(--color-ghost-grey);
+  --md-sys-color-surface-container: var(--color-white);
+  --md-sys-color-surface-container-low: var(--color-ghost-grey);
+  --md-sys-color-surface-container-high: #E8E9EC;
+  --md-sys-color-surface-container-highest: #E0E1E4;
+  --md-sys-color-on-surface: var(--text-primary);
+  --md-sys-color-on-surface-variant: var(--text-secondary);
+  --md-sys-color-primary: var(--color-cobalt);
+  --md-sys-color-on-primary: var(--color-white);
+  --md-sys-color-primary-container: var(--color-cobalt-light);
+  --md-sys-color-on-primary-container: var(--color-cobalt);
+  --md-sys-color-secondary: var(--color-mint);
+  --md-sys-color-on-secondary: var(--text-primary);
+  --md-sys-color-secondary-container: var(--color-mint-light);
+  --md-sys-color-on-secondary-container: var(--color-success);
+  --md-sys-color-tertiary: #7C5DBA;
+  --md-sys-color-outline: rgba(0, 0, 0, 0.12);
+  --md-sys-color-outline-variant: rgba(0, 0, 0, 0.06);
+  --md-sys-color-surface-variant: var(--color-ghost-grey);
+  --md-sys-color-inverse-surface: var(--color-obsidian);
+  --md-sys-color-inverse-on-surface: var(--color-white);
+  --md-sys-color-error: var(--color-danger);
+  --md-sys-color-on-error: var(--color-white);
+}
+
+// ══════════════════════════════════════════
+// Dark Theme (Rayum Dark Mode)
+// ══════════════════════════════════════════
+.dark-theme {
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6B7280;
+
+  --md-sys-color-surface: var(--color-obsidian-deep);
+  --md-sys-color-surface-container: rgba(255, 255, 255, 0.04);
+  --md-sys-color-surface-container-low: #141720;
+  --md-sys-color-surface-container-high: rgba(255, 255, 255, 0.06);
+  --md-sys-color-surface-container-highest: rgba(255, 255, 255, 0.08);
+  --md-sys-color-on-surface: #FFFFFF;
+  --md-sys-color-on-surface-variant: #9CA3AF;
+  --md-sys-color-primary: var(--color-mint);
+  --md-sys-color-on-primary: var(--color-obsidian);
+  --md-sys-color-primary-container: rgba(112, 252, 142, 0.15);
+  --md-sys-color-on-primary-container: var(--color-mint);
+  --md-sys-color-secondary: var(--color-cobalt);
+  --md-sys-color-on-secondary: var(--color-white);
+  --md-sys-color-secondary-container: var(--color-cobalt-light);
+  --md-sys-color-on-secondary-container: #A8C7FA;
+  --md-sys-color-tertiary: #8B5CF6;
+  --md-sys-color-outline: rgba(255, 255, 255, 0.12);
+  --md-sys-color-outline-variant: rgba(255, 255, 255, 0.08);
+  --md-sys-color-surface-variant: rgba(255, 255, 255, 0.06);
+  --md-sys-color-inverse-surface: var(--color-white);
+  --md-sys-color-inverse-on-surface: var(--color-obsidian);
+  --md-sys-color-error: var(--color-danger);
+  --md-sys-color-on-error: var(--color-white);
+
+  // Override shadows — dark mode uses borders, not shadows
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+}
+
+// ══════════════════════════════════════════
+// Reset
+// ══════════════════════════════════════════
+*,
+*::before,
+*::after {
+  margin: 0;
+  box-sizing: border-box;
+}
+// NOTE: Do NOT reset padding globally — breaks @material/web components
+
+body {
+  font-family: var(--font-family);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  min-height: 100vh;
+  transition: background-color var(--transition-slow), color var(--transition-slow);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ══════════════════════════════════════════
+// Card Styling (Rayum pattern)
+// ══════════════════════════════════════════
+
+// Light mode cards
+iu-card .iu-card {
+  background: var(--color-white) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 20px 24px !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+
+  &:hover {
+    box-shadow: var(--shadow-md) !important;
+    transform: translateY(-1px);
+  }
+}
+
+// Dark mode cards
+.dark-theme iu-card .iu-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(8px);
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    box-shadow: none !important;
+  }
+}
+
+// Card header icons
+iu-card .iu-card__avatar {
+  color: var(--color-mint) !important;
+  font-size: 20px !important;
+}
+
+iu-card .iu-card__title {
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+// ══════════════════════════════════════════
+// KPI & Data Display
+// ══════════════════════════════════════════
+.kpi-value {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+
+  &--up {
+    color: var(--color-success);
+    background: var(--color-mint-light);
+  }
+  &--down {
+    color: var(--color-danger);
+    background: rgba(239, 68, 68, 0.1);
+  }
+  &--warning {
+    color: var(--color-warning);
+    background: rgba(245, 158, 11, 0.15);
+  }
+}
+
+.badge {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &--shipped, &--success {
+    background: var(--color-mint-light);
+    color: var(--color-success);
+  }
+  &--pending, &--warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--color-warning);
+  }
+  &--cancelled, &--danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger);
+  }
+  &--info {
+    background: var(--color-cobalt-light);
+    color: var(--color-cobalt);
+  }
+}
+
+// ══════════════════════════════════════════
+// M3 Component Overrides
+// ══════════════════════════════════════════
+
+// Progress bar
+md-linear-progress {
+  --md-linear-progress-active-indicator-color: var(--color-mint);
+  --md-linear-progress-track-color: var(--md-sys-color-surface-variant);
+  --md-linear-progress-track-height: 6px;
+  --md-linear-progress-active-indicator-height: 6px;
+  --md-linear-progress-track-shape: var(--radius-full);
+}
+
+// Checkbox
+md-checkbox {
+  --md-checkbox-selected-container-color: var(--color-mint);
+  --md-checkbox-selected-icon-color: var(--color-obsidian);
+}
+
+// ══════════════════════════════════════════
+// Navigation (Rayum sidebar style)
+// ══════════════════════════════════════════
+
+// Top App Bar
+iu-top-app-bar .iu-top-app-bar {
+  background: var(--md-sys-color-surface) !important;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+// Nav rail
+iu-nav-rail .iu-nav-rail {
+  background: var(--color-white) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark-theme {
+  iu-top-app-bar .iu-top-app-bar {
+    background: var(--color-obsidian-deep) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  iu-nav-rail .iu-nav-rail {
+    background: var(--color-obsidian) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
