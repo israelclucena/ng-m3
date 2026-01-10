@@ -1,0 +1,134 @@
+<!--
+  Root cause fix:
+  Angular's <ng-content> inside @switch/@case does NOT re-project
+  dynamically when the active case changes — only the first render works.
+  We use `label` input for button text (reactive) and keep <ng-content>
+  only for static rich content where the variant won't change after init.
+-->
+
+@switch (variant()) {
+
+  @case ('primary') {
+    <md-filled-button
+      [class]="hostClass()"
+      [disabled]="isDisabled()"
+      [softDisabled]="isSoftDisabled()"
+      [trailingIcon]="trailingIcon()"
+      [hasIcon]="hasIcon()"
+      [type]="type()"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-busy]="loading() || null"
+      (click)="onClick($event)"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+      {{ label() }}
+      <ng-content />
+    </md-filled-button>
+  }
+
+  @case ('secondary') {
+    <md-filled-tonal-button
+      [class]="hostClass()"
+      [disabled]="isDisabled()"
+      [softDisabled]="isSoftDisabled()"
+      [trailingIcon]="trailingIcon()"
+      [hasIcon]="hasIcon()"
+      [type]="type()"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-busy]="loading() || null"
+      (click)="onClick($event)"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+      {{ label() }}
+    </md-filled-tonal-button>
+  }
+
+  @case ('outlined') {
+    <md-outlined-button
+      [class]="hostClass()"
+      [disabled]="isDisabled()"
+      [softDisabled]="isSoftDisabled()"
+      [trailingIcon]="trailingIcon()"
+      [hasIcon]="hasIcon()"
+      [type]="type()"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-busy]="loading() || null"
+      (click)="onClick($event)"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+      {{ label() }}
+    </md-outlined-button>
+  }
+
+  @case ('elevated') {
+    <md-elevated-button
+      [class]="hostClass()"
+      [disabled]="isDisabled()"
+      [softDisabled]="isSoftDisabled()"
+      [trailingIcon]="trailingIcon()"
+      [hasIcon]="hasIcon()"
+      [type]="type()"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-busy]="loading() || null"
+      (click)="onClick($event)"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+      {{ label() }}
+    </md-elevated-button>
+  }
+
+  @case ('selected') {
+    <!-- selected = filled-tonal + custom color tokens -->
+    <md-filled-tonal-button
+      [class]="hostClass()"
+      [disabled]="isDisabled()"
+      [softDisabled]="isSoftDisabled()"
+      [trailingIcon]="trailingIcon()"
+      [hasIcon]="hasIcon()"
+      [type]="type()"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-busy]="loading() || null"
+      (click)="onClick($event)"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+      {{ label() }}
+    </md-filled-tonal-button>
+  }
+
+  @case ('danger') {
+    <!-- danger = filled + error color tokens -->
+    <md-filled-button
+      [class]="hostClass()"
+      [disabled]="isDisabled()"
+      [softDisabled]="isSoftDisabled()"
+      [trailingIcon]="trailingIcon()"
+      [hasIcon]="hasIcon()"
+      [type]="type()"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-busy]="loading() || null"
+      (click)="onClick($event)"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+      {{ label() }}
+    </md-filled-button>
+  }
+
+  @default {
+    <!-- ghost / text -->
+    <md-text-button
+      [class]="hostClass()"
+      [disabled]="isDisabled()"
+      [softDisabled]="isSoftDisabled()"
+      [trailingIcon]="trailingIcon()"
+      [hasIcon]="hasIcon()"
+      [type]="type()"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-busy]="loading() || null"
+      (click)="onClick($event)"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+      {{ label() }}
+    </md-text-button>
+  }
+
+}
