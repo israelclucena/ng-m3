@@ -1,0 +1,67 @@
+@switch (variant()) {
+
+  @case ('outlined') {
+    <md-outlined-text-field
+      [class]="hostClass()"
+      [label]="label()"
+      [placeholder]="placeholder()"
+      [type]="effectiveType()"
+      [disabled]="disabled()"
+      [required]="required()"
+      [error]="hasError()"
+      [errorText]="errorMessage()"
+      [supportingText]="hint()"
+      [value]="value()"
+      [hasLeadingIcon]="hasPrefix()"
+      [hasTrailingIcon]="hasSuffix()"
+      (input)="onInput($event)"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      (keydown)="onKeydown($event)"
+    >
+      @if (hasPrefix()) {
+        <md-icon slot="leading-icon">{{ prefixIcon() }}</md-icon>
+      }
+      @if (type() === 'password') {
+        <md-icon-button slot="trailing-icon" (click)="togglePassword()" [attr.aria-label]="showPassword() ? 'Ocultar password' : 'Mostrar password'">
+          <md-icon>{{ passwordIcon() }}</md-icon>
+        </md-icon-button>
+      } @else if (suffixIcon()) {
+        <md-icon slot="trailing-icon">{{ suffixIcon() }}</md-icon>
+      }
+    </md-outlined-text-field>
+  }
+
+  @case ('filled') {
+    <md-filled-text-field
+      [class]="hostClass()"
+      [label]="label()"
+      [placeholder]="placeholder()"
+      [type]="effectiveType()"
+      [disabled]="disabled()"
+      [required]="required()"
+      [error]="hasError()"
+      [errorText]="errorMessage()"
+      [supportingText]="hint()"
+      [value]="value()"
+      [hasLeadingIcon]="hasPrefix()"
+      [hasTrailingIcon]="hasSuffix()"
+      (input)="onInput($event)"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      (keydown)="onKeydown($event)"
+    >
+      @if (hasPrefix()) {
+        <md-icon slot="leading-icon">{{ prefixIcon() }}</md-icon>
+      }
+      @if (type() === 'password') {
+        <md-icon-button slot="trailing-icon" (click)="togglePassword()" [attr.aria-label]="showPassword() ? 'Ocultar password' : 'Mostrar password'">
+          <md-icon>{{ passwordIcon() }}</md-icon>
+        </md-icon-button>
+      } @else if (suffixIcon()) {
+        <md-icon slot="trailing-icon">{{ suffixIcon() }}</md-icon>
+      }
+    </md-filled-text-field>
+  }
+
+}

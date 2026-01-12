@@ -1,0 +1,25 @@
+// IU Input — Minimal host styles; @material/web handles M3 rendering.
+
+:host {
+  display: inline-block;
+}
+
+.iu-input--full-width {
+  width: 100%;
+}
+
+// Ensure md-*-text-field stretches when full-width
+md-outlined-text-field,
+md-filled-text-field {
+  &.iu-input--full-width {
+    width: 100%;
+  }
+}
+
+// Password toggle icon button inside trailing slot — remove extra padding
+md-outlined-text-field,
+md-filled-text-field {
+  md-icon-button[slot='trailing-icon'] {
+    --md-icon-button-icon-size: 24px;
+  }
+}
