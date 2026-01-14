@@ -1,0 +1,34 @@
+<article [class]="hostClass()" (click)="onClick($event)" (keydown.enter)="onClick($event)" (keydown.space)="onClick($event)" [attr.role]="clickable() ? 'button' : null" [attr.tabindex]="clickable() && !disabled() ? 0 : null">
+
+  <!-- Custom header slot (overrides title/subtitle) -->
+  <ng-content select="[slot='header']" />
+
+  <!-- Default header from inputs -->
+  @if (hasHeader()) {
+    <div class="iu-card__header">
+      @if (hasAvatar()) {
+        <span class="iu-card__avatar material-symbols-outlined" aria-hidden="true">{{ avatar() }}</span>
+      }
+      <div class="iu-card__header-text">
+        @if (hasTitle()) {
+          <h3 class="iu-card__title">{{ title() }}</h3>
+        }
+        @if (hasSubtitle()) {
+          <p class="iu-card__subtitle">{{ subtitle() }}</p>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Media slot (image, map, etc.) -->
+  <ng-content select="[slot='media']" />
+
+  <!-- Body content -->
+  <div class="iu-card__body">
+    <ng-content />
+  </div>
+
+  <!-- Footer / actions slot -->
+  <ng-content select="[slot='footer']" />
+
+</article>

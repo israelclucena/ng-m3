@@ -1,0 +1,227 @@
+// ==========================================
+// IU Card Component — M3 Card Styles
+// ==========================================
+//
+// Uses @material/web CSS custom properties (design tokens) for full
+// consistency with native md-* components. No hardcoded colors, fonts,
+// shapes or elevations — everything goes through --md-sys-* tokens.
+//
+// M3 Card Specs (material.io/design):
+// - Corner radius: medium (12px default)
+// - Elevated: surface-container-low, elevation level 1
+// - Filled: surface-container-highest, elevation 0
+// - Outlined: surface, outline-variant 1px border, elevation 0
+// - State layers: hover 8%, focus 10%, pressed 10%, dragged 16%
+
+// --- Transition ---
+$transition: 200ms cubic-bezier(0.2, 0, 0, 1);
+
+// --- Base ---
+.iu-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--md-sys-shape-corner-medium, 12px);
+  overflow: hidden;
+  transition:
+    box-shadow $transition,
+    transform $transition,
+    background-color $transition;
+  position: relative;
+  font-family: var(--md-sys-typescale-body-medium-font, var(--md-ref-typeface-plain, 'Roboto', sans-serif));
+
+  &--full-width {
+    width: 100%;
+  }
+
+  // --- Clickable (M3 state layers) ---
+  &--clickable {
+    cursor: pointer;
+    user-select: none;
+
+    // State layer pseudo-element
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--md-sys-shape-corner-medium, 12px);
+      background-color: var(--md-sys-color-on-surface, #1D1B20);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity $transition;
+    }
+
+    &:hover:not(.iu-card--disabled) {
+      // M3 hover state layer: 8% on-surface
+      &::after {
+        opacity: 0.08;
+      }
+
+      &.iu-card--elevated {
+        // Elevated hover → elevation level 2
+        box-shadow: var(--md-sys-elevation-level2, 0 1px 2px rgba(0, 0, 0, 0.30), 0 2px 6px 2px rgba(0, 0, 0, 0.15));
+      }
+    }
+
+    &:focus-visible:not(.iu-card--disabled) {
+      outline: 2px solid var(--md-sys-color-primary, #6750A4);
+      outline-offset: 2px;
+      // M3 focus state layer: 10%
+      &::after {
+        opacity: 0.10;
+      }
+    }
+
+    &:active:not(.iu-card--disabled) {
+      // M3 pressed state layer: 10%
+      &::after {
+        opacity: 0.10;
+      }
+    }
+  }
+
+  // --- Disabled (M3: container 12% on-surface, content 38% on-surface) ---
+  &--disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    position: relative;
+
+    // M3 disabled content: 38% opacity
+    .iu-card__title,
+    .iu-card__subtitle,
+    .iu-card__body {
+      opacity: 0.38;
+    }
+
+    // M3 disabled container overlay: 12% on-surface
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--md-sys-shape-corner-medium, 12px);
+      background-color: var(--md-sys-color-on-surface, #1D1B20);
+      opacity: 0.12;
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+}
+
+// ================================
+// VARIANT: Elevated (M3 elevation level 1)
+// ================================
+.iu-card--elevated {
+  background-color: var(--md-sys-color-surface-container-low, #F7F2FA);
+  box-shadow: var(--md-sys-elevation-level1, 0 1px 2px rgba(0, 0, 0, 0.30), 0 1px 3px 1px rgba(0, 0, 0, 0.15));
+}
+
+// ================================
+// VARIANT: Filled (M3 elevation 0, surface-container-highest)
+// ================================
+.iu-card--filled {
+  background-color: var(--md-sys-color-surface-container-highest, #E6E0E9);
+  box-shadow: var(--md-sys-elevation-level0, none);
+}
+
+// ================================
+// VARIANT: Outlined (M3 elevation 0, 1px outline-variant)
+// ================================
+.iu-card--outlined {
+  background-color: var(--md-sys-color-surface, #FEF7FF);
+  border: 1px solid var(--md-sys-color-outline-variant, #CAC4D0);
+  box-shadow: var(--md-sys-elevation-level0, none);
+}
+
+// --- Header ---
+.iu-card__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 16px 0;
+}
+
+.iu-card__avatar {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--md-sys-shape-corner-full, 9999px);
+  background-color: color-mix(in srgb, var(--md-sys-color-primary, #6750A4) 10%, transparent);
+  color: var(--md-sys-color-primary, #6750A4);
+  flex-shrink: 0;
+}
+
+.iu-card__header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+// M3 Title Medium via typescale tokens
+.iu-card__title {
+  margin: 0;
+  font-family: var(--md-sys-typescale-title-medium-font, var(--md-ref-typeface-brand, 'Roboto', sans-serif));
+  font-size: var(--md-sys-typescale-title-medium-size, 16px);
+  font-weight: var(--md-sys-typescale-title-medium-weight, 500);
+  line-height: var(--md-sys-typescale-title-medium-line-height, 24px);
+  letter-spacing: var(--md-sys-typescale-title-medium-tracking, 0.15px);
+  color: var(--md-sys-color-on-surface, #1D1B20);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// M3 Body Medium via typescale tokens
+.iu-card__subtitle {
+  margin: 0;
+  font-family: var(--md-sys-typescale-body-medium-font, var(--md-ref-typeface-plain, 'Roboto', sans-serif));
+  font-size: var(--md-sys-typescale-body-medium-size, 14px);
+  font-weight: var(--md-sys-typescale-body-medium-weight, 400);
+  line-height: var(--md-sys-typescale-body-medium-line-height, 20px);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking, 0.25px);
+  color: var(--md-sys-color-on-surface-variant, #49454F);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// --- Body ---
+.iu-card__body {
+  padding: 16px;
+  // M3 Body Medium via typescale tokens
+  font-family: var(--md-sys-typescale-body-medium-font, var(--md-ref-typeface-plain, 'Roboto', sans-serif));
+  font-size: var(--md-sys-typescale-body-medium-size, 14px);
+  font-weight: var(--md-sys-typescale-body-medium-weight, 400);
+  line-height: var(--md-sys-typescale-body-medium-line-height, 20px);
+  letter-spacing: var(--md-sys-typescale-body-medium-tracking, 0.25px);
+  color: var(--md-sys-color-on-surface-variant, #49454F);
+
+  &:empty {
+    padding: 0;
+  }
+}
+
+// --- Media slot ---
+::ng-deep [slot='media'] {
+  width: 100%;
+  display: block;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+// --- Footer / actions ---
+::ng-deep [slot='footer'] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 16px;
+  flex-wrap: wrap;
+}
