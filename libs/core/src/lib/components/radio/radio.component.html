@@ -1,0 +1,13 @@
+<label class="iu-radio">
+  <md-radio
+    [checked]="checked()"
+    [disabled]="disabled()"
+    [name]="name()"
+    [value]="value()"
+    [attr.aria-label]="ariaLabel() || null"
+    (change)="onChange($event)"
+  ></md-radio>
+  @if (label()) {
+    <span class="iu-radio__label">{{ label() }}</span>
+  }
+</label>
