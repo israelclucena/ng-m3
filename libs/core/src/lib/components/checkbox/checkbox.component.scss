@@ -1,0 +1,41 @@
+/*
+  IU Checkbox — M3-compliant wrapper styles
+  ==========================================
+  M3 Checkbox Specs:
+  - Icon size: 18×18px
+  - Touch target: 48×48px
+  - Corner radius: 2px
+  - State layers: hover 8%, focus 10%, pressed 10%
+*/
+
+.iu-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+
+  // M3 tokens
+  --md-checkbox-container-size: 18px;
+  --md-checkbox-container-shape: 2px;
+
+  &__label {
+    // M3 Body Large: Roboto 400 16px/24px +0.5px
+    font-family: var(--md-sys-typescale-body-large-font, 'Roboto', sans-serif);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: var(--md-sys-color-on-surface, #1c1b1f);
+    user-select: none;
+  }
+
+  // Disabled state label
+  &:has(md-checkbox[disabled]) {
+    cursor: default;
+
+    .iu-checkbox__label {
+      color: var(--md-sys-color-on-surface, #1c1b1f);
+      opacity: 0.38;
+    }
+  }
+}

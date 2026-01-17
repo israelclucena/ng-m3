@@ -1,0 +1,12 @@
+<label class="iu-checkbox">
+  <md-checkbox
+    [checked]="checked()"
+    [indeterminate]="indeterminate()"
+    [disabled]="disabled()"
+    [attr.aria-label]="ariaLabel() || null"
+    (change)="onChange($event)"
+  ></md-checkbox>
+  @if (label()) {
+    <span class="iu-checkbox__label">{{ label() }}</span>
+  }
+</label>
