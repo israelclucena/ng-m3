@@ -1,0 +1,12 @@
+<label class="iu-switch">
+  @if (label()) {
+    <span class="iu-switch__label">{{ label() }}</span>
+  }
+  <md-switch
+    [selected]="selected()"
+    [disabled]="disabled()"
+    [icons]="icons()"
+    [attr.aria-label]="ariaLabel() || null"
+    (change)="onChange($event)"
+  ></md-switch>
+</label>

@@ -1,0 +1,44 @@
+/*
+  IU Switch — M3-compliant wrapper styles
+  ========================================
+  M3 Switch Specs:
+  - Track: 52×32px
+  - Handle: 28px selected / 16px unselected
+  - State layers: hover 8%, focus 10%, pressed 10%
+*/
+
+.iu-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+
+  // M3 tokens
+  --md-switch-track-width: 52px;
+  --md-switch-track-height: 32px;
+  --md-switch-selected-handle-width: 28px;
+  --md-switch-selected-handle-height: 28px;
+  --md-switch-handle-width: 16px;
+  --md-switch-handle-height: 16px;
+
+  &__label {
+    // M3 Body Large: Roboto 400 16px/24px +0.5px
+    font-family: var(--md-sys-typescale-body-large-font, 'Roboto', sans-serif);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: var(--md-sys-color-on-surface, #1c1b1f);
+    user-select: none;
+  }
+
+  // Disabled state label
+  &:has(md-switch[disabled]) {
+    cursor: default;
+
+    .iu-switch__label {
+      color: var(--md-sys-color-on-surface, #1c1b1f);
+      opacity: 0.38;
+    }
+  }
+}
