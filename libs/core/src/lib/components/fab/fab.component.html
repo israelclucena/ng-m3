@@ -1,0 +1,12 @@
+<md-fab
+  [class]="hostClass()"
+  [size]="size()"
+  [lowered]="lowered()"
+  [label]="label()"
+  [variant]="variant()"
+  [attr.aria-label]="ariaLabel() || null"
+  [attr.disabled]="disabled() || null"
+  (click)="onClick($event)"
+>
+  <md-icon slot="icon">{{ icon() }}</md-icon>
+</md-fab>

@@ -1,0 +1,19 @@
+// IU FAB — M3 wrapper styles
+
+iu-fab {
+  display: inline-flex;
+  vertical-align: middle;
+
+  // M3 FAB shape tokens: small 12px, medium 16px, large 28px; elevation 3
+  md-fab {
+    --md-fab-container-shape: 16px; // Medium (default)
+
+    &[size='small'] {
+      --md-fab-container-shape: 12px; // Small shape
+    }
+
+    &[size='large'] {
+      --md-fab-container-shape: 28px; // Extra Large shape
+    }
+  }
+}
