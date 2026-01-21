@@ -1,0 +1,15 @@
+// IU Icon Button — M3 wrapper styles
+// Sizing/theming handled by @material/web; only layout overrides here.
+
+iu-icon-button {
+  display: inline-flex;
+  vertical-align: middle;
+
+  // M3 Icon Button: Full shape (circle)
+  md-icon-button,
+  md-filled-icon-button,
+  md-filled-tonal-icon-button,
+  md-outlined-icon-button {
+    --md-icon-button-container-shape: 9999px;
+  }
+}

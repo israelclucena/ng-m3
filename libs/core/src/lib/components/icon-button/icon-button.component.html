@@ -1,0 +1,56 @@
+@switch (variant()) {
+
+  @case ('filled') {
+    <md-filled-icon-button
+      [class]="hostClass()"
+      [disabled]="disabled()"
+      [toggle]="toggle()"
+      [selected]="selected()"
+      [attr.aria-label]="ariaLabel() || null"
+      (click)="onClick($event)"
+    >
+      <md-icon>{{ icon() }}</md-icon>
+    </md-filled-icon-button>
+  }
+
+  @case ('tonal') {
+    <md-filled-tonal-icon-button
+      [class]="hostClass()"
+      [disabled]="disabled()"
+      [toggle]="toggle()"
+      [selected]="selected()"
+      [attr.aria-label]="ariaLabel() || null"
+      (click)="onClick($event)"
+    >
+      <md-icon>{{ icon() }}</md-icon>
+    </md-filled-tonal-icon-button>
+  }
+
+  @case ('outlined') {
+    <md-outlined-icon-button
+      [class]="hostClass()"
+      [disabled]="disabled()"
+      [toggle]="toggle()"
+      [selected]="selected()"
+      [attr.aria-label]="ariaLabel() || null"
+      (click)="onClick($event)"
+    >
+      <md-icon>{{ icon() }}</md-icon>
+    </md-outlined-icon-button>
+  }
+
+  @default {
+    <!-- standard -->
+    <md-icon-button
+      [class]="hostClass()"
+      [disabled]="disabled()"
+      [toggle]="toggle()"
+      [selected]="selected()"
+      [attr.aria-label]="ariaLabel() || null"
+      (click)="onClick($event)"
+    >
+      <md-icon>{{ icon() }}</md-icon>
+    </md-icon-button>
+  }
+
+}
