@@ -1,0 +1,24 @@
+// IU Chip — M3 styles
+
+iu-chip {
+  display: inline-flex;
+}
+
+.iu-chip {
+  // M3 chip tokens — Shape: Small (8px), elevation 0
+  --md-assist-chip-container-shape: 8px;
+  --md-filter-chip-container-shape: 8px;
+  --md-suggestion-chip-container-shape: 8px;
+  --md-input-chip-container-shape: 8px;
+  --md-assist-chip-container-height: 32px;
+  --md-filter-chip-container-height: 32px;
+  --md-suggestion-chip-container-height: 32px;
+  --md-input-chip-container-height: 32px;
+  --md-assist-chip-container-color: var(--md-sys-color-surface);
+  --md-filter-chip-container-color: var(--md-sys-color-surface);
+
+  &--elevated {
+    --md-assist-chip-elevated-container-color: var(--md-sys-color-surface-container-low);
+    --md-suggestion-chip-elevated-container-color: var(--md-sys-color-surface-container-low);
+  }
+}

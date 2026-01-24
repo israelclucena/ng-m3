@@ -1,0 +1,57 @@
+@switch (variant()) {
+
+  @case ('assist') {
+    <md-assist-chip
+      [class]="hostClass()"
+      [label]="label()"
+      [elevated]="elevated()"
+      [disabled]="disabled()"
+      [attr.aria-label]="ariaLabel() || null"
+      (click)="onClick()"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+    </md-assist-chip>
+  }
+
+  @case ('filter') {
+    <md-filter-chip
+      [class]="hostClass()"
+      [label]="label()"
+      [elevated]="elevated()"
+      [disabled]="disabled()"
+      [selected]="selected()"
+      [attr.aria-label]="ariaLabel() || null"
+      (click)="onClick()"
+      (selected)="onSelected($event)"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+    </md-filter-chip>
+  }
+
+  @case ('input') {
+    <md-input-chip
+      [class]="hostClass()"
+      [label]="label()"
+      [disabled]="disabled()"
+      [attr.aria-label]="ariaLabel() || null"
+      (click)="onClick()"
+      (remove)="onRemoved()"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+    </md-input-chip>
+  }
+
+  @case ('suggestion') {
+    <md-suggestion-chip
+      [class]="hostClass()"
+      [label]="label()"
+      [elevated]="elevated()"
+      [disabled]="disabled()"
+      [attr.aria-label]="ariaLabel() || null"
+      (click)="onClick()"
+    >
+      @if (hasIcon()) { <md-icon slot="icon">{{ icon() }}</md-icon> }
+    </md-suggestion-chip>
+  }
+
+}
