@@ -1,0 +1,26 @@
+<md-dialog
+  [class]="hostClass()"
+  [open]="open()"
+  [type]="type()"
+  (opened)="onOpened()"
+  (closed)="onClosed($event)"
+>
+  @if (hasIcon()) {
+    <md-icon slot="headline-prefix">{{ icon() }}</md-icon>
+  }
+
+  @if (hasHeadline()) {
+    <span slot="headline">{{ headline() }}</span>
+  }
+
+  <div slot="content">
+    @if (hasSupportingText()) {
+      <p class="iu-dialog__supporting-text">{{ supportingText() }}</p>
+    }
+    <ng-content select="[slot=content]" />
+  </div>
+
+  <div slot="actions">
+    <ng-content select="[slot=actions]" />
+  </div>
+</md-dialog>

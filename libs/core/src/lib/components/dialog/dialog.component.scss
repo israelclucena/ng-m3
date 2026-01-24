@@ -1,0 +1,34 @@
+// IU Dialog — M3 styles
+// ViewEncapsulation.None allows us to style md-dialog directly
+
+iu-dialog {
+  display: contents;
+}
+
+.iu-dialog {
+  // M3 Dialog: Extra Large shape (28px), elevation 3
+  --md-dialog-container-shape: 28px;
+  --md-dialog-container-color: var(--md-sys-color-surface-container-high);
+  --md-dialog-headline-color: var(--md-sys-color-on-surface);
+  --md-dialog-supporting-text-color: var(--md-sys-color-on-surface-variant);
+  --md-dialog-container-min-inline-size: 280px;
+  --md-dialog-container-max-inline-size: 560px;
+  --md-dialog-container-shape: 28px;
+
+  // M3 Headline Small for dialog headline: Roboto 400 24px/32px 0px
+  --md-dialog-headline-size: 24px;
+  --md-dialog-headline-weight: 400;
+  --md-dialog-headline-line-height: 32px;
+  --md-dialog-headline-tracking: 0px;
+
+  // M3 Body Medium for supporting text: Roboto 400 14px/20px +0.25px
+  --md-dialog-supporting-text-size: 14px;
+  --md-dialog-supporting-text-weight: 400;
+  --md-dialog-supporting-text-line-height: 20px;
+  --md-dialog-supporting-text-tracking: 0.25px;
+
+  &__supporting-text {
+    margin: 0;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+}
