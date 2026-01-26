@@ -1,0 +1,24 @@
+@switch (type()) {
+
+  @case ('circular') {
+    <md-circular-progress
+      [class]="hostClass()"
+      [value]="value()"
+      [indeterminate]="indeterminate()"
+      [fourColor]="fourColor()"
+      [attr.aria-label]="ariaLabel() || null"
+    ></md-circular-progress>
+  }
+
+  @default {
+    <!-- linear -->
+    <md-linear-progress
+      [class]="hostClass()"
+      [value]="value()"
+      [indeterminate]="indeterminate()"
+      [fourColor]="fourColor()"
+      [attr.aria-label]="ariaLabel() || null"
+    ></md-linear-progress>
+  }
+
+}

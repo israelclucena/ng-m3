@@ -1,0 +1,11 @@
+// IU Progress — M3 wrapper styles
+
+iu-progress {
+  display: inline-flex;
+  vertical-align: middle;
+  width: 100%;
+
+  md-linear-progress {
+    width: 100%;
+  }
+}
