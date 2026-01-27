@@ -1,0 +1,29 @@
+<!--
+  IU Slider — wraps md-slider from @material/web.
+  Supports single value and range mode.
+-->
+@if (range()) {
+  <md-slider
+    #sliderEl
+    [class]="hostClass()"
+    range
+    [min]="min()"
+    [max]="max()"
+    [step]="step()"
+    [valueStart]="valueStart()"
+    [valueEnd]="valueEnd()"
+    [labeled]="labeled()"
+    [disabled]="disabled()"
+  ></md-slider>
+} @else {
+  <md-slider
+    #sliderEl
+    [class]="hostClass()"
+    [min]="min()"
+    [max]="max()"
+    [step]="step()"
+    [value]="value()"
+    [labeled]="labeled()"
+    [disabled]="disabled()"
+  ></md-slider>
+}

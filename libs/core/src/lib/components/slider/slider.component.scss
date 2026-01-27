@@ -1,0 +1,37 @@
+/*
+  IU Slider — M3-compliant wrapper styles
+  ========================================
+  M3 Slider Specs:
+  - Track height: 4px (inactive), 16px (active state layer)
+  - Handle size: 20px
+  - Touch target: 48px
+  - Corner radius: full (track and handle)
+*/
+
+iu-slider {
+  display: block;
+  width: 100%;
+
+  md-slider {
+    width: 100%;
+
+    // M3 track
+    --md-slider-inactive-track-height: 4px;
+    --md-slider-active-track-height: 4px;
+    --md-slider-inactive-track-shape: 9999px;
+    --md-slider-active-track-shape: 9999px;
+
+    // M3 handle
+    --md-slider-handle-height: 20px;
+    --md-slider-handle-width: 20px;
+    --md-slider-handle-shape: 9999px;
+
+    // M3 state layer (touch target)
+    --md-slider-state-layer-size: 48px;
+  }
+
+  &.iu-slider--disabled {
+    opacity: 0.38;
+    pointer-events: none;
+  }
+}
