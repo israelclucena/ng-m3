@@ -1,0 +1,35 @@
+@switch (variant()) {
+
+  @case ('filled') {
+    <md-filled-select
+      [class]="hostClass()"
+      [label]="label()"
+      [disabled]="disabled()"
+      [required]="required()"
+      [errorText]="errorText()"
+      [supportingText]="supportingText()"
+      [error]="!!errorText()"
+      (change)="onChange($event)"
+      (input)="onInput($event)"
+    >
+      <ng-content />
+    </md-filled-select>
+  }
+
+  @default {
+    <md-outlined-select
+      [class]="hostClass()"
+      [label]="label()"
+      [disabled]="disabled()"
+      [required]="required()"
+      [errorText]="errorText()"
+      [supportingText]="supportingText()"
+      [error]="!!errorText()"
+      (change)="onChange($event)"
+      (input)="onInput($event)"
+    >
+      <ng-content />
+    </md-outlined-select>
+  }
+
+}

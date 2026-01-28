@@ -1,0 +1,16 @@
+iu-select {
+  display: inline-block;
+
+  md-outlined-select,
+  md-filled-select {
+    min-width: 210px;
+    // M3 TextField height: 56px
+    --md-outlined-select-text-field-container-height: 56px;
+    --md-filled-select-text-field-container-height: 56px;
+  }
+
+  .iu-select--disabled {
+    opacity: 0.38;
+    pointer-events: none;
+  }
+}
