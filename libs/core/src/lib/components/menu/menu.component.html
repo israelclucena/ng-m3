@@ -1,0 +1,11 @@
+<md-menu
+  [class]="hostClass()"
+  [open]="open()"
+  [anchor]="anchor()"
+  [positioning]="positioning()"
+  (opened)="onOpened()"
+  (closed)="onClosed()"
+  (close-menu)="onItemSelected($event)"
+>
+  <ng-content />
+</md-menu>

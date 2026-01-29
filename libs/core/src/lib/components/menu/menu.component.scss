@@ -1,0 +1,11 @@
+iu-menu {
+  display: contents;
+
+  md-menu {
+    // M3 Menu: Extra Small shape (4px), elevation 2
+    --md-menu-container-shape: 4px;
+    --md-menu-container-surface-tint-layer-color: var(--md-sys-color-surface-tint);
+    min-width: 112px;
+    max-width: 280px;
+  }
+}
