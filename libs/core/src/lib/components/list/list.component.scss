@@ -1,0 +1,17 @@
+iu-list {
+  display: block;
+
+  md-list {
+    // M3: Lists have no corner radius (Shape: None)
+    border-radius: 0;
+  }
+}
+
+iu-list-item {
+  display: contents;
+
+  .iu-list-item--disabled {
+    opacity: 0.38;
+    pointer-events: none;
+  }
+}

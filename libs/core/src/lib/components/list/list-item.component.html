@@ -1,0 +1,13 @@
+<md-list-item
+  [class]="hostClass()"
+  [type]="type()"
+  [disabled]="disabled()"
+>
+  <ng-content select="[slot=start]" />
+  <div slot="headline">{{ headline() }}</div>
+  @if (supportingText()) {
+    <div slot="supporting-text">{{ supportingText() }}</div>
+  }
+  <ng-content select="[slot=end]" />
+  <ng-content />
+</md-list-item>
