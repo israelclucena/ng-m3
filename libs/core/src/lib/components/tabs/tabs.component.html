@@ -1,0 +1,7 @@
+<!--
+  IU Tabs — wraps md-tabs with projected md-primary-tab / md-secondary-tab children.
+  The consumer projects tab elements directly via <ng-content>.
+-->
+<md-tabs #tabsEl [attr.active-tab-index]="activeTabIndex()">
+  <ng-content />
+</md-tabs>

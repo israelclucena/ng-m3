@@ -1,0 +1,36 @@
+/*
+  IU Tabs — M3-compliant wrapper styles
+  ======================================
+  M3 Tabs Specs:
+  - Height: 48px (both primary and secondary)
+  - Active indicator: 3px height, full corner radius
+  - Divider: 1px solid outline-variant
+  - Label: "Title Small" — 14px/20px, weight 500
+*/
+
+iu-tabs {
+  display: block;
+  width: 100%;
+
+  md-tabs {
+    width: 100%;
+
+    // M3 tab height
+    --md-primary-tab-container-height: 48px;
+    --md-secondary-tab-container-height: 48px;
+
+    // M3 active indicator
+    --md-primary-tab-active-indicator-height: 3px;
+    --md-secondary-tab-active-indicator-height: 3px;
+    --md-primary-tab-active-indicator-shape: 9999px;
+    --md-secondary-tab-active-indicator-shape: 9999px;
+
+    // M3 typography — Title Small
+    --md-primary-tab-label-text-size: 14px;
+    --md-secondary-tab-label-text-size: 14px;
+    --md-primary-tab-label-text-weight: 500;
+    --md-secondary-tab-label-text-weight: 500;
+    --md-primary-tab-label-text-tracking: 0.1px;
+    --md-secondary-tab-label-text-tracking: 0.1px;
+  }
+}
