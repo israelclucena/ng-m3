@@ -1,0 +1,11 @@
+// IU Divider — M3 styles
+
+iu-divider {
+  display: block;
+  width: 100%;
+}
+
+.iu-divider {
+  --md-divider-color: var(--md-sys-color-outline-variant);
+  --md-divider-thickness: 1px;
+}
