@@ -1,0 +1,13 @@
+/*
+  IU Elevation — M3 elevation utility
+  M3 Elevation Levels: 0 (0dp), 1 (1dp), 2 (3dp), 3 (6dp), 4 (8dp), 5 (12dp)
+*/
+
+iu-elevation {
+  display: contents;
+
+  md-elevation {
+    // md-elevation needs position context from parent
+    --md-elevation-duration: 280ms;
+  }
+}
