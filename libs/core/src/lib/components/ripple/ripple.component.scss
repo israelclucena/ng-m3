@@ -1,0 +1,13 @@
+/*
+  IU Ripple — M3 ripple utility
+  M3 Specs: pressed state layer 10% opacity, 450ms duration
+*/
+
+iu-ripple {
+  display: contents;
+
+  md-ripple {
+    --md-ripple-pressed-opacity: 0.10;
+    --md-ripple-hover-opacity: 0.08;
+  }
+}
