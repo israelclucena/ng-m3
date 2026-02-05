@@ -1,0 +1,104 @@
+// IU Top App Bar — M3 spec
+// Small/Center: 64px, Medium: 112px, Large: 152px
+
+iu-top-app-bar {
+  display: block;
+}
+
+.iu-top-app-bar {
+  background: var(--md-sys-color-surface, #fffbfe);
+  color: var(--md-sys-color-on-surface, #1c1b1f);
+  width: 100%;
+  transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1);
+
+  &--scrolled {
+    box-shadow: var(--md-sys-elevation-level2,
+      0 1px 2px 0 rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15));
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    height: 64px;
+    padding: 0 4px;
+  }
+
+  &__leading,
+  &__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: transparent;
+    color: var(--md-sys-color-on-surface, #1c1b1f);
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 24px;
+
+    &:hover {
+      background: var(--md-sys-color-on-surface, #1c1b1f);
+      background: color-mix(in srgb, var(--md-sys-color-on-surface, #1c1b1f) 8%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--md-sys-color-primary, #6750a4);
+      outline-offset: 2px;
+    }
+  }
+
+  &__headline {
+    font-family: var(--md-sys-typescale-title-large-font, 'Roboto', sans-serif);
+    font-size: var(--md-sys-typescale-title-large-size, 22px);
+    font-weight: var(--md-sys-typescale-title-large-weight, 400);
+    line-height: var(--md-sys-typescale-title-large-line-height, 28px);
+    margin: 0;
+    padding: 0 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__trailing {
+    display: flex;
+    align-items: center;
+  }
+
+  &__headline-row {
+    padding: 0 16px 20px;
+  }
+
+  // --- Variants ---
+
+  &--center-aligned {
+    .iu-top-app-bar__headline {
+      text-align: center;
+      flex: 1;
+    }
+  }
+
+  &--small {
+    // default 64px — already set
+  }
+
+  &--medium {
+    .iu-top-app-bar__headline-row .iu-top-app-bar__headline {
+      font-size: var(--md-sys-typescale-headline-small-size, 24px);
+      line-height: var(--md-sys-typescale-headline-small-line-height, 32px);
+      padding: 0;
+    }
+  }
+
+  &--large {
+    .iu-top-app-bar__headline-row .iu-top-app-bar__headline {
+      font-size: var(--md-sys-typescale-headline-medium-size, 28px);
+      line-height: var(--md-sys-typescale-headline-medium-line-height, 36px);
+      padding: 0;
+    }
+  }
+}

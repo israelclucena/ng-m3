@@ -1,0 +1,58 @@
+<header [class]="hostClass()" role="banner">
+  <div class="iu-top-app-bar__row">
+
+    @if (hasLeadingIcon()) {
+      <button
+        class="iu-top-app-bar__leading"
+        type="button"
+        [attr.aria-label]="leadingIcon()"
+        (click)="leadingIconClick.emit()"
+      >
+        <span class="material-symbols-outlined">{{ leadingIcon() }}</span>
+      </button>
+    }
+
+    @if (variant() === 'medium' || variant() === 'large') {
+      <div class="iu-top-app-bar__spacer"></div>
+      @if (hasTrailingIcons()) {
+        <div class="iu-top-app-bar__trailing">
+          @for (icon of trailingIcons(); track icon) {
+            <button
+              class="iu-top-app-bar__action"
+              type="button"
+              [attr.aria-label]="icon"
+              (click)="trailingIconClick.emit(icon)"
+            >
+              <span class="material-symbols-outlined">{{ icon }}</span>
+            </button>
+          }
+        </div>
+      }
+    } @else {
+      <h1 class="iu-top-app-bar__headline">{{ headline() }}</h1>
+      <div class="iu-top-app-bar__spacer"></div>
+      <div class="iu-top-app-bar__trailing">
+        @if (hasTrailingIcons()) {
+          @for (icon of trailingIcons(); track icon) {
+            <button
+              class="iu-top-app-bar__action"
+              type="button"
+              [attr.aria-label]="icon"
+              (click)="trailingIconClick.emit(icon)"
+            >
+              <span class="material-symbols-outlined">{{ icon }}</span>
+            </button>
+          }
+        }
+        <ng-content select="[slot=trailing],.theme-toggle"></ng-content>
+      </div>
+    }
+
+  </div>
+
+  @if (variant() === 'medium' || variant() === 'large') {
+    <div class="iu-top-app-bar__headline-row">
+      <h1 class="iu-top-app-bar__headline">{{ headline() }}</h1>
+    </div>
+  }
+</header>
