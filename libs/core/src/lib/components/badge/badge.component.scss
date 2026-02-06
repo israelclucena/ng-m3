@@ -1,0 +1,45 @@
+// IU Badge — M3 spec
+// Small: 6px dot, Large: 16px height with text
+
+iu-badge {
+  display: inline-flex;
+  position: relative;
+}
+
+.iu-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--md-sys-color-error, #b3261e);
+  color: var(--md-sys-color-on-error, #fff);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1),
+              opacity 200ms cubic-bezier(0.2, 0, 0, 1);
+
+  &--small {
+    width: 6px;
+    height: 6px;
+    top: -2px;
+    right: -2px;
+  }
+
+  &--large {
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-family: var(--md-sys-typescale-label-small-font, 'Roboto', sans-serif);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  &--hidden {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
