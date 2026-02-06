@@ -1,0 +1,26 @@
+<div [class]="hostClass()" role="status" aria-live="polite">
+  <span class="iu-snackbar__message">{{ message() }}</span>
+
+  <div class="iu-snackbar__actions">
+    @if (hasAction()) {
+      <button
+        class="iu-snackbar__action"
+        type="button"
+        (click)="onAction()"
+      >
+        {{ action() }}
+      </button>
+    }
+
+    @if (closeable()) {
+      <button
+        class="iu-snackbar__close"
+        type="button"
+        aria-label="Dismiss"
+        (click)="hide()"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    }
+  </div>
+</div>
