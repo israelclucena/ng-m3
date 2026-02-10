@@ -1,0 +1,303 @@
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- M3 Navigation Rail — Flyout + Accordion + Dark Mode      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<!-- === NEW API (menuItems) === -->
+@if (useNewApi()) {
+  <nav
+    class="m3-rail"
+    [class.m3-rail--expanded]="expanded()"
+    [style.--rail-width]="resolvedConfig().collapsedWidth + 'px'"
+    [style.--rail-expanded-width]="resolvedConfig().expandedWidth + 'px'"
+    role="navigation"
+    aria-label="Main navigation"
+  >
+    <!-- Header: Menu / Close -->
+    <div class="m3-rail__header">
+      <button
+        class="m3-rail__menu-btn"
+        type="button"
+        (click)="toggleExpand()"
+        [attr.aria-expanded]="expanded()"
+        [attr.aria-label]="expanded() ? 'Close navigation' : 'Open navigation'"
+      >
+        <span class="material-symbols-outlined">{{ expanded() ? 'close' : 'menu' }}</span>
+      </button>
+      @if (expanded()) {
+        <span class="m3-rail__title">{{ resolvedConfig().title }}</span>
+      }
+    </div>
+
+    <!-- FAB (optional) -->
+    @if (resolvedConfig().showFab) {
+      <button
+        class="m3-rail__fab"
+        [class.m3-rail__fab--extended]="expanded()"
+        type="button"
+        [attr.aria-label]="resolvedConfig().fabLabel || resolvedConfig().fabIcon"
+        (click)="fabClick.emit()"
+      >
+        <span class="material-symbols-outlined">{{ resolvedConfig().fabIcon }}</span>
+        @if (expanded() && resolvedConfig().fabLabel) {
+          <span class="m3-rail__fab-label">{{ resolvedConfig().fabLabel }}</span>
+        }
+      </button>
+    }
+
+    <!-- Primary Items -->
+    <div class="m3-rail__items" role="list">
+      @for (item of menuItems(); track item.id) {
+        <!-- COLLAPSED: Rail item with hover flyout trigger -->
+        @if (!expanded()) {
+          <button
+            class="m3-rail__item"
+            [class.m3-rail__item--active]="isItemActive(item.id)"
+            [class.m3-rail__item--has-children]="hasChildren(item)"
+            type="button"
+            role="listitem"
+            [attr.aria-label]="item.label"
+            [attr.aria-current]="isItemActive(item.id) ? 'page' : null"
+            (click)="onMenuItemClick(item, 1)"
+            (mouseenter)="onRailItemHover(item.id)"
+            (mouseleave)="onRailItemLeave()"
+          >
+            <span class="m3-rail__indicator">
+              <span class="material-symbols-outlined">{{ item.icon }}</span>
+              @if (item.badge) {
+                <span class="m3-rail__badge"
+                  [class.m3-rail__badge--dot]="!item.badge.value"
+                  [class.m3-rail__badge--large]="!!item.badge.value">
+                  @if (item.badge.value) { {{ item.badge.value }} }
+                </span>
+              }
+            </span>
+            <span class="m3-rail__label">{{ item.label }}</span>
+          </button>
+        }
+
+        <!-- EXPANDED: Rail item with inline accordion -->
+        @if (expanded()) {
+          <div class="m3-rail__group">
+            <button
+              class="m3-rail__item m3-rail__item--expanded"
+              [class.m3-rail__item--active]="isItemActive(item.id)"
+              [class.m3-rail__item--expandable]="hasChildren(item)"
+              type="button"
+              role="listitem"
+              (click)="onMenuItemClick(item, 1)"
+            >
+              <span class="m3-rail__indicator">
+                <span class="material-symbols-outlined">{{ item.icon }}</span>
+              </span>
+              <span class="m3-rail__label">{{ item.label }}</span>
+              @if (hasChildren(item)) {
+                <span class="material-symbols-outlined m3-rail__chevron"
+                  [class.m3-rail__chevron--open]="isGroupExpanded(item.id)">
+                  expand_more
+                </span>
+              }
+            </button>
+
+            <!-- Level 2 accordion (expanded rail) -->
+            @if (hasChildren(item) && isGroupExpanded(item.id)) {
+              <div class="m3-rail__sub-items" >
+                @for (child of item.children; track child.id) {
+                  <div class="m3-rail__sub-group">
+                    <button
+                      class="m3-rail__sub-item"
+                      [class.m3-rail__sub-item--active]="isItemActive(child.id)"
+                      [class.m3-rail__sub-item--expandable]="hasChildren(child)"
+                      (click)="hasChildren(child) ? toggleGroup(child.id) : onMenuItemClick(child, 2)"
+                    >
+                      <span>{{ child.label }}</span>
+                      @if (hasChildren(child)) {
+                        <span class="material-symbols-outlined m3-rail__chevron"
+                          [class.m3-rail__chevron--open]="isGroupExpanded(child.id)">
+                          expand_more
+                        </span>
+                      }
+                    </button>
+
+                    <!-- Level 3 accordion -->
+                    @if (hasChildren(child) && isGroupExpanded(child.id)) {
+                      <div class="m3-rail__nested-items" >
+                        @for (sub of child.children; track sub.id) {
+                          <button
+                            class="m3-rail__nested-item"
+                            [class.m3-rail__nested-item--active]="isItemActive(sub.id)"
+                            (click)="onMenuItemClick(sub, 3)"
+                          >
+                            {{ sub.label }}
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Footer: Dark Mode Toggle -->
+    @if (resolvedConfig().showDarkModeToggle) {
+      <div class="m3-rail__footer">
+        <div class="m3-rail__dark-toggle" (click)="onToggleDarkMode()" role="button" tabindex="0"
+          [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'">
+          <span class="material-symbols-outlined">
+            {{ isDarkMode() ? 'light_mode' : 'dark_mode' }}
+          </span>
+          @if (expanded()) {
+            <span class="m3-rail__toggle-label">{{ isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
+            <div class="m3-rail__switch"
+              [class.m3-rail__switch--active]="isDarkMode()"
+              role="switch"
+              [attr.aria-checked]="isDarkMode()">
+              <div class="m3-rail__switch-track">
+                <div class="m3-rail__switch-thumb"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </nav>
+
+  <!-- Flyout Panel (collapsed mode only) -->
+  @for (item of menuItems(); track item.id) {
+    @if (!expanded() && activeFlyout() === item.id && hasChildren(item)) {
+      <div
+        class="m3-flyout"
+        [style.left]="(resolvedConfig().collapsedWidth + 1) + 'px'"
+        [style.width]="resolvedConfig().flyoutWidth + 'px'"
+        (mouseenter)="onFlyoutEnter()"
+        (mouseleave)="onFlyoutLeave()"
+        
+      >
+        <!-- Flyout Header -->
+        <button class="m3-flyout__header" (click)="onMenuItemClick(item, 1)">
+          {{ getOverviewLabel(item) }}
+        </button>
+
+        <!-- Flyout Items -->
+        <div class="m3-flyout__items">
+          @for (child of item.children; track child.id) {
+            @if (hasChildren(child)) {
+              <!-- Expandable group -->
+              <div class="m3-flyout__group" [class.m3-flyout__group--expanded]="isGroupExpanded(child.id)">
+                <button class="m3-flyout__item m3-flyout__item--expandable" (click)="toggleGroup(child.id)">
+                  <span>{{ child.label }}</span>
+                  <span class="material-symbols-outlined m3-flyout__chevron">expand_more</span>
+                </button>
+
+                @if (isGroupExpanded(child.id)) {
+                  <div class="m3-flyout__sub-items" >
+                    @for (sub of child.children; track sub.id) {
+                      <button
+                        class="m3-flyout__item m3-flyout__item--nested"
+                        [class.m3-flyout__item--active]="isItemActive(sub.id)"
+                        (click)="onFlyoutItemClick(sub, 3)"
+                      >
+                        {{ sub.label }}
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            } @else {
+              <!-- Simple item -->
+              <button
+                class="m3-flyout__item"
+                [class.m3-flyout__item--active]="isItemActive(child.id)"
+                (click)="onFlyoutItemClick(child, 2)"
+              >
+                {{ child.label }}
+              </button>
+            }
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Scrim (modal overlay for < breakpoint) -->
+  @if (expanded() && isModalMode()) {
+    <div class="m3-rail__scrim" (click)="closePanel()"></div>
+  }
+}
+
+<!-- === LEGACY API (items input) — backward compat === -->
+@if (!useNewApi()) {
+  <nav
+    class="m3-rail"
+    [class.m3-rail--expanded]="expanded()"
+    role="navigation"
+    aria-label="Main navigation"
+  >
+    <div class="m3-rail__header">
+      <button class="m3-rail__menu-btn" type="button" (click)="toggleExpand()"
+        [attr.aria-expanded]="expanded()">
+        <span class="material-symbols-outlined">{{ expanded() ? 'close' : 'menu' }}</span>
+      </button>
+      @if (expanded()) {
+        <span class="m3-rail__title">{{ drawerTitle() }}</span>
+      }
+    </div>
+
+    <div class="m3-rail__items" role="list">
+      @for (item of items(); track item.label; let i = $index) {
+        <button
+          class="m3-rail__item"
+          [class.m3-rail__item--active]="item.active"
+          [class.m3-rail__item--expanded]="expanded()"
+          type="button"
+          role="listitem"
+          (click)="onLegacyItemClick(i)"
+        >
+          <span class="m3-rail__indicator">
+            <span class="material-symbols-outlined">{{ item.icon }}</span>
+          </span>
+          <span class="m3-rail__label">{{ item.label }}</span>
+        </button>
+      }
+    </div>
+
+    @if (expanded() && secondaryItems().length > 0) {
+      <div class="m3-rail__divider"></div>
+      <div class="m3-rail__secondary" role="list">
+        @for (item of secondaryItems(); track item.label) {
+          <button class="m3-rail__item m3-rail__item--expanded"
+            type="button" role="listitem"
+            (click)="secondaryItemClick.emit(item)">
+            <span class="m3-rail__indicator">
+              <span class="material-symbols-outlined">{{ item.icon }}</span>
+            </span>
+            <span class="m3-rail__label">{{ item.label }}</span>
+          </button>
+        }
+      </div>
+    }
+
+    <div class="m3-rail__footer">
+      <div class="m3-rail__dark-toggle" (click)="onToggleDarkMode()" role="button" tabindex="0">
+        <span class="material-symbols-outlined">
+          {{ isDarkMode() ? 'light_mode' : 'dark_mode' }}
+        </span>
+        @if (expanded()) {
+          <span class="m3-rail__toggle-label">{{ isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
+          <div class="m3-rail__switch" [class.m3-rail__switch--active]="isDarkMode()" role="switch">
+            <div class="m3-rail__switch-track">
+              <div class="m3-rail__switch-thumb"></div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </nav>
+
+  @if (expanded() && isModalMode()) {
+    <div class="m3-rail__scrim" (click)="closePanel()"></div>
+  }
+}
