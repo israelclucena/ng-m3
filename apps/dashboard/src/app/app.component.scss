@@ -1,0 +1,436 @@
+// ══════════════════════════════════════════
+// SPA Layout: Fixed Shell + Scrollable Body
+// ══════════════════════════════════════════
+// Structure: [NavRail | [TopAppBar / Body]]
+// - NavRail: fixed left, full height (desktop)
+// - TopAppBar: fixed top
+// - Body: fills remaining space, scrolls internally
+// - Mobile: NavRail → Bottom Bar
+
+// ── Desktop ──
+@media (min-width: 901px) {
+  .app-shell {
+    flex-direction: row;
+    overflow: hidden;
+  }
+}
+:host {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+  background: var(--md-sys-color-surface, #fef7ff);
+  color: var(--md-sys-color-on-surface, #1d1b20);
+}
+
+.app-shell {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// ── Nav Rail (desktop) ──
+// The iu-nav-rail host sits in the flex row
+:host ::ng-deep iu-nav-rail {
+  flex-shrink: 0;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: auto; // let the inner nav-rail control width
+
+  .iu-nav-rail {
+    height: 100%;
+  }
+}
+
+// Main area offset for fixed nav-rail
+// ── Main Area (right of rail) ──
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-width: 0;
+  overflow: hidden;
+  margin-left: 88px;
+  transition: margin-left 300ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+// ── Top App Bar (fixed in main) ──
+:host ::ng-deep iu-top-app-bar {
+  flex-shrink: 0;
+}
+
+// ── Nav Expanded: main content adapts ──
+.nav-expanded .main {
+  @media (min-width: 840px) {
+    margin-left: 256px;
+    transition: margin-left 300ms cubic-bezier(0.2, 0, 0, 1);
+  }
+}
+
+// ── Page Wrapper ──
+.page-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0; // critical for nested flex scroll
+}
+
+// ── Side Panel (Components page, desktop only) ──
+.side-panel {
+  width: 260px;
+  flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--md-sys-color-surface-container, #f3edf7);
+  border-right: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+  padding: 16px 0;
+
+  &__header {
+    padding: 0 16px 12px;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--md-sys-color-on-surface);
+      margin: 0 0 8px;
+    }
+  }
+
+  &__stats {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+  }
+
+  &__category { margin-bottom: 4px; }
+
+  &__category-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px 6px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+
+  &__category-icon {
+    font-size: 18px;
+    color: var(--md-sys-color-primary);
+  }
+
+  &__list { list-style: none; margin: 0; padding: 0; }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px 8px 24px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--md-sys-color-on-surface);
+    transition: background 0.15s ease;
+    border-radius: 0 28px 28px 0;
+    margin-right: 12px;
+
+    &:hover { background: var(--md-sys-color-surface-container-highest, #e6e0e9); }
+
+    &.active {
+      background: var(--md-sys-color-secondary-container, #e8def8);
+      color: var(--md-sys-color-on-secondary-container, #1d192b);
+      font-weight: 500;
+    }
+  }
+
+  &__status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    .ready & { background: #4caf50; }
+    .wip & { background: #ff9800; }
+    .missing & { background: #f44336; }
+  }
+
+  &__item-name { flex: 1; }
+
+  &__badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    &.wip { background: #fff3e0; color: #e65100; }
+    &.missing { background: #fce4ec; color: #c62828; }
+  }
+}
+
+// ── Page Content (scrollable body) ──
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+  background: var(--md-sys-color-surface, #fef7ff);
+}
+
+// ── Dashboard Grid ──
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 24px;
+}
+
+// ── Widget animations ──
+.widget--animate {
+  animation: widgetIn 0.4s ease both;
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) { animation-delay: #{$i * 0.06}s; }
+  }
+}
+
+@keyframes widgetIn {
+  from { opacity: 0; transform: scale(0.95) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.widget--wide {
+  grid-column: span 2;
+  @media (max-width: 720px) { grid-column: span 1; }
+}
+
+// ══════════════════════
+// Drawer Overlay (all sizes)
+// ══════════════════════
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 300px;
+  max-width: 85vw;
+  z-index: 201;
+  background: var(--md-sys-color-surface-container, #f3edf7);
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  animation: slideInDrawer 0.25s ease;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    height: 64px;
+
+    h3 {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--md-sys-color-on-surface);
+      margin: 0;
+    }
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    &:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent); }
+  }
+
+  &__nav {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 28px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    .material-symbols-outlined { font-size: 24px; }
+    &:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent); }
+    &.active {
+      background: var(--md-sys-color-secondary-container, #e8def8);
+      color: var(--md-sys-color-on-secondary-container);
+    }
+  }
+
+  &__components { padding: 8px 12px 24px; }
+
+  &__section-title {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--md-sys-color-on-surface-variant);
+    padding: 8px 16px 4px;
+  }
+
+  &__stats {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    padding: 4px 16px 8px;
+  }
+
+  &__category-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    .material-symbols-outlined { font-size: 18px; color: var(--md-sys-color-primary); }
+  }
+
+  &__comp-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px 8px 28px;
+    border: none;
+    background: transparent;
+    border-radius: 0 28px 28px 0;
+    font-size: 14px;
+    color: var(--md-sys-color-on-surface);
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    margin-right: 12px;
+    &:hover { background: var(--md-sys-color-surface-container-highest, #e6e0e9); }
+    &.active { background: var(--md-sys-color-secondary-container, #e8def8); font-weight: 500; }
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    &.ready { background: #4caf50; }
+    &.wip { background: #ff9800; }
+    &.missing { background: #f44336; }
+  }
+}
+
+@keyframes slideInDrawer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// ══════════════════════
+// Tablet (≤900px)
+// ══════════════════════
+@media (max-width: 900px) {
+  .side-panel { width: 200px; }
+  .dashboard-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+}
+
+// ══════════════════════
+// Mobile (≤600px)
+// ══════════════════════
+@media (max-width: 600px) {
+  .app-shell {
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  // Nav Rail → Bottom Bar
+  :host ::ng-deep iu-nav-rail {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    z-index: 100;
+
+    .iu-nav-rail {
+      flex-direction: row;
+      width: 100%;
+      height: 80px;
+      background: var(--md-sys-color-surface-container, #f3edf7);
+      border-top: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .iu-nav-rail__menu,
+    .iu-nav-rail__fab { display: none; }
+
+    .iu-nav-rail__items {
+      flex-direction: row;
+      justify-content: space-around;
+      width: 100%;
+      padding: 0;
+    }
+
+    .iu-nav-rail__item {
+      width: auto;
+      flex: 1;
+      height: 80px;
+      padding: 12px 0 16px;
+    }
+
+    .iu-nav-rail__icon-container { width: 64px; }
+  }
+
+  .main {
+    height: calc(100vh - 80px); // minus bottom nav
+  }
+
+  .side-panel { display: none; }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 12px;
+  }
+}
