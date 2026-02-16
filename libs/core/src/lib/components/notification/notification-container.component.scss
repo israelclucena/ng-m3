@@ -1,0 +1,89 @@
+.iu-notification {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--md-sys-shape-corner-small, 4px);
+  min-width: 320px;
+  max-width: 560px;
+  z-index: 10000;
+  font-family: var(--md-sys-typescale-body-medium-font, 'Roboto', sans-serif);
+  font-size: var(--md-sys-typescale-body-medium-size, 14px);
+  box-shadow: var(--md-sys-elevation-level3,
+    0 1px 3px rgba(0, 0, 0, 0.30),
+    0 4px 8px 3px rgba(0, 0, 0, 0.15));
+  animation: iu-notification-slide-in 200ms cubic-bezier(0.2, 0, 0, 1);
+
+  // Default: inverse surface
+  background-color: var(--md-sys-color-inverse-surface, #313033);
+  color: var(--md-sys-color-inverse-on-surface, #F4EFF4);
+
+  &__icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  &__message {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: var(--md-sys-typescale-label-large-size, 14px);
+    color: var(--md-sys-color-inverse-primary, #D0BCFF);
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .material-symbols-outlined {
+      font-size: 18px;
+    }
+  }
+
+  // Type variants — icon colors
+  &--info .iu-notification__icon { color: #90CAF9; }
+  &--success .iu-notification__icon { color: #A5D6A7; }
+  &--warning .iu-notification__icon { color: #FFE082; }
+  &--error .iu-notification__icon { color: #EF9A9A; }
+}
+
+@keyframes iu-notification-slide-in {
+  from {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
