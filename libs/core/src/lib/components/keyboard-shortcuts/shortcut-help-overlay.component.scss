@@ -1,0 +1,101 @@
+.iu-shortcut-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  animation: iu-overlay-fade-in 0.15s ease;
+
+  &__panel {
+    background: var(--md-sys-color-surface-container-low, #fff);
+    border-radius: 28px;
+    width: min(520px, 90vw);
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant, #c4c7c5);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface, #1c1b1f);
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    color: var(--md-sys-color-on-surface-variant, #49454f);
+    display: flex;
+
+    &:hover {
+      background: var(--md-sys-color-surface-container-highest, #e6e0e9);
+    }
+  }
+
+  &__body {
+    padding: 16px 24px 24px;
+    overflow-y: auto;
+  }
+
+  &__category {
+    margin-bottom: 20px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__category-title {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--md-sys-color-primary, #1565c0);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+
+  &__desc {
+    font-size: 14px;
+    color: var(--md-sys-color-on-surface, #1c1b1f);
+  }
+
+  &__kbd {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--md-sys-color-surface-container-highest, #e6e0e9);
+    color: var(--md-sys-color-on-surface, #1c1b1f);
+    border: 1px solid var(--md-sys-color-outline-variant, #c4c7c5);
+    white-space: nowrap;
+  }
+}
+
+@keyframes iu-overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
