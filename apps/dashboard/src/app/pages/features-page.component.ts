@@ -1,0 +1,565 @@
+import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  DataTableComponent,
+  DataTableColumn,
+  SearchComponent,
+  SearchResult,
+  EmptyStateComponent,
+  LineChartComponent,
+  LineChartSeries,
+  BarChartComponent,
+  BarChartDataPoint,
+  DonutChartComponent,
+  DonutChartSegment,
+  NotificationService,
+  ThemeService,
+  KeyboardShortcutService,
+  ShortcutHelpOverlayComponent,
+  DividerComponent,
+  ButtonComponent,
+  ExportToolbarComponent,
+  VoiceWidgetComponent,
+  FormBuilderComponent,
+  FormField,
+  FormSubmitEvent,
+} from '@israel-ui/core';
+
+// ─── Sample Data ───────────────────────────────────────────────────
+interface User {
+  id: number;
+  name: string;
+  role: string;
+  status: string;
+  joined: string;
+}
+
+const SAMPLE_USERS: User[] = [
+  { id: 1, name: 'Israel Lucena', role: 'Frontend Dev', status: 'Active', joined: '2024-01' },
+  { id: 2, name: 'Luana Silva', role: 'Designer', status: 'Active', joined: '2024-02' },
+  { id: 3, name: 'Samuel Lucena', role: 'Backend Dev', status: 'Inactive', joined: '2023-11' },
+  { id: 4, name: 'Davi Costa', role: 'Product Manager', status: 'Active', joined: '2024-03' },
+  { id: 5, name: 'Eduardo Lucena', role: 'DevOps', status: 'Active', joined: '2023-08' },
+  { id: 6, name: 'Wilma Santos', role: 'QA Engineer', status: 'Inactive', joined: '2023-06' },
+  { id: 7, name: 'Ana Pereira', role: 'Frontend Dev', status: 'Active', joined: '2024-01' },
+  { id: 8, name: 'Carlos Mendes', role: 'Backend Dev', status: 'Active', joined: '2023-12' },
+];
+
+const USER_COLUMNS: DataTableColumn<User>[] = [
+  { key: 'id', label: '#', width: '60px', align: 'center' },
+  { key: 'name', label: 'Name', sortable: true },
+  { key: 'role', label: 'Role', sortable: true },
+  { key: 'status', label: 'Status', sortable: true },
+  { key: 'joined', label: 'Joined', sortable: true },
+];
+
+const SEARCH_DATA: SearchResult[] = [
+  { id: '1', label: 'Israel Lucena', subtitle: 'Frontend Developer', icon: 'person' },
+  { id: '2', label: 'Angular 19', subtitle: 'Framework', icon: 'code' },
+  { id: '3', label: 'Material Design 3', subtitle: 'Design System', icon: 'palette' },
+  { id: '4', label: 'TypeScript', subtitle: 'Language', icon: 'terminal' },
+  { id: '5', label: 'Dashboard', subtitle: 'Page', icon: 'dashboard' },
+  { id: '6', label: 'Settings', subtitle: 'Page', icon: 'settings' },
+];
+
+// ─── Component ─────────────────────────────────────────────────────
+@Component({
+  selector: 'app-features-page',
+  standalone: true,
+  imports: [
+    CommonModule,
+    DataTableComponent,
+    SearchComponent,
+    EmptyStateComponent,
+    LineChartComponent,
+    BarChartComponent,
+    DonutChartComponent,
+    ShortcutHelpOverlayComponent,
+    DividerComponent,
+    ButtonComponent,
+    ExportToolbarComponent,
+    VoiceWidgetComponent,
+    FormBuilderComponent,
+  ],
+  template: `
+    <div class="features-catalog">
+
+      <h1>Feature Showcase</h1>
+      <p class="subtitle">Todos os novos componentes — clica no menu lateral para navegar</p>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ DATA TABLE ═══ -->
+      <section id="feat-data-table">
+        <h2>Data Table</h2>
+        <p class="desc">Sorting tri-state por coluna, filtro full-text e paginação com Signals.</p>
+        <div class="demo-block">
+          <iu-data-table
+            [columns]="userColumns"
+            [data]="users"
+            [pageSize]="5"
+            [filterable]="true"
+          ></iu-data-table>
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ SEARCH ═══ -->
+      <section id="feat-search">
+        <h2>Search — Autocomplete</h2>
+        <p class="desc">Debounce 300ms, navegação com teclado ↑↓ Enter Esc, highlight nos resultados.</p>
+        <div class="demo-block" style="max-width: 480px;">
+          <iu-search
+            placeholder="Pesquisa componentes, páginas..."
+            [results]="searchResults()"
+            [loading]="searchLoading()"
+            (search)="onSearch($event)"
+            (select)="onSearchSelect($event)"
+          ></iu-search>
+          @if (lastSelected()) {
+            <p style="margin-top: 12px; color: var(--md-sys-color-primary)">
+              ✅ Seleccionado: <strong>{{ lastSelected() }}</strong>
+            </p>
+          }
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ CHARTS ═══ -->
+      <section id="feat-charts">
+        <h2>Charts — SVG puro</h2>
+        <p class="desc">Line, Bar e Donut charts sem dependências externas. Tooltips, hover e legendas.</p>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3>Line Chart</h3>
+            <iu-line-chart
+              [series]="lineSeries"
+              [height]="200"
+            ></iu-line-chart>
+          </div>
+          <div class="chart-card">
+            <h3>Bar Chart</h3>
+            <iu-bar-chart
+              [data]="barData"
+              [height]="200"
+            ></iu-bar-chart>
+          </div>
+          <div class="chart-card">
+            <h3>Donut Chart</h3>
+            <iu-donut-chart
+              [segments]="donutData"
+              [size]="200"
+            ></iu-donut-chart>
+          </div>
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ EMPTY STATES ═══ -->
+      <section id="feat-empty-states">
+        <h2>Empty States</h2>
+        <p class="desc">Componente reutilizável com 3 tamanhos, ícone, título, descrição e CTA.</p>
+
+        <div class="empty-grid">
+          <iu-empty-state
+            icon="inbox"
+            title="Inbox vazio"
+            description="Sem mensagens por agora. Começa uma conversa!"
+            actionLabel="Escrever"
+            size="small"
+          ></iu-empty-state>
+
+          <iu-empty-state
+            icon="search_off"
+            title="Sem resultados"
+            description="Tenta alterar os filtros de pesquisa."
+            actionLabel="Limpar filtros"
+            size="medium"
+          ></iu-empty-state>
+
+          <iu-empty-state
+            icon="cloud_off"
+            title="Sem ligação"
+            description="Verifica a tua ligação à internet e tenta de novo."
+            actionLabel="Tentar de novo"
+            size="large"
+          ></iu-empty-state>
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ NOTIFICATIONS ═══ -->
+      <section id="feat-notifications">
+        <h2>Notification System</h2>
+        <p class="desc">Toast/snackbar com queue management, 4 tipos e duração configurável.</p>
+
+        <div class="demo-block">
+          <div class="row">
+            <iu-button variant="primary" label="Info" icon="info" (clicked)="notify('info')"></iu-button>
+            <iu-button variant="secondary" label="Success" icon="check_circle" (clicked)="notify('success')"></iu-button>
+            <iu-button variant="outlined" label="Warning" icon="warning" (clicked)="notify('warning')"></iu-button>
+            <iu-button variant="danger" label="Error" icon="error" (clicked)="notify('error')"></iu-button>
+          </div>
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ KEYBOARD SHORTCUTS ═══ -->
+      <section id="feat-keyboard">
+        <h2>Keyboard Shortcuts</h2>
+        <p class="desc">Sistema global de atalhos com overlay de ajuda. Pressiona <kbd>?</kbd> para ver todos.</p>
+
+        <div class="demo-block">
+          <div class="shortcuts-list">
+            <div class="shortcut-row"><kbd>?</kbd> <span>Mostrar ajuda</span></div>
+            <div class="shortcut-row"><kbd>G</kbd> + <kbd>D</kbd> <span>Ir para Dashboard</span></div>
+            <div class="shortcut-row"><kbd>G</kbd> + <kbd>C</kbd> <span>Ir para Components</span></div>
+            <div class="shortcut-row"><kbd>G</kbd> + <kbd>S</kbd> <span>Ir para Settings</span></div>
+            <div class="shortcut-row"><kbd>Ctrl</kbd> + <kbd>K</kbd> <span>Abrir pesquisa</span></div>
+          </div>
+          <iu-button variant="outlined" label="Abrir overlay de atalhos" icon="keyboard" (clicked)="openShortcuts()"></iu-button>
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ THEME SWITCHER ═══ -->
+      <section id="feat-theme">
+        <h2>Theme Switcher</h2>
+        <p class="desc">Troca dinâmica entre light/dark/custom com ThemeService e persistência via localStorage.</p>
+
+        <div class="demo-block">
+          <div class="row">
+            <iu-button variant="outlined" label="Light" icon="light_mode" (clicked)="setTheme('light')"></iu-button>
+            <iu-button variant="outlined" label="Dark" icon="dark_mode" (clicked)="setTheme('dark')"></iu-button>
+            <iu-button variant="outlined" label="Purple" icon="palette" (clicked)="setTheme('purple')"></iu-button>
+            <iu-button variant="outlined" label="Ocean" icon="water" (clicked)="setTheme('ocean')"></iu-button>
+          </div>
+          <p style="margin-top: 12px; color: var(--md-sys-color-on-surface-variant)">
+            Tema activo: <strong>{{ currentTheme() }}</strong>
+          </p>
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ EXPORT SYSTEM ═══ -->
+      <section id="feat-export">
+        <h2>Export System</h2>
+        <p class="desc">Exporta o dashboard em PDF, PNG, JSON ou CSV — sem dependências externas, apenas APIs nativas do browser.</p>
+        <div class="demo-block">
+          <iu-export-toolbar filename="israel-ui-dashboard"></iu-export-toolbar>
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ VOICE COMMANDS ═══ -->
+      <section id="feat-voice">
+        <h2>Voice Commands</h2>
+        <p class="desc">Controlo por voz via Web Speech API. Funciona em Chrome e Edge. Clica no microfone e fala.</p>
+        <div class="demo-block">
+          <iu-voice-widget></iu-voice-widget>
+        </div>
+      </section>
+
+      <iu-divider></iu-divider>
+
+      <!-- ═══ FORM BUILDER ═══ -->
+      <section id="feat-form-builder">
+        <h2>Form Builder</h2>
+        <p class="desc">Schema-driven form builder com validação reactiva, Signals, e M3 design tokens. Suporta text, email, password, textarea, select, radio, checkbox e toggle.</p>
+        <div class="demo-block" style="max-width: 560px">
+          @if (formResult()) {
+            <div class="form-result">
+              <span class="material-symbols-outlined" style="color: var(--md-sys-color-primary)">check_circle</span>
+              <div>
+                <strong>Formulário submetido!</strong>
+                <p style="font-size:0.85rem; margin:4px 0 0; color: var(--md-sys-color-on-surface-variant)">
+                  Dados: {{ formResult() | json }}
+                </p>
+              </div>
+            </div>
+          }
+          <iu-form-builder
+            [fields]="demoFormFields"
+            submitLabel="Criar Conta"
+            [showReset]="true"
+            (submitted)="onFormSubmit($event)"
+          ></iu-form-builder>
+        </div>
+      </section>
+
+      <!-- Shortcut overlay (global, visível em toda a app) -->
+      <iu-shortcut-help-overlay></iu-shortcut-help-overlay>
+
+    </div>
+  `,
+  styles: [`
+    :host { display: block; }
+    .features-catalog {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--md-sys-color-primary, #6750a4);
+    }
+    .subtitle {
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 24px;
+    }
+    .desc {
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+    section { margin: 32px 0; }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--md-sys-color-on-surface);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--md-sys-color-on-surface-variant);
+    }
+    .demo-block {
+      background: var(--md-sys-color-surface-container-low, #f7f2fa);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .form-result {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      background: var(--md-sys-color-primary-container);
+      border-radius: 12px;
+      .material-symbols-outlined { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .chart-card {
+      background: var(--md-sys-color-surface-container-low, #f7f2fa);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .empty-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .shortcuts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .shortcut-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+    kbd {
+      background: var(--md-sys-color-surface-container, #ece6f0);
+      border: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--md-sys-color-on-surface);
+    }
+  `],
+})
+export class FeaturesPageComponent implements OnInit, OnDestroy {
+  private notif = inject(NotificationService);
+  private themeService = inject(ThemeService);
+  private shortcuts = inject(KeyboardShortcutService);
+
+  // Data Table
+  userColumns = USER_COLUMNS;
+  users = SAMPLE_USERS;
+
+  // Search
+  searchResults = signal<SearchResult[]>([]);
+  searchLoading = signal(false);
+  lastSelected = signal('');
+  private allResults = SEARCH_DATA;
+
+  // Theme
+  currentTheme = signal('dark');
+
+  // Charts
+  lineSeries: LineChartSeries[] = [
+    {
+      name: 'Sprint A', color: '#6750A4',
+      data: [
+        { label: 'Seg', value: 3 }, { label: 'Ter', value: 7 },
+        { label: 'Qua', value: 5 }, { label: 'Qui', value: 9 },
+        { label: 'Sex', value: 6 }, { label: 'Sáb', value: 8 },
+        { label: 'Dom', value: 10 },
+      ],
+    },
+    {
+      name: 'Sprint B', color: '#7D5260',
+      data: [
+        { label: 'Seg', value: 1 }, { label: 'Ter', value: 4 },
+        { label: 'Qua', value: 6 }, { label: 'Qui', value: 3 },
+        { label: 'Sex', value: 8 }, { label: 'Sáb', value: 5 },
+        { label: 'Dom', value: 7 },
+      ],
+    },
+  ];
+
+  barData: BarChartDataPoint[] = [
+    { label: 'Jan', value: 65 }, { label: 'Fev', value: 40 },
+    { label: 'Mar', value: 85 }, { label: 'Abr', value: 50 },
+    { label: 'Mai', value: 70 }, { label: 'Jun', value: 90 },
+    { label: 'Jul', value: 45 },
+  ];
+
+  donutData: DonutChartSegment[] = [
+    { label: 'Ready', value: 28, color: '#6750A4' },
+    { label: 'WIP', value: 6, color: '#7D5260' },
+    { label: 'Missing', value: 4, color: '#B3261E' },
+  ];
+
+  // Form Builder
+  formResult = signal<Record<string, unknown> | null>(null);
+
+  demoFormFields: FormField[] = [
+    {
+      key: 'name',
+      type: 'text',
+      label: 'Nome completo',
+      placeholder: 'Ex: Israel Lucena',
+      prefixIcon: 'person',
+      validation: { required: true, minLength: 3 },
+    },
+    {
+      key: 'email',
+      type: 'email',
+      label: 'Email',
+      placeholder: 'email@exemplo.com',
+      prefixIcon: 'mail',
+      validation: { required: true, email: true },
+    },
+    {
+      key: 'password',
+      type: 'password',
+      label: 'Palavra-passe',
+      placeholder: 'Mínimo 8 caracteres',
+      prefixIcon: 'lock',
+      hint: 'Use letras, números e símbolos.',
+      validation: { required: true, minLength: 8 },
+    },
+    {
+      key: 'role',
+      type: 'select',
+      label: 'Função',
+      placeholder: 'Escolhe a tua função',
+      options: [
+        { label: 'Frontend Developer', value: 'frontend' },
+        { label: 'Backend Developer', value: 'backend' },
+        { label: 'Designer', value: 'design' },
+        { label: 'Product Manager', value: 'pm' },
+      ],
+      validation: { required: true },
+    },
+    {
+      key: 'notifications',
+      type: 'toggle',
+      label: 'Receber notificações por email',
+      defaultValue: true,
+    },
+    {
+      key: 'terms',
+      type: 'checkbox',
+      label: 'Aceito os termos e condições',
+      validation: { required: true },
+    },
+  ];
+
+  onFormSubmit(event: FormSubmitEvent): void {
+    if (event.isValid) {
+      this.formResult.set(event.values);
+      this.notif.show({ message: 'Conta criada com sucesso!', type: 'success', duration: 4000 });
+    }
+  }
+
+  ngOnInit(): void {
+    this.shortcuts.register({ id: 'help', keys: '?', description: 'Mostrar ajuda', category: 'Geral', handler: () => this.shortcuts.toggleHelp() });
+    this.shortcuts.register({ id: 'go-dashboard', keys: 'g+d', description: 'Ir para Dashboard', category: 'Navegação', handler: () => {} });
+    this.shortcuts.register({ id: 'go-components', keys: 'g+c', description: 'Ir para Components', category: 'Navegação', handler: () => {} });
+    this.shortcuts.register({ id: 'go-settings', keys: 'g+s', description: 'Ir para Settings', category: 'Navegação', handler: () => {} });
+    this.shortcuts.register({ id: 'open-search', keys: 'ctrl+k', description: 'Abrir pesquisa', category: 'Geral', handler: () => {} });
+  }
+
+  ngOnDestroy(): void {
+    // shortcuts clean themselves up when component destroys
+  }
+
+  onSearch(query: string): void {
+    this.searchLoading.set(true);
+    setTimeout(() => {
+      this.searchResults.set(
+        query.length > 0
+          ? this.allResults.filter(r =>
+              r.label.toLowerCase().includes(query.toLowerCase())
+            )
+          : []
+      );
+      this.searchLoading.set(false);
+    }, 300);
+  }
+
+  onSearchSelect(result: SearchResult): void {
+    this.lastSelected.set(result.label);
+    this.searchResults.set([]);
+  }
+
+  notify(type: 'info' | 'success' | 'warning' | 'error'): void {
+    const messages = {
+      info: 'Isto é uma notificação informativa!',
+      success: 'Operação concluída com sucesso! ✅',
+      warning: 'Atenção: verifica os dados antes de continuar.',
+      error: 'Ocorreu um erro. Tenta de novo.',
+    };
+    this.notif.show({ message: messages[type], type, duration: 3000 });
+  }
+
+  setTheme(theme: string): void {
+    if (theme === 'light') this.themeService.setMode('light');
+    else if (theme === 'dark') this.themeService.setMode('dark');
+    else this.themeService.setPalette(theme);
+    this.currentTheme.set(theme);
+  }
+
+  openShortcuts(): void {
+    this.shortcuts.toggleHelp();
+  }
+}
