@@ -1,0 +1,15 @@
+export const FeatureFlags = {
+  DRAG_DROP_WIDGETS: true,
+  ADVANCED_DATA_TABLE: true,
+  THEME_SWITCHER: true,
+  CHART_COMPONENTS: true,
+  NOTIFICATION_SYSTEM: true,
+  FORM_BUILDER: true,
+  SEARCH_AUTOCOMPLETE: true,
+  CARD_VARIANTS: true,
+  EMPTY_STATES: true,
+  AI_DASHBOARD: true,
+  VOICE_COMMANDS: true,
+  KEYBOARD_SHORTCUTS: true,
+  EXPORT_SYSTEM: true,
+} as const;
