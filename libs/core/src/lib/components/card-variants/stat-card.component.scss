@@ -1,0 +1,64 @@
+.iu-stat-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  &__icon {
+    font-size: 32px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--md-sys-shape-corner-medium, 12px);
+    background-color: color-mix(in srgb, var(--md-sys-color-primary, #6750A4) 10%, transparent);
+    color: var(--md-sys-color-primary, #6750A4);
+    flex-shrink: 0;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: var(--md-sys-typescale-label-medium-size, 12px);
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant, #49454F);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__value {
+    font-size: var(--md-sys-typescale-headline-small-size, 24px);
+    font-weight: 600;
+    color: var(--md-sys-color-on-surface, #1D1B20);
+    line-height: 1.2;
+  }
+
+  &__change {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--md-sys-typescale-body-small-size, 12px);
+    font-weight: 500;
+
+    &--up {
+      color: #2E7D32;
+    }
+
+    &--down {
+      color: var(--md-sys-color-error, #B3261E);
+    }
+
+    &--neutral {
+      color: var(--md-sys-color-on-surface-variant, #49454F);
+    }
+  }
+
+  &__trend-icon {
+    font-size: 16px;
+  }
+}

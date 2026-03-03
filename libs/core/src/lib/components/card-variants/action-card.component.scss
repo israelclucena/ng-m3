@@ -1,0 +1,37 @@
+.iu-action-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  &__icon {
+    font-size: 28px;
+    color: var(--md-sys-color-primary, #6750A4);
+    flex-shrink: 0;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--md-sys-typescale-title-small-size, 14px);
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface, #1D1B20);
+  }
+
+  &__description {
+    margin: 4px 0 0;
+    font-size: var(--md-sys-typescale-body-small-size, 12px);
+    color: var(--md-sys-color-on-surface-variant, #49454F);
+  }
+
+  &__action {
+    font-size: var(--md-sys-typescale-label-large-size, 14px);
+    font-weight: 500;
+    color: var(--md-sys-color-primary, #6750A4);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
