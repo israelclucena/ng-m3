@@ -88,3 +88,11 @@ export * from './lib/components/voice/voice-widget.component';
 // Sprint 006 — Form Builder
 export * from './lib/components/form-builder/form-field.model';
 export * from './lib/components/form-builder/form-builder.component';
+
+// Sprint 007 — Night Shift 2026-03-04
+export * from './lib/components/avatar/avatar.component';
+export * from './lib/components/tag-input/tag-input.component';
+export * from './lib/components/stepper/stepper.component';
+export * from './lib/components/timeline/timeline.component';
+export * from './lib/components/date-picker/date-picker.component';
+export * from './lib/components/color-picker/color-picker.component';

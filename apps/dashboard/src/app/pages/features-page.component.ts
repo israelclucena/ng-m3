@@ -23,7 +23,19 @@ import {
   FormBuilderComponent,
   FormField,
   FormSubmitEvent,
+  // Sprint 007
+  AvatarComponent,
+  AvatarGroupComponent,
+  TagInputComponent,
+  StepperComponent,
+  StepperStep,
+  StepChangeEvent,
+  TimelineComponent,
+  TimelineItem,
+  DatePickerComponent,
+  ColorPickerComponent,
 } from '@israel-ui/core';
+import { FeatureFlags } from '../feature-flags';
 
 // ─── Sample Data ───────────────────────────────────────────────────
 interface User {
@@ -80,6 +92,14 @@ const SEARCH_DATA: SearchResult[] = [
     ExportToolbarComponent,
     VoiceWidgetComponent,
     FormBuilderComponent,
+    // Sprint 007
+    AvatarComponent,
+    AvatarGroupComponent,
+    TagInputComponent,
+    StepperComponent,
+    TimelineComponent,
+    DatePickerComponent,
+    ColorPickerComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -299,6 +319,101 @@ const SEARCH_DATA: SearchResult[] = [
       <!-- Shortcut overlay (global, visível em toda a app) -->
       <iu-shortcut-help-overlay></iu-shortcut-help-overlay>
 
+      <iu-divider></iu-divider>
+
+      <!-- ═══ SPRINT 007 ═══ -->
+      @if (flags.AVATAR) {
+        <section id="feat-avatar">
+          <h2>Avatar</h2>
+          <p class="desc">Iniciais, fallback de ícone, estados online/offline e group stack.</p>
+          <div class="demo-block">
+            <div class="row" style="margin-bottom:24px;">
+              <iu-avatar name="Israel Lucena" size="xs"></iu-avatar>
+              <iu-avatar name="Luana Silva" size="sm"></iu-avatar>
+              <iu-avatar name="Samuel Lucena" size="md"></iu-avatar>
+              <iu-avatar name="Davi Costa" size="lg" [online]="true"></iu-avatar>
+              <iu-avatar name="Eduardo Lucena" size="xl" [online]="false"></iu-avatar>
+            </div>
+            <iu-avatar-group [avatars]="avatarGroupItems" [max]="4" size="md"></iu-avatar-group>
+          </div>
+        </section>
+        <iu-divider></iu-divider>
+      }
+
+      @if (flags.TAG_INPUT) {
+        <section id="feat-tag-input">
+          <h2>Tag Input</h2>
+          <p class="desc">Chip-style input com autocomplete, backspace para remover, separadores configuráveis.</p>
+          <div class="demo-block" style="max-width:480px;">
+            <iu-tag-input
+              placeholder="Adicionar skill..."
+              [suggestions]="techSuggestions"
+              helperText="Pressiona Enter ou vírgula para adicionar."
+            ></iu-tag-input>
+          </div>
+        </section>
+        <iu-divider></iu-divider>
+      }
+
+      @if (flags.STEPPER) {
+        <section id="feat-stepper">
+          <h2>Stepper</h2>
+          <p class="desc">Linear e não-linear, horizontal e vertical, com ícones e passos opcionais.</p>
+          <div class="demo-block">
+            <iu-stepper
+              [steps]="stepperSteps"
+              [activeStep]="currentStep()"
+              orientation="horizontal"
+              mode="linear"
+              [showControls]="true"
+              (stepChange)="onStepChange($event)"
+              (finished)="onStepFinish()"
+            ></iu-stepper>
+          </div>
+        </section>
+        <iu-divider></iu-divider>
+      }
+
+      @if (flags.TIMELINE) {
+        <section id="feat-timeline">
+          <h2>Timeline</h2>
+          <p class="desc">Vertical e horizontal com ícones, cores, conectores e cards ativos.</p>
+          <div class="demo-block">
+            <iu-timeline [items]="timelineItems" orientation="vertical" align="start"></iu-timeline>
+          </div>
+        </section>
+        <iu-divider></iu-divider>
+      }
+
+      @if (flags.DATE_PICKER) {
+        <section id="feat-date-picker">
+          <h2>Date Picker</h2>
+          <p class="desc">Calendário M3 com seleção simples e range. Navegação por teclado, min/max.</p>
+          <div class="demo-block" style="display:flex; gap:32px; flex-wrap:wrap;">
+            <div style="min-width:260px;">
+              <p style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--md-sys-color-on-surface-variant)">SINGLE DATE</p>
+              <iu-date-picker label="Check-in" mode="single"></iu-date-picker>
+            </div>
+            <div style="min-width:260px;">
+              <p style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--md-sys-color-on-surface-variant)">DATE RANGE</p>
+              <iu-date-picker label="Travel dates" mode="range"></iu-date-picker>
+            </div>
+          </div>
+        </section>
+        <iu-divider></iu-divider>
+      }
+
+      @if (flags.COLOR_PICKER) {
+        <section id="feat-color-picker">
+          <h2>Color Picker</h2>
+          <p class="desc">Paleta M3, inputs hex/rgb, slider de opacidade e confirmação.</p>
+          <div class="demo-block" style="display:flex; gap:32px; flex-wrap:wrap;">
+            <iu-color-picker label="Brand color" value="#6750a4" [showOpacity]="true"></iu-color-picker>
+            <iu-color-picker label="Accent color" value="#7d5260" [showOpacity]="false"></iu-color-picker>
+          </div>
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -510,6 +625,43 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
       this.notif.show({ message: 'Conta criada com sucesso!', type: 'success', duration: 4000 });
     }
   }
+
+  // ── Sprint 007 ──────────────────────────────────────────────────
+  readonly flags = FeatureFlags;
+
+  avatarGroupItems = [
+    { name: 'Israel Lucena', online: true },
+    { name: 'Luana Silva', online: true },
+    { name: 'Samuel Lucena', online: false },
+    { name: 'Davi Costa' },
+    { name: 'Eduardo Lucena' },
+  ];
+
+  techSuggestions = [
+    'Angular', 'TypeScript', 'JavaScript', 'RxJS', 'Node.js',
+    'NestJS', 'GraphQL', 'SCSS', 'Firebase', 'PostgreSQL',
+  ];
+
+  stepperSteps: StepperStep[] = [
+    { label: 'Cart', icon: 'shopping_cart' },
+    { label: 'Shipping', icon: 'local_shipping' },
+    { label: 'Payment', icon: 'payment' },
+    { label: 'Confirm', icon: 'check_circle' },
+  ];
+  currentStep = signal(0);
+
+  onStepChange(e: StepChangeEvent): void { this.currentStep.set(e.currentIndex); }
+  onStepFinish(): void {
+    this.notif.show({ message: '🎉 Order placed!', type: 'success', duration: 3000 });
+    this.currentStep.set(0);
+  }
+
+  timelineItems: TimelineItem[] = [
+    { title: 'Sprint 007 launched', description: 'Avatar, Tag Input, Stepper, Timeline, Date Picker, Color Picker.', date: 'Mar 4, 2026', icon: 'rocket_launch', color: 'primary', active: true },
+    { title: 'Sprint 006 — Form Builder', description: 'Schema-driven forms with validation.', date: 'Feb 25, 2026', icon: 'dynamic_form', color: 'success' },
+    { title: 'Sprint 005 — Charts', description: 'SVG charts, Export toolbar, Voice widget.', date: 'Feb 18, 2026', icon: 'bar_chart' },
+    { title: 'Sprint 001 — Foundation', description: 'Button, Input, Card, Dialog, Chip.', date: 'Jan 2026', icon: 'flag' },
+  ];
 
   ngOnInit(): void {
     this.shortcuts.register({ id: 'help', keys: '?', description: 'Mostrar ajuda', category: 'Geral', handler: () => this.shortcuts.toggleHelp() });
