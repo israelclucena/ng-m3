@@ -1,0 +1,19 @@
+{
+  "name": "@israelclucena/core",
+  "version": "1.0.0",
+  "description": "Israel UI — Angular M3 component library",
+  "keywords": ["angular", "material3", "components", "ui"],
+  "author": "Israel Lucena",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/israelclucena/ng-m3.git"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=17.0.0",
+    "@angular/common": ">=17.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

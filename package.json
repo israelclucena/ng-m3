@@ -54,6 +54,7 @@
     "jest-environment-jsdom": "^30.0.2",
     "jest-preset-angular": "~16.0.0",
     "jest-util": "^30.0.2",
+    "ng-packagr": "^21.2.0",
     "nx": "22.5.1",
     "prettier": "~3.6.2",
     "storybook": "^10.1.0",

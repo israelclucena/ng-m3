@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { NavMenuItem, NavRailConfig, NavRailNavigationEvent, NavRailFabEvent } from './m3-nav-rail.types';
 
 // Re-export types for barrel export
-export { NavMenuItem, NavBadge, NavRailConfig, NavRailNavigationEvent, NavRailFabEvent } from './m3-nav-rail.types';
+export type { NavMenuItem, NavBadge, NavRailConfig, NavRailNavigationEvent, NavRailFabEvent } from './m3-nav-rail.types';
 
 // Legacy compat — kept for existing consumers
 export interface NavRailItem {
