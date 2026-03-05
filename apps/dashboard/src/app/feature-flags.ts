@@ -21,6 +21,6 @@ export const FeatureFlags = {
   TIMELINE: true,
   DATE_PICKER: true,
   COLOR_PICKER: true,
-  DATA_TABLE_V2: false, // Sprint 008 — built tonight, pending activation
-  WIDGET_SYSTEM: false, // Sprint 008 — built tonight, pending activation
+  DATA_TABLE_V2: true,  // Sprint 008 — activated 2026-03-05 (tarde)
+  WIDGET_SYSTEM: true,  // Sprint 008 — activated 2026-03-05 (tarde)
 } as const;
