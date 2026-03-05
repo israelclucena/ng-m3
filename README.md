@@ -1,3 +1,6 @@
+[![CI](https://github.com/israelclucena/ng-m3/actions/workflows/ci.yml/badge.svg)](https://github.com/israelclucena/ng-m3/actions/workflows/ci.yml)
+[![Storybook](https://github.com/israelclucena/ng-m3/actions/workflows/storybook.yml/badge.svg)](https://github.com/israelclucena/ng-m3/actions/workflows/storybook.yml)
+
 <p align="center">
   <img src="https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/design_services/default/48px.svg" alt="israel-ui logo" width="64" height="64">
 </p>
