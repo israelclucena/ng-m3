@@ -100,3 +100,7 @@ export * from './lib/components/color-picker/color-picker.component';
 // Sprint 008 — Night Shift 2026-03-05
 export * from './lib/components/data-table-v2/data-table-v2.component';
 export * from './lib/components/widget-container/widget-container.component';
+
+// Sprint 009 — Night Shift 2026-03-05
+export * from './lib/components/resource-data-table/resource-data-table.component';
+export * from './lib/components/filter-bar/filter-bar.component';
