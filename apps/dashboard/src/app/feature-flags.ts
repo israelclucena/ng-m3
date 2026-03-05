@@ -14,13 +14,13 @@ export const FeatureFlags = {
   KEYBOARD_SHORTCUTS: true,
   EXPORT_SYSTEM: true,
 
-  // Sprint 007 — Night Shift 2026-03-04
-  AVATAR: false,
-  TAG_INPUT: false,
-  STEPPER: false,
-  TIMELINE: false,
-  DATE_PICKER: false,
-  COLOR_PICKER: false,
-  DATA_TABLE_V2: false,
-  WIDGET_SYSTEM: false,
+  // Sprint 007 — Night Shift 2026-03-04 (activated 2026-03-05)
+  AVATAR: true,
+  TAG_INPUT: true,
+  STEPPER: true,
+  TIMELINE: true,
+  DATE_PICKER: true,
+  COLOR_PICKER: true,
+  DATA_TABLE_V2: false, // Sprint 008 — built tonight, pending activation
+  WIDGET_SYSTEM: false, // Sprint 008 — built tonight, pending activation
 } as const;

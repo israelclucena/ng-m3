@@ -34,6 +34,12 @@ import {
   TimelineItem,
   DatePickerComponent,
   ColorPickerComponent,
+  // Sprint 008
+  DataTableV2Component,
+  DataTableV2Column,
+  DataTableV2BulkAction,
+  WidgetContainerComponent,
+  WidgetGridComponent,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -100,6 +106,10 @@ const SEARCH_DATA: SearchResult[] = [
     TimelineComponent,
     DatePickerComponent,
     ColorPickerComponent,
+    // Sprint 008
+    DataTableV2Component,
+    WidgetContainerComponent,
+    WidgetGridComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -414,6 +424,57 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ═══ DATA TABLE V2 ═══ -->
+      @if (flags.DATA_TABLE_V2) {
+        <iu-divider></iu-divider>
+        <section id="feat-data-table-v2">
+          <h2>Data Table v2</h2>
+          <p class="desc">Multi-select com checkboxes, bulk actions toolbar, linhas expansíveis, tri-state sort e paginação completa.</p>
+          <div class="demo-block">
+            <iu-data-table-v2
+              [columns]="dtv2Columns"
+              [data]="users"
+              selectionMode="multi"
+              [bulkActions]="dtv2BulkActions"
+              [expandable]="true"
+              [filterable]="true"
+              [pageSize]="5"
+            ></iu-data-table-v2>
+          </div>
+        </section>
+      }
+
+      <!-- ═══ WIDGET SYSTEM ═══ -->
+      @if (flags.WIDGET_SYSTEM) {
+        <iu-divider></iu-divider>
+        <section id="feat-widget-system">
+          <h2>Widget System</h2>
+          <p class="desc">Containers configuráveis com resize, collapse, refresh e close. Compose com iu-widget-grid para layouts responsivos.</p>
+          <div class="demo-block">
+            <iu-widget-grid [minColWidth]="280" [gap]="16">
+              <iu-widget-container widgetId="w-revenue" title="Revenue" subtitle="Last 30 days" icon="payments" [resizable]="true" [collapsible]="true" [refreshable]="true" [elevated]="true">
+                <div style="padding:8px 0">
+                  <div style="font-size:32px;font-weight:700;color:var(--md-sys-color-primary)">€ 24,980</div>
+                  <div style="font-size:13px;color:var(--md-sys-color-on-surface-variant);margin-top:6px">↑ 12.4% vs previous period</div>
+                </div>
+              </iu-widget-container>
+              <iu-widget-container widgetId="w-users" title="Active Users" icon="people" [resizable]="false" [collapsible]="true" [closable]="true" [elevated]="true">
+                <div style="padding:8px 0">
+                  <div style="font-size:32px;font-weight:700;color:var(--md-sys-color-tertiary)">1,204</div>
+                  <div style="font-size:13px;color:var(--md-sys-color-on-surface-variant);margin-top:6px">↑ 3.1% this week</div>
+                </div>
+              </iu-widget-container>
+              <iu-widget-container widgetId="w-listings" title="Listings" icon="home" [resizable]="false" [refreshable]="true" [elevated]="true">
+                <div style="padding:8px 0">
+                  <div style="font-size:32px;font-weight:700;color:var(--md-sys-color-secondary)">384</div>
+                  <div style="font-size:13px;color:var(--md-sys-color-on-surface-variant);margin-top:6px">42 new this month</div>
+                </div>
+              </iu-widget-container>
+            </iu-widget-grid>
+          </div>
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -626,8 +687,23 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ── Sprint 007 ──────────────────────────────────────────────────
+  // ── Sprint 007 & 008 ──────────────────────────────────────────────────
   readonly flags = FeatureFlags;
+
+  // ── Sprint 008 — DataTableV2 ──
+  readonly dtv2Columns: DataTableV2Column<User>[] = [
+    { key: 'id',     label: '#',      width: '60px', align: 'center' },
+    { key: 'name',   label: 'Name',   sortable: true },
+    { key: 'role',   label: 'Role',   sortable: true },
+    { key: 'status', label: 'Status', sortable: true },
+    { key: 'joined', label: 'Joined', sortable: true },
+  ];
+
+  readonly dtv2BulkActions: DataTableV2BulkAction[] = [
+    { id: 'export',  label: 'Export',  icon: 'download' },
+    { id: 'archive', label: 'Archive', icon: 'archive'  },
+    { id: 'delete',  label: 'Delete',  icon: 'delete',  variant: 'danger' },
+  ];
 
   avatarGroupItems = [
     { name: 'Israel Lucena', online: true },

@@ -96,3 +96,7 @@ export * from './lib/components/stepper/stepper.component';
 export * from './lib/components/timeline/timeline.component';
 export * from './lib/components/date-picker/date-picker.component';
 export * from './lib/components/color-picker/color-picker.component';
+
+// Sprint 008 — Night Shift 2026-03-05
+export * from './lib/components/data-table-v2/data-table-v2.component';
+export * from './lib/components/widget-container/widget-container.component';
