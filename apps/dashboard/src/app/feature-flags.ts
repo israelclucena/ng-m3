@@ -25,7 +25,7 @@ export const FeatureFlags = {
   WIDGET_SYSTEM: true,  // Sprint 008 — activated 2026-03-05 (tarde)
 
   // Sprint 009 — Night Shift 2026-03-05
-  RESOURCE_DATA_TABLE: false,  // activar após commit
-  FILTER_BAR: false,           // activar após commit
+  RESOURCE_DATA_TABLE: true,
+  FILTER_BAR: true,
   MODULE_FEDERATION_READY: false,
 } as const;
