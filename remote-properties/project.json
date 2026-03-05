@@ -7,6 +7,20 @@
   "tags": [],
   "targets": {
     "build": {
+      "executor": "@angular-architects/native-federation:build",
+      "options": {},
+      "configurations": {
+        "production": {
+          "target": "remote-properties:esbuild:production"
+        },
+        "development": {
+          "target": "remote-properties:esbuild:development",
+          "dev": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "esbuild": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -19,7 +33,8 @@
             "input": "remote-properties/public"
           }
         ],
-        "styles": ["remote-properties/src/styles.css"]
+        "styles": ["remote-properties/src/styles.css"],
+        "polyfills": ["es-module-shims"]
       },
       "configurations": {
         "production": {
@@ -50,10 +65,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "remote-properties:build:production"
+          "buildTarget": "remote-properties:esbuild:production"
         },
         "development": {
-          "buildTarget": "remote-properties:build:development"
+          "buildTarget": "remote-properties:esbuild:development"
         }
       },
       "defaultConfiguration": "development"

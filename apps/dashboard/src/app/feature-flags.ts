@@ -27,5 +27,5 @@ export const FeatureFlags = {
   // Sprint 009 — Night Shift 2026-03-05
   RESOURCE_DATA_TABLE: true,
   FILTER_BAR: true,
-  MODULE_FEDERATION_READY: false,
+  MODULE_FEDERATION_READY: true,
 } as const;

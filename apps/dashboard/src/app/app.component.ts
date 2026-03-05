@@ -21,9 +21,8 @@ import { WeatherWidgetComponent } from './widgets/weather-widget.component';
 import { CountdownWidgetComponent } from './widgets/countdown-widget.component';
 import { StreakWidgetComponent } from './widgets/streak-widget.component';
 import { QuickLinksWidgetComponent } from './widgets/quick-links-widget.component';
-import { ComponentsPageComponent } from './pages/components-page.component';
-import { SettingsPageComponent } from './pages/settings-page.component';
-import { FeaturesPageComponent } from './pages/features-page.component';
+// ComponentsPageComponent, SettingsPageComponent, FeaturesPageComponent
+// are loaded lazily via @defer blocks in the template — no eager import needed.
 import { MetricsChartWidgetComponent } from './widgets/metrics-chart-widget.component';
 import { DraggableDashboardComponent } from './widgets/draggable-dashboard.component';
 
@@ -53,9 +52,6 @@ export interface ComponentEntry {
     CountdownWidgetComponent,
     StreakWidgetComponent,
     QuickLinksWidgetComponent,
-    ComponentsPageComponent,
-    SettingsPageComponent,
-    FeaturesPageComponent,
     MetricsChartWidgetComponent,
     DraggableDashboardComponent,
     StatCardComponent,

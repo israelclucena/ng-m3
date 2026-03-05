@@ -127,19 +127,25 @@
           }
         }
 
-        <!-- Components Page -->
-        @if (activeNav() === 1) {
+        <!-- Components Page — lazy (deferred until navigation) -->
+        @defer (when activeNav() === 1) {
           <app-components-page></app-components-page>
+        } @placeholder {
+          <div></div>
         }
 
-        <!-- Settings Page -->
-        @if (activeNav() === 2) {
+        <!-- Settings Page — lazy (deferred until navigation) -->
+        @defer (when activeNav() === 2) {
           <app-settings-page></app-settings-page>
+        } @placeholder {
+          <div></div>
         }
 
-        <!-- Features Page -->
-        @if (activeNav() === 3) {
+        <!-- Features Page — lazy (deferred until navigation) -->
+        @defer (when activeNav() === 3) {
           <app-features-page></app-features-page>
+        } @placeholder {
+          <div></div>
         }
 
       </div>

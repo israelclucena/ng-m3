@@ -1,34 +1,20 @@
 /**
- * Dashboard shell routes — Module Federation skeleton
+ * Dashboard shell routes — Module Federation (Native Federation / esbuild)
  *
- * The `properties` route will lazy-load the remote-properties micro-frontend
- * via Module Federation once MODULE_FEDERATION_READY is enabled.
+ * The `properties` route lazy-loads the remote-properties micro-frontend
+ * via Native Federation (@angular-architects/native-federation).
  *
- * Full activation requires:
- *  1. `MODULE_FEDERATION_READY` flag set to `true` in feature-flags.ts
+ * Requires:
+ *  1. `MODULE_FEDERATION_READY` flag set to `true` in feature-flags.ts ✅
  *  2. remote-properties app running at http://localhost:4201
- *  3. Both apps using a webpack-based build executor (@nx/angular:webpack-browser)
- *  4. `@angular-architects/module-federation` installed and configured
+ *  3. Both apps using @angular-architects/native-federation:build executor ✅
  *
  * @see feature-flags.ts
- * @see remote-properties/webpack.config.js
+ * @see apps/dashboard/federation.config.js
+ * @see remote-properties/federation.config.js
  */
 import { Routes } from '@angular/router';
-import { Component } from '@angular/core';
-
-/** Placeholder component shown while MF is not yet active */
-@Component({
-  standalone: true,
-  template: `
-    <div style="padding:48px;text-align:center;font-family:Roboto,sans-serif;">
-      <span style="font-size:48px;display:block;margin-bottom:16px">🏗️</span>
-      <h2>Properties (Module Federation)</h2>
-      <p style="color:#49454f">Remote module not yet available.<br>
-        Enable <code>MODULE_FEDERATION_READY</code> flag and start the remote app.</p>
-    </div>
-  `,
-})
-class MfPlaceholderComponent {}
+import { loadRemoteModule } from '@angular-architects/native-federation';
 
 export const appRoutes: Routes = [
   {
@@ -44,18 +30,10 @@ export const appRoutes: Routes = [
   {
     /**
      * Module Federation — remote-properties micro-frontend.
-     *
-     * TODO: Replace MfPlaceholderComponent with:
-     * ```ts
-     * loadChildren: () => loadRemoteModule({
-     *   remoteName: 'remoteProperties',
-     *   exposedModule: './Routes',
-     *   remoteEntry: 'http://localhost:4201/remoteEntry.js',
-     * }).then(m => m.appRoutes)
-     * ```
-     * Once MODULE_FEDERATION_READY = true and the webpack executor is configured.
+     * Lazy-loads Routes exposed by the remote at http://localhost:4201.
      */
     path: 'properties',
-    component: MfPlaceholderComponent,
+    loadChildren: () =>
+      loadRemoteModule('remoteProperties', './Routes').then(m => m.appRoutes),
   },
 ];
