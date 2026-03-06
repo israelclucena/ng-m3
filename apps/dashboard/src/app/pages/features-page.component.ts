@@ -40,6 +40,9 @@ import {
   DataTableV2BulkAction,
   WidgetContainerComponent,
   WidgetGridComponent,
+  // Sprint 010
+  PropertyCardComponent,
+  PropertyData,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -110,6 +113,8 @@ const SEARCH_DATA: SearchResult[] = [
     DataTableV2Component,
     WidgetContainerComponent,
     WidgetGridComponent,
+    // Sprint 010
+    PropertyCardComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -475,6 +480,25 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ═══ SPRINT 010 — PROPERTY CARD ═══ -->
+      @if (flags.PROPERTY_LISTING) {
+        <section>
+          <h2>🏠 Sprint 010 — Property Card</h2>
+          <p class="desc">Cartão de propriedade para o LisboaRent. Suporta imagem, preço, localização, badges e favoritos. Grid responsivo pronto para o remote-properties MF.</p>
+          <div class="demo-block">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
+              @for (prop of sampleProperties; track prop.id) {
+                <iu-property-card
+                  [property]="prop"
+                  (cardClick)="onPropertyClick($event)"
+                  (favouriteToggle)="onPropertyFav($event)"
+                />
+              }
+            </div>
+          </div>
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -789,5 +813,65 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
 
   openShortcuts(): void {
     this.shortcuts.toggleHelp();
+  }
+
+  // ── Sprint 010 — Property Card ─────────────────────────────────
+  readonly sampleProperties: PropertyData[] = [
+    {
+      id: 's1',
+      title: 'Apartamento T2 renovado em Príncipe Real',
+      location: 'Príncipe Real, Lisboa',
+      priceMonthly: 1450,
+      bedrooms: 2,
+      bathrooms: 1,
+      areaSqm: 78,
+      type: 'apartment',
+      imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&auto=format&fit=crop',
+      badges: ['available', 'verified'],
+      availableFrom: '1 Abr 2026',
+    },
+    {
+      id: 's2',
+      title: 'Penthouse com Terraço — Vista Tejo',
+      location: 'Mouraria, Lisboa',
+      priceMonthly: 3200,
+      bedrooms: 3,
+      bathrooms: 2,
+      areaSqm: 142,
+      type: 'penthouse',
+      imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&auto=format&fit=crop',
+      badges: ['featured', 'new'],
+      availableFrom: '15 Mar 2026',
+    },
+    {
+      id: 's3',
+      title: 'Estúdio moderno — Metro Intendente',
+      location: 'Intendente, Lisboa',
+      priceMonthly: 750,
+      bedrooms: 0,
+      bathrooms: 1,
+      areaSqm: 35,
+      type: 'studio',
+      badges: ['new'],
+      availableFrom: '1 Mar 2026',
+    },
+  ];
+
+  onPropertyClick(property: PropertyData): void {
+    this.notif.show({
+      message: `🏠 ${property.title} — ${new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.priceMonthly)}/mês`,
+      type: 'info',
+      duration: 3000,
+    });
+  }
+
+  onPropertyFav(event: { property: PropertyData; isFavourited: boolean }): void {
+    this.notif.show({
+      message: event.isFavourited
+        ? `❤️ "${event.property.title}" adicionado aos favoritos`
+        : `🤍 "${event.property.title}" removido dos favoritos`,
+      type: 'success',
+      duration: 2500,
+    });
   }
 }

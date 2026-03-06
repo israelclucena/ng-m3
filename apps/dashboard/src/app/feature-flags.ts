@@ -28,4 +28,8 @@ export const FeatureFlags = {
   RESOURCE_DATA_TABLE: true,
   FILTER_BAR: true,
   MODULE_FEDERATION_READY: true,
+
+  // Sprint 010 — Night Shift 2026-03-06
+  PROPERTY_LISTING: true,
+  PROPERTY_DETAIL_VIEW: true,
 } as const;
