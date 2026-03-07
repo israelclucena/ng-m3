@@ -43,6 +43,9 @@ import {
   // Sprint 010
   PropertyCardComponent,
   PropertyData,
+  // Sprint 011
+  PropertyDetailComponent,
+  PropertyResourceService,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -115,6 +118,8 @@ const SEARCH_DATA: SearchResult[] = [
     WidgetGridComponent,
     // Sprint 010
     PropertyCardComponent,
+    // Sprint 011
+    PropertyDetailComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -480,22 +485,56 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
-      <!-- ═══ SPRINT 010 — PROPERTY CARD ═══ -->
+      <!-- ═══ SPRINT 010+011 — PROPERTY LISTING + DETAIL ═══ -->
       @if (flags.PROPERTY_LISTING) {
-        <section>
-          <h2>🏠 Sprint 010 — Property Card</h2>
-          <p class="desc">Cartão de propriedade para o LisboaRent. Suporta imagem, preço, localização, badges e favoritos. Grid responsivo pronto para o remote-properties MF.</p>
-          <div class="demo-block">
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
-              @for (prop of sampleProperties; track prop.id) {
-                <iu-property-card
-                  [property]="prop"
-                  (cardClick)="onPropertyClick($event)"
-                  (favouriteToggle)="onPropertyFav($event)"
-                />
-              }
+        <section id="feat-property-listing">
+          <h2>🏠 LisboaRent — Property System</h2>
+          <p class="desc">
+            PropertyCard + PropertyDetail + PropertyResourceService.
+            Clica num cartão para abrir a vista de detalhe completa.
+            @if (flags.PROPERTY_RESOURCE) {
+              <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+                &nbsp;— Dados carregados via <code>resource()</code> (Signal-based, httpResource-ready).
+              </span>
+            }
+          </p>
+
+          @if (selectedProperty()) {
+            <!-- ── Detail View ── -->
+            <div class="demo-block" style="padding: 0; border-radius: 24px; overflow: hidden;">
+              <iu-property-detail
+                [property]="selectedProperty()!"
+                (closed)="clearSelectedProperty()"
+                (contactClick)="onPropertyDetailContact($event)"
+                (scheduleClick)="onPropertyDetailSchedule($event)"
+                (favouriteToggle)="onPropertyFav($event)"
+              />
             </div>
-          </div>
+          } @else {
+            <!-- ── Listing Grid ── -->
+            @if (flags.PROPERTY_RESOURCE && propertyResource.properties.isLoading()) {
+              <div class="demo-block" style="text-align: center; padding: 40px; color: var(--md-sys-color-on-surface-variant)">
+                <span class="material-symbols-outlined" style="font-size: 36px; display: block; margin-bottom: 8px; animation: spin 1s linear infinite">autorenew</span>
+                A carregar propriedades...
+              </div>
+            } @else if (flags.PROPERTY_RESOURCE && propertyResource.properties.error()) {
+              <div class="demo-block" style="text-align: center; color: var(--md-sys-color-error)">
+                Erro ao carregar propriedades.
+              </div>
+            } @else {
+              <div class="demo-block">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
+                  @for (prop of (flags.PROPERTY_RESOURCE ? (propertyResource.properties.value() ?? sampleProperties) : sampleProperties); track prop.id) {
+                    <iu-property-card
+                      [property]="prop"
+                      (cardClick)="onPropertyClick($event)"
+                      (favouriteToggle)="onPropertyFav($event)"
+                    />
+                  }
+                </div>
+              </div>
+            }
+          }
         </section>
       }
 
@@ -593,12 +632,28 @@ const SEARCH_DATA: SearchResult[] = [
       font-size: 0.85rem;
       color: var(--md-sys-color-on-surface);
     }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    code {
+      font-family: monospace;
+      background: var(--md-sys-color-surface-container, #ece6f0);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
   `],
 })
 export class FeaturesPageComponent implements OnInit, OnDestroy {
   private notif = inject(NotificationService);
   private themeService = inject(ThemeService);
   private shortcuts = inject(KeyboardShortcutService);
+
+  // ── Sprint 011 — PropertyResource ─────────────────────────────
+  readonly propertyResource = inject(PropertyResourceService);
+  /** Currently selected property for detail view (null = list view) */
+  readonly selectedProperty = signal<PropertyData | null>(null);
 
   // Data Table
   userColumns = USER_COLUMNS;
@@ -858,8 +913,34 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
   ];
 
   onPropertyClick(property: PropertyData): void {
+    if (FeatureFlags.PROPERTY_DETAIL_VIEW) {
+      this.selectedProperty.set(property);
+      this.propertyResource.select(property.id);
+    } else {
+      this.notif.show({
+        message: `🏠 ${property.title} — ${new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.priceMonthly)}/mês`,
+        type: 'info',
+        duration: 3000,
+      });
+    }
+  }
+
+  clearSelectedProperty(): void {
+    this.selectedProperty.set(null);
+    this.propertyResource.select(null);
+  }
+
+  onPropertyDetailContact(property: PropertyData): void {
     this.notif.show({
-      message: `🏠 ${property.title} — ${new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.priceMonthly)}/mês`,
+      message: `📩 Mensagem enviada para proprietário de "${property.title}"`,
+      type: 'success',
+      duration: 3000,
+    });
+  }
+
+  onPropertyDetailSchedule(property: PropertyData): void {
+    this.notif.show({
+      message: `📅 Pedido de visita enviado para "${property.title}"`,
       type: 'info',
       duration: 3000,
     });

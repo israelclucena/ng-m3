@@ -107,3 +107,7 @@ export * from './lib/components/filter-bar/filter-bar.component';
 
 // Sprint 010 — Night Shift 2026-03-06
 export * from './lib/components/property-card/property-card.component';
+
+// Sprint 011 — Night Shift 2026-03-07
+export * from './lib/components/property-detail/property-detail.component';
+export * from './lib/services/property-resource.service';

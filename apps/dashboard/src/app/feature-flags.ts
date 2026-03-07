@@ -32,4 +32,7 @@ export const FeatureFlags = {
   // Sprint 010 — Night Shift 2026-03-06
   PROPERTY_LISTING: true,
   PROPERTY_DETAIL_VIEW: true,
+
+  // Sprint 011 — Night Shift 2026-03-07
+  PROPERTY_RESOURCE: true,
 } as const;
