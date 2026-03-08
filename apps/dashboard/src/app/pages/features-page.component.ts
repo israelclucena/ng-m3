@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   DataTableComponent,
@@ -46,6 +46,10 @@ import {
   // Sprint 011
   PropertyDetailComponent,
   PropertyResourceService,
+  // Sprint 012
+  PropertyFilterComponent,
+  PropertyFilterState,
+  FavouritesService,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -120,6 +124,8 @@ const SEARCH_DATA: SearchResult[] = [
     PropertyCardComponent,
     // Sprint 011
     PropertyDetailComponent,
+    // Sprint 012
+    PropertyFilterComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -490,11 +496,16 @@ const SEARCH_DATA: SearchResult[] = [
         <section id="feat-property-listing">
           <h2>🏠 LisboaRent — Property System</h2>
           <p class="desc">
-            PropertyCard + PropertyDetail + PropertyResourceService.
-            Clica num cartão para abrir a vista de detalhe completa.
+            PropertyCard + PropertyDetail + PropertyResourceService + PropertyFilter + FavouritesService.
+            Clica num cartão para abrir a vista de detalhe completa. Usa os filtros para afinar a pesquisa.
             @if (flags.PROPERTY_RESOURCE) {
               <span style="color: var(--md-sys-color-primary); font-weight: 500;">
                 &nbsp;— Dados carregados via <code>resource()</code> (Signal-based, httpResource-ready).
+              </span>
+            }
+            @if (flags.FAVOURITES_SERVICE && favourites.hasAny()) {
+              <span style="color: var(--md-sys-color-error); font-weight: 500; display:block; margin-top:6px;">
+                ❤️ {{ favourites.count() }} favorito{{ favourites.count() === 1 ? '' : 's' }} guardado{{ favourites.count() === 1 ? '' : 's' }} em localStorage
               </span>
             }
           </p>
@@ -511,29 +522,50 @@ const SEARCH_DATA: SearchResult[] = [
               />
             </div>
           } @else {
-            <!-- ── Listing Grid ── -->
-            @if (flags.PROPERTY_RESOURCE && propertyResource.properties.isLoading()) {
-              <div class="demo-block" style="text-align: center; padding: 40px; color: var(--md-sys-color-on-surface-variant)">
-                <span class="material-symbols-outlined" style="font-size: 36px; display: block; margin-bottom: 8px; animation: spin 1s linear infinite">autorenew</span>
-                A carregar propriedades...
-              </div>
-            } @else if (flags.PROPERTY_RESOURCE && propertyResource.properties.error()) {
-              <div class="demo-block" style="text-align: center; color: var(--md-sys-color-error)">
-                Erro ao carregar propriedades.
-              </div>
-            } @else {
-              <div class="demo-block">
-                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
-                  @for (prop of (flags.PROPERTY_RESOURCE ? (propertyResource.properties.value() ?? sampleProperties) : sampleProperties); track prop.id) {
-                    <iu-property-card
-                      [property]="prop"
-                      (cardClick)="onPropertyClick($event)"
-                      (favouriteToggle)="onPropertyFav($event)"
-                    />
+            <!-- ── Filter + Grid Layout ── -->
+            <div class="property-layout">
+
+              <!-- Filter Sidebar (Sprint 012) -->
+              @if (flags.PROPERTY_FILTER_SIDEBAR) {
+                <iu-property-filter
+                  [resultCount]="filteredProperties().length"
+                  (filterChange)="onFilterChange($event)"
+                  (filterReset)="onFilterReset()"
+                />
+              }
+
+              <!-- Listing Grid -->
+              <div class="property-grid-wrap">
+                @if (flags.PROPERTY_RESOURCE && propertyResource.properties.isLoading()) {
+                  <div class="demo-block" style="text-align: center; padding: 40px; color: var(--md-sys-color-on-surface-variant)">
+                    <span class="material-symbols-outlined" style="font-size: 36px; display: block; margin-bottom: 8px; animation: spin 1s linear infinite">autorenew</span>
+                    A carregar propriedades...
+                  </div>
+                } @else if (flags.PROPERTY_RESOURCE && propertyResource.properties.error()) {
+                  <div class="demo-block" style="text-align: center; color: var(--md-sys-color-error)">
+                    Erro ao carregar propriedades.
+                  </div>
+                } @else {
+                  @if (filteredProperties().length === 0) {
+                    <div class="demo-block" style="text-align: center; padding: 48px; color: var(--md-sys-color-on-surface-variant)">
+                      <span class="material-symbols-outlined" style="font-size: 48px; display: block; margin-bottom: 12px; opacity: 0.4">search_off</span>
+                      <p style="margin: 0; font-size: 15px; font-weight: 500;">Nenhum imóvel corresponde aos filtros</p>
+                      <p style="margin: 6px 0 0; font-size: 13px; opacity: 0.7;">Tenta ajustar os critérios de pesquisa</p>
+                    </div>
+                  } @else {
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px">
+                      @for (prop of filteredProperties(); track prop.id) {
+                        <iu-property-card
+                          [property]="prop"
+                          (cardClick)="onPropertyClick($event)"
+                          (favouriteToggle)="onPropertyFav($event)"
+                        />
+                      }
+                    </div>
                   }
-                </div>
+                }
               </div>
-            }
+            </div>
           }
         </section>
       }
@@ -643,6 +675,18 @@ const SEARCH_DATA: SearchResult[] = [
       border-radius: 4px;
       font-size: 0.85em;
     }
+
+    /* Sprint 012 — Filter + Grid layout */
+    .property-layout {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .property-grid-wrap { flex: 1; min-width: 0; }
+    @media (max-width: 768px) {
+      .property-layout { flex-direction: column; }
+      .property-layout iu-property-filter { max-width: 100%; }
+    }
   `],
 })
 export class FeaturesPageComponent implements OnInit, OnDestroy {
@@ -654,6 +698,27 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
   readonly propertyResource = inject(PropertyResourceService);
   /** Currently selected property for detail view (null = list view) */
   readonly selectedProperty = signal<PropertyData | null>(null);
+
+  // ── Sprint 012 — Favourites + Filter ──────────────────────────
+  readonly favourites = inject(FavouritesService);
+  readonly activeFilter = signal<PropertyFilterState | null>(null);
+
+  readonly filteredProperties = computed(() => {
+    const f = this.activeFilter();
+    const all = this.sampleProperties;
+    if (!f) return all;
+    return all.filter(p => {
+      if (f.types.length > 0 && !f.types.includes(p.type)) return false;
+      if (f.priceMin !== null && p.priceMonthly < f.priceMin) return false;
+      if (f.priceMax !== null && p.priceMonthly > f.priceMax) return false;
+      if (f.bedroomsMin !== null && p.bedrooms < f.bedroomsMin) return false;
+      if (f.areaMin !== null && p.areaSqm < f.areaMin) return false;
+      if (f.areaMax !== null && p.areaSqm > f.areaMax) return false;
+      if (f.availableOnly && !p.badges?.includes('available')) return false;
+      if (f.verifiedOnly && !p.badges?.includes('verified')) return false;
+      return true;
+    });
+  });
 
   // Data Table
   userColumns = USER_COLUMNS;
@@ -947,6 +1012,12 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
   }
 
   onPropertyFav(event: { property: PropertyData; isFavourited: boolean }): void {
+    // Sync with FavouritesService
+    if (event.isFavourited) {
+      this.favourites.add(event.property.id);
+    } else {
+      this.favourites.remove(event.property.id);
+    }
     this.notif.show({
       message: event.isFavourited
         ? `❤️ "${event.property.title}" adicionado aos favoritos`
@@ -954,5 +1025,18 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
       type: 'success',
       duration: 2500,
     });
+  }
+
+  onFilterChange(filter: PropertyFilterState): void {
+    this.activeFilter.set(filter);
+  }
+
+  onFilterReset(): void {
+    this.activeFilter.set(null);
+    this.notif.show({ message: 'Filtros limpos', type: 'info', duration: 1500 });
+  }
+
+  isFavourited(id: string | number): boolean {
+    return this.favourites.isFavourited(id);
   }
 }
