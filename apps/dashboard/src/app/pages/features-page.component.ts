@@ -50,6 +50,13 @@ import {
   PropertyFilterComponent,
   PropertyFilterState,
   FavouritesService,
+  // Sprint 013
+  PropertyMapComponent,
+  PropertyMapMarker,
+  MOCK_MAP_MARKERS,
+  PropertyComparisonComponent,
+  PaginatorComponent,
+  PaginatorPageEvent,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -126,6 +133,10 @@ const SEARCH_DATA: SearchResult[] = [
     PropertyDetailComponent,
     // Sprint 012
     PropertyFilterComponent,
+    // Sprint 013
+    PropertyMapComponent,
+    PropertyComparisonComponent,
+    PaginatorComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -570,6 +581,93 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ═══ SPRINT 013 — PROPERTY MAP ═══ -->
+      @if (flags.PROPERTY_MAP) {
+        <section id="feat-property-map">
+          <h2>🗺️ Property Map</h2>
+          <p class="desc">
+            Interactive Leaflet map showing LisboaRent properties across Lisboa.
+            Click a pin to see a preview popup. Uses OpenStreetMap — no API key needed.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: PROPERTY_MAP
+            </span>
+          </p>
+          <div class="demo-block" style="padding: 0; overflow: hidden; border-radius: 16px;">
+            <iu-property-map
+              [markers]="mapMarkers()"
+              [center]="{ lat: 38.72, lng: -9.18, zoom: 11 }"
+              [fitBounds]="true"
+              (markerClick)="onMapMarkerClick($event)"
+            />
+          </div>
+          @if (lastMapClick()) {
+            <p style="margin-top: 10px; font-size: 13px; color: var(--md-sys-color-primary); padding: 8px 16px; background: var(--md-sys-color-primary-container); border-radius: 8px;">
+              🏠 Seleccionado: <strong>{{ lastMapClick()!.title }}</strong> — €{{ lastMapClick()!.priceMonthly }}/mês
+            </p>
+          }
+        </section>
+      }
+
+      <!-- ═══ SPRINT 013 — PROPERTY COMPARISON ═══ -->
+      @if (flags.PROPERTY_COMPARISON) {
+        <section id="feat-property-comparison">
+          <h2>🔍 Property Comparison</h2>
+          <p class="desc">
+            Side-by-side comparison of favourited properties. Best value in each row is highlighted.
+            @if (flags.FAVOURITES_SERVICE) {
+              <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+                — Ligado ao FavouritesService ({{ favourites.count() }} guardado{{ favourites.count() === 1 ? '' : 's' }}).
+              </span>
+            }
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: PROPERTY_COMPARISON
+            </span>
+          </p>
+          @if (comparisonProperties().length < 2) {
+            <p style="font-size: 13px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 12px;">
+              ℹ️ Nenhum favorito suficiente — a mostrar demo com dados de exemplo (primeiros 3 imóveis).
+            </p>
+          }
+          <iu-property-comparison
+            [properties]="comparisonProperties()"
+            [showRemove]="true"
+            (removeProperty)="onRemoveFromComparison($event)"
+          />
+        </section>
+      }
+
+      <!-- ═══ SPRINT 013 — PAGINATOR ═══ -->
+      @if (flags.PAGINATOR) {
+        <section id="feat-paginator">
+          <h2>📄 Paginator</h2>
+          <p class="desc">
+            M3 page navigation bar with ellipsis and page-size selector.
+            Below is a live demo paginating the 6 mock properties (3 per page).
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: PAGINATOR
+            </span>
+          </p>
+          <div class="demo-block">
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 16px;">
+              @for (prop of pagedProperties(); track prop.id) {
+                <iu-property-card
+                  [property]="prop"
+                  (cardClick)="onPropertyClick($event)"
+                  (favouriteToggle)="onPropertyFav($event)"
+                />
+              }
+            </div>
+            <iu-paginator
+              [length]="allProperties().length"
+              [pageSize]="paginatorPageSize()"
+              [(pageIndex)]="paginatorPage"
+              [pageSizeOptions]="[3, 6]"
+              (page)="onPaginatorChange($event)"
+            />
+          </div>
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -702,6 +800,33 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
   // ── Sprint 012 — Favourites + Filter ──────────────────────────
   readonly favourites = inject(FavouritesService);
   readonly activeFilter = signal<PropertyFilterState | null>(null);
+
+  // ── Sprint 013 — Map ───────────────────────────────────────────
+  readonly mapMarkers = signal<PropertyMapMarker[]>(MOCK_MAP_MARKERS);
+  readonly lastMapClick = signal<PropertyData | null>(null);
+
+  // ── Sprint 013 — Comparison ────────────────────────────────────
+  readonly removedFromComparison = signal<Set<string | number>>(new Set());
+
+  readonly comparisonProperties = computed(() => {
+    // Prefer favourited properties; fall back to first 3 mock items
+    const favIds = new Set(this.favourites.ids());
+    const all = MOCK_MAP_MARKERS.map(m => m.property);
+    const removed = this.removedFromComparison();
+    const favoured = all.filter(p => favIds.has(String(p.id)) && !removed.has(p.id));
+    if (favoured.length >= 2) return favoured.slice(0, 3);
+    return all.filter(p => !removed.has(p.id)).slice(0, 3);
+  });
+
+  // ── Sprint 013 — Paginator ─────────────────────────────────────
+  readonly allProperties = signal<PropertyData[]>(MOCK_MAP_MARKERS.map(m => m.property));
+  readonly paginatorPage = signal<number>(0);
+  readonly paginatorPageSize = signal<number>(3);
+
+  readonly pagedProperties = computed(() => {
+    const start = this.paginatorPage() * this.paginatorPageSize();
+    return this.allProperties().slice(start, start + this.paginatorPageSize());
+  });
 
   readonly filteredProperties = computed(() => {
     const f = this.activeFilter();
@@ -1038,5 +1163,22 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
 
   isFavourited(id: string | number): boolean {
     return this.favourites.isFavourited(id);
+  }
+
+  // ── Sprint 013 handlers ─────────────────────────────────────────
+
+  onMapMarkerClick(property: PropertyData): void {
+    this.lastMapClick.set(property);
+  }
+
+  onRemoveFromComparison(id: string | number): void {
+    const set = new Set(this.removedFromComparison());
+    set.add(id);
+    this.removedFromComparison.set(set);
+    this.notif.show({ message: 'Removido da comparação', type: 'info', duration: 1500 });
+  }
+
+  onPaginatorChange(event: PaginatorPageEvent): void {
+    this.paginatorPageSize.set(event.pageSize);
   }
 }

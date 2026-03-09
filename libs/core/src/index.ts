@@ -115,3 +115,8 @@ export * from './lib/services/property-resource.service';
 // Sprint 012 — Night Shift 2026-03-08
 export * from './lib/components/property-filter/property-filter.component';
 export * from './lib/services/favourites.service';
+
+// Sprint 013 — Night Shift 2026-03-09
+export * from './lib/components/property-map/property-map.component';
+export * from './lib/components/property-comparison/property-comparison.component';
+export * from './lib/components/paginator/paginator.component';
