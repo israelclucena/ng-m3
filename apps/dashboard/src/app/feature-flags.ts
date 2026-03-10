@@ -44,4 +44,12 @@ export const FeatureFlags = {
   PROPERTY_MAP: true,
   PROPERTY_COMPARISON: true,
   PAGINATOR: true,
+
+  // Sprint 014 — Night Shift 2026-03-10
+  PROPERTY_BOOKING: true,
+  PROPERTY_INQUIRY_FORM: true,
+
+  // Sprint 015 — Night Shift 2026-03-10
+  AUTH_MODULE: true,
+  AUTH_GUARDS: true,
 } as const;

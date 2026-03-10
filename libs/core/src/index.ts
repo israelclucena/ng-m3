@@ -120,3 +120,12 @@ export * from './lib/services/favourites.service';
 export * from './lib/components/property-map/property-map.component';
 export * from './lib/components/property-comparison/property-comparison.component';
 export * from './lib/components/paginator/paginator.component';
+
+// Sprint 014 — Night Shift 2026-03-10
+export * from './lib/components/property-booking/property-booking.component';
+
+// Sprint 015 — Night Shift 2026-03-10
+export * from './lib/services/auth.service';
+export * from './lib/components/auth-login/auth-login.component';
+export * from './lib/components/auth-register/auth-register.component';
+export * from './lib/guards/auth.guard';

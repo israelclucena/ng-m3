@@ -57,6 +57,12 @@ import {
   PropertyComparisonComponent,
   PaginatorComponent,
   PaginatorPageEvent,
+  // Sprint 014
+  PropertyBookingComponent,
+  BookingSubmitEvent,
+  // Sprint 015
+  AuthLoginComponent,
+  AuthRegisterComponent,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -137,6 +143,11 @@ const SEARCH_DATA: SearchResult[] = [
     PropertyMapComponent,
     PropertyComparisonComponent,
     PaginatorComponent,
+    // Sprint 014
+    PropertyBookingComponent,
+    // Sprint 015
+    AuthLoginComponent,
+    AuthRegisterComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -668,6 +679,102 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 014 — Property Booking ──────────────────────── -->
+      @if (flags.PROPERTY_BOOKING) {
+        <section id="feat-property-booking">
+          <h2>📅 Property Booking</h2>
+          <p class="desc">
+            Modal panel for scheduling visits or sending inquiries. Tabs between
+            "Agendar Visita" and "Enviar Mensagem". Shows success confirmation after submit.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: PROPERTY_BOOKING
+            </span>
+          </p>
+          <div class="demo-block" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            @for (prop of allProperties().slice(0, 3); track prop.id) {
+              <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+                <iu-property-card
+                  [property]="prop"
+                  (cardClick)="openBooking($event)"
+                  (favouriteToggle)="onPropertyFav($event)"
+                />
+                <button
+                  style="width: 100%; padding: 8px 16px; border-radius: 100px; border: 1px solid var(--md-sys-color-primary, #6750a4); background: transparent; color: var(--md-sys-color-primary, #6750a4); font-weight: 600; cursor: pointer; font-size: 0.875rem;"
+                  (click)="openBooking(prop)"
+                >
+                  📅 Abrir Formulário de Reserva
+                </button>
+              </div>
+            }
+          </div>
+          <p style="margin-top: 8px; font-size: 0.875rem; color: var(--md-sys-color-on-surface-variant);">
+            Clica em qualquer card ou botão para abrir o painel de reserva.
+          </p>
+        </section>
+      }
+
+      <!-- Booking modal overlay -->
+      @if (flags.PROPERTY_BOOKING && bookingProperty()) {
+        <iu-property-booking
+          [property]="bookingProperty()!"
+          (bookingSubmitted)="onBookingSubmit($event)"
+          (closed)="closeBooking()"
+        />
+      }
+
+      <!-- ── Sprint 015 — Auth Module ─────────────────────────────── -->
+      @if (flags.AUTH_MODULE) {
+        <section id="feat-auth">
+          <h2>🔐 Auth Module</h2>
+          <p class="desc">
+            Signal-based authentication — Login form with validation &amp; loading state,
+            Registration form with role selector (Inquilino / Proprietário) and password strength indicator.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flags: AUTH_MODULE, AUTH_GUARDS
+            </span>
+          </p>
+          <div class="demo-block" style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <button
+              style="padding: 12px 24px; border-radius: 100px; border: none; background: var(--md-sys-color-primary, #6750a4); color: #fff; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem;"
+              (click)="openAuthLogin()"
+            >
+              <span class="material-symbols-outlined" style="font-size: 20px;">login</span>
+              Abrir Login
+            </button>
+            <button
+              style="padding: 12px 24px; border-radius: 100px; border: 1px solid var(--md-sys-color-primary, #6750a4); background: transparent; color: var(--md-sys-color-primary, #6750a4); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem;"
+              (click)="openAuthRegister()"
+            >
+              <span class="material-symbols-outlined" style="font-size: 20px;">person_add</span>
+              Abrir Registo
+            </button>
+          </div>
+        </section>
+      }
+
+      <!-- Auth modal overlay -->
+      @if (flags.AUTH_MODULE && authView() === 'login') {
+        <div class="iu-auth-overlay" (click)="closeAuth()">
+          <div class="iu-auth-panel" (click)="$event.stopPropagation()">
+            <iu-auth-login
+              (loginSuccess)="onLoginSuccess()"
+              (registerRequested)="authView.set('register')"
+            />
+          </div>
+        </div>
+      }
+
+      @if (flags.AUTH_MODULE && authView() === 'register') {
+        <div class="iu-auth-overlay" (click)="closeAuth()">
+          <div class="iu-auth-panel" (click)="$event.stopPropagation()">
+            <iu-auth-register
+              (registerSuccess)="onRegisterSuccess()"
+              (loginRequested)="authView.set('login')"
+            />
+          </div>
+        </div>
+      }
+
     </div>
   `,
   styles: [`
@@ -709,6 +816,27 @@ const SEARCH_DATA: SearchResult[] = [
       background: var(--md-sys-color-surface-container-low, #f7f2fa);
       border-radius: 16px;
       padding: 24px;
+    }
+    /* Sprint 015 — Auth overlay */
+    .iu-auth-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background: rgba(0,0,0,.48);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .iu-auth-panel {
+      background: var(--md-sys-color-surface, #fffbfe);
+      border-radius: 28px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,.24);
     }
     .form-result {
       display: flex;
@@ -1180,5 +1308,42 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
 
   onPaginatorChange(event: PaginatorPageEvent): void {
     this.paginatorPageSize.set(event.pageSize);
+  }
+
+  // ── Sprint 014 — Property Booking ──────────────────────────────
+
+  readonly bookingProperty = signal<PropertyData | null>(null);
+
+  openBooking(property: PropertyData): void {
+    this.bookingProperty.set(property);
+  }
+
+  closeBooking(): void {
+    this.bookingProperty.set(null);
+  }
+
+  onBookingSubmit(event: BookingSubmitEvent): void {
+    this.notif.show({
+      message: `✅ ${event.form.bookingType === 'visit' ? 'Visita agendada' : 'Mensagem enviada'} para "${event.property.title}"`,
+      type: 'success',
+      duration: 4000,
+    });
+  }
+
+  // ── Sprint 015 — Auth ───────────────────────────────────────────
+
+  readonly authView = signal<'login' | 'register' | null>(null);
+
+  openAuthLogin(): void { this.authView.set('login'); }
+  openAuthRegister(): void { this.authView.set('register'); }
+  closeAuth(): void { this.authView.set(null); }
+
+  onLoginSuccess(): void {
+    this.closeAuth();
+    this.notif.show({ message: '👋 Login realizado com sucesso!', type: 'success', duration: 3000 });
+  }
+
+  onRegisterSuccess(): void {
+    this.notif.show({ message: '🎉 Conta criada com sucesso!', type: 'success', duration: 3000 });
   }
 }
