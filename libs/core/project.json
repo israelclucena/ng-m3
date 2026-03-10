@@ -12,6 +12,20 @@
       "options": {
         "project": "libs/core/ng-package.json",
         "tsConfig": "libs/core/tsconfig.lib.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/core/tsconfig.lib.json",
+          "project": "libs/core/ng-package.json"
+        }
+      }
+    },
+    "build-publishable": {
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist/libs/core-publish"],
+      "options": {
+        "project": "libs/core/ng-package.json",
+        "tsConfig": "libs/core/tsconfig.lib.json"
       }
     },
     "storybook": {
