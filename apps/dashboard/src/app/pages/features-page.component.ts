@@ -63,6 +63,19 @@ import {
   // Sprint 015
   AuthLoginComponent,
   AuthRegisterComponent,
+  AuthService,
+  AuthUser,
+  // Sprint 016
+  UserProfileComponent,
+  UserProfileStats,
+  MyBookingsComponent,
+  BookingRecord,
+  MyFavouritesComponent,
+  // Sprint 017
+  AddPropertyComponent,
+  NewPropertyForm,
+  ManageListingsComponent,
+  LandlordListing,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -148,6 +161,13 @@ const SEARCH_DATA: SearchResult[] = [
     // Sprint 015
     AuthLoginComponent,
     AuthRegisterComponent,
+    // Sprint 016
+    UserProfileComponent,
+    MyBookingsComponent,
+    MyFavouritesComponent,
+    // Sprint 017
+    AddPropertyComponent,
+    ManageListingsComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -752,6 +772,141 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 016 — User Profile ──────────────────────────── -->
+      @if (flags.USER_PROFILE) {
+        <iu-divider></iu-divider>
+        <section id="feat-user-profile">
+          <h2>👤 User Profile</h2>
+          <p class="desc">
+            M3 profile card with avatar initials, role badge, stats row, and edit/logout actions.
+            Integrates with AuthService — mock user pre-loaded.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flags: USER_PROFILE
+            </span>
+          </p>
+          <div class="demo-block" style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 320px;">
+              <p style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--md-sys-color-on-surface-variant)">INQUILINO</p>
+              <iu-user-profile
+                [user]="mockTenant()"
+                [stats]="tenantStats()"
+                [editable]="true"
+                (editProfile)="onEditProfile()"
+                (logout)="onProfileLogout()"
+              />
+            </div>
+            <div style="flex: 1; min-width: 320px;">
+              <p style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--md-sys-color-on-surface-variant)">PROPRIETÁRIO</p>
+              <iu-user-profile
+                [user]="mockLandlord()"
+                [stats]="landlordStats()"
+                [editable]="false"
+              />
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ── Sprint 016 — My Bookings ────────────────────────────── -->
+      @if (flags.MY_BOOKINGS) {
+        <iu-divider></iu-divider>
+        <section id="feat-my-bookings">
+          <h2>📅 As Minhas Reservas</h2>
+          <p class="desc">
+            Booking history for a logged-in user. Filterable by type (Visitas / Mensagens / Concluídos).
+            Status chips with cancel and view actions.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: MY_BOOKINGS
+            </span>
+          </p>
+          <div class="demo-block">
+            <iu-my-bookings
+              [bookings]="mockBookings"
+              (cancel)="onCancelBooking($event)"
+              (view)="onViewBooking($event)"
+            />
+          </div>
+        </section>
+      }
+
+      <!-- ── Sprint 016 — My Favourites ──────────────────────────── -->
+      @if (flags.MY_FAVOURITES) {
+        <iu-divider></iu-divider>
+        <section id="feat-my-favourites">
+          <h2>❤️ Os Meus Favoritos</h2>
+          <p class="desc">
+            Saved properties gallery with sort control, remove action, and empty state.
+            Displays the current FavouritesService selection.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: MY_FAVOURITES
+            </span>
+          </p>
+          <div class="demo-block">
+            <iu-my-favourites
+              [properties]="sampleProperties"
+              (remove)="onRemoveFav($event)"
+              (viewDetail)="onPropertyClick($event)"
+            />
+          </div>
+        </section>
+      }
+
+      <!-- ── Sprint 017 — Manage Listings ────────────────────────── -->
+      @if (flags.MANAGE_LISTINGS) {
+        <iu-divider></iu-divider>
+        <section id="feat-manage-listings">
+          <h2>🏠 Gerir Imóveis (Proprietário)</h2>
+          <p class="desc">
+            Landlord dashboard — filterable table with status chips, inquiry/visit counters,
+            revenue summary, and inline edit/pause/delete actions.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flags: LANDLORD_MODULE, MANAGE_LISTINGS
+            </span>
+          </p>
+          <div class="demo-block">
+            <iu-manage-listings
+              [listings]="mockListings"
+              (edit)="onEditListing($event)"
+              (pause)="onPauseListing($event)"
+              (activate)="onActivateListing($event)"
+              (delete)="onDeleteListing($event)"
+              (addNew)="showAddProperty.set(true)"
+            />
+          </div>
+        </section>
+      }
+
+      <!-- ── Sprint 017 — Add Property ───────────────────────────── -->
+      @if (flags.ADD_PROPERTY) {
+        <iu-divider></iu-divider>
+        <section id="feat-add-property">
+          <h2>➕ Adicionar Imóvel</h2>
+          <p class="desc">
+            4-step multi-step form for landlords: Basic Info → Details → Description & Media → Review & Publish.
+            Angular Signals throughout, M3 tokens, no external form library.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flags: ADD_PROPERTY, LANDLORD_MODULE
+            </span>
+          </p>
+          @if (!showAddProperty()) {
+            <div class="demo-block" style="text-align: center; padding: 32px;">
+              <button
+                style="padding: 12px 28px; border-radius: 100px; border: none; background: var(--md-sys-color-primary, #6750a4); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;"
+                (click)="showAddProperty.set(true)"
+              >
+                <span class="material-symbols-outlined">add_home</span>
+                Abrir Formulário
+              </button>
+            </div>
+          } @else {
+            <iu-add-property
+              (submitted)="onPropertyFormSubmit($event)"
+              (cancelled)="showAddProperty.set(false)"
+            />
+          }
+        </section>
+      }
+
       <!-- Auth modal overlay -->
       @if (flags.AUTH_MODULE && authView() === 'login') {
         <div class="iu-auth-overlay" (click)="closeAuth()">
@@ -1328,6 +1483,168 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
       type: 'success',
       duration: 4000,
     });
+  }
+
+  // ── Sprint 016 — User Profile ──────────────────────────────────
+
+  readonly mockTenant = signal<AuthUser>({
+    id: 'u1',
+    name: 'Israel Lucena',
+    email: 'israel@lisboarent.pt',
+    role: 'tenant',
+  });
+
+  readonly mockLandlord = signal<AuthUser>({
+    id: 'u2',
+    name: 'Luana Silva',
+    email: 'luana@lisboarent.pt',
+    role: 'landlord',
+  });
+
+  readonly tenantStats = signal<UserProfileStats>({ bookings: 5, favourites: 12 });
+  readonly landlordStats = signal<UserProfileStats>({ bookings: 2, favourites: 4, listings: 8 });
+
+  onEditProfile(): void {
+    this.notif.show({ message: '✏️ Editar perfil — em breve!', type: 'info', duration: 2000 });
+  }
+
+  onProfileLogout(): void {
+    this.notif.show({ message: '👋 Sessão terminada.', type: 'success', duration: 2000 });
+  }
+
+  // ── Sprint 016 — My Bookings ───────────────────────────────────
+
+  readonly mockBookings: BookingRecord[] = [
+    {
+      id: 'b1',
+      propertyTitle: 'Apartamento T2 renovado em Príncipe Real',
+      propertyLocation: 'Príncipe Real, Lisboa',
+      propertyImageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&auto=format&fit=crop',
+      date: '15 Mar 2026',
+      time: '14:30',
+      status: 'confirmed',
+      type: 'visit',
+      priceMonthly: 1450,
+    },
+    {
+      id: 'b2',
+      propertyTitle: 'Penthouse com Terraço — Vista Tejo',
+      propertyLocation: 'Mouraria, Lisboa',
+      date: '18 Mar 2026',
+      status: 'pending',
+      type: 'inquiry',
+      priceMonthly: 3200,
+    },
+    {
+      id: 'b3',
+      propertyTitle: 'Estúdio moderno — Metro Intendente',
+      propertyLocation: 'Intendente, Lisboa',
+      date: '5 Mar 2026',
+      time: '10:00',
+      status: 'completed',
+      type: 'visit',
+      priceMonthly: 750,
+    },
+    {
+      id: 'b4',
+      propertyTitle: 'Moradia T3 com jardim — Cascais',
+      propertyLocation: 'Cascais, Lisboa',
+      date: '1 Mar 2026',
+      status: 'cancelled',
+      type: 'inquiry',
+      priceMonthly: 2800,
+    },
+  ];
+
+  onCancelBooking(booking: BookingRecord): void {
+    this.notif.show({ message: `❌ Reserva cancelada: "${booking.propertyTitle}"`, type: 'warning', duration: 3000 });
+  }
+
+  onViewBooking(booking: BookingRecord): void {
+    this.notif.show({ message: `📋 Ver detalhes: "${booking.propertyTitle}"`, type: 'info', duration: 2000 });
+  }
+
+  onRemoveFav(prop: PropertyData): void {
+    this.favourites.remove(prop.id);
+    this.notif.show({ message: `🤍 Removido dos favoritos: "${prop.title}"`, type: 'info', duration: 2000 });
+  }
+
+  // ── Sprint 017 — Manage Listings ───────────────────────────────
+
+  readonly showAddProperty = signal(false);
+
+  readonly mockListings: LandlordListing[] = [
+    {
+      id: 'l1',
+      title: 'Apartamento T2 renovado em Príncipe Real',
+      location: 'Príncipe Real, Lisboa',
+      priceMonthly: 1450,
+      bedrooms: 2,
+      bathrooms: 1,
+      areaSqm: 78,
+      type: 'apartment',
+      imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&auto=format&fit=crop',
+      badges: ['available'],
+      availableFrom: '1 Abr 2026',
+      status: 'active',
+      inquiries: 7,
+      visits: 3,
+      listedDate: '15 Fev 2026',
+    },
+    {
+      id: 'l2',
+      title: 'Penthouse com Terraço — Vista Tejo',
+      location: 'Mouraria, Lisboa',
+      priceMonthly: 3200,
+      bedrooms: 3,
+      bathrooms: 2,
+      areaSqm: 142,
+      type: 'penthouse',
+      imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&auto=format&fit=crop',
+      badges: ['featured'],
+      availableFrom: '1 Mar 2026',
+      status: 'rented',
+      inquiries: 24,
+      visits: 9,
+      listedDate: '1 Jan 2026',
+    },
+    {
+      id: 'l3',
+      title: 'Estúdio moderno — Metro Intendente',
+      location: 'Intendente, Lisboa',
+      priceMonthly: 750,
+      bedrooms: 0,
+      bathrooms: 1,
+      areaSqm: 35,
+      type: 'studio',
+      badges: [],
+      availableFrom: '1 Mar 2026',
+      status: 'paused',
+      inquiries: 2,
+      visits: 1,
+      listedDate: '20 Fev 2026',
+    },
+  ];
+
+  onEditListing(listing: LandlordListing): void {
+    this.notif.show({ message: `✏️ Editar: "${listing.title}"`, type: 'info', duration: 2000 });
+  }
+
+  onPauseListing(listing: LandlordListing): void {
+    this.notif.show({ message: `⏸️ Pausado: "${listing.title}"`, type: 'warning', duration: 2500 });
+  }
+
+  onActivateListing(listing: LandlordListing): void {
+    this.notif.show({ message: `▶️ Reactivado: "${listing.title}"`, type: 'success', duration: 2500 });
+  }
+
+  onDeleteListing(listing: LandlordListing): void {
+    this.notif.show({ message: `🗑️ Removido: "${listing.title}"`, type: 'error', duration: 2500 });
+  }
+
+  onPropertyFormSubmit(form: NewPropertyForm): void {
+    this.showAddProperty.set(false);
+    this.notif.show({ message: `🏠 Imóvel "${form.title}" publicado com sucesso!`, type: 'success', duration: 4000 });
   }
 
   // ── Sprint 015 — Auth ───────────────────────────────────────────

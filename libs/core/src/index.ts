@@ -129,3 +129,12 @@ export * from './lib/services/auth.service';
 export * from './lib/components/auth-login/auth-login.component';
 export * from './lib/components/auth-register/auth-register.component';
 export * from './lib/guards/auth.guard';
+
+// Sprint 016 — Night Shift 2026-03-11
+export * from './lib/components/user-profile/user-profile.component';
+export * from './lib/components/my-bookings/my-bookings.component';
+export * from './lib/components/my-favourites/my-favourites.component';
+
+// Sprint 017 — Night Shift 2026-03-11
+export * from './lib/components/add-property/add-property.component';
+export * from './lib/components/manage-listings/manage-listings.component';

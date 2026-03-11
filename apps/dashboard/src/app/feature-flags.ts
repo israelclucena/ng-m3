@@ -52,4 +52,14 @@ export const FeatureFlags = {
   // Sprint 015 — Night Shift 2026-03-10
   AUTH_MODULE: true,
   AUTH_GUARDS: true,
+
+  // Sprint 016 — Night Shift 2026-03-11
+  USER_PROFILE: true,
+  MY_BOOKINGS: true,
+  MY_FAVOURITES: true,
+
+  // Sprint 017 — Night Shift 2026-03-11
+  LANDLORD_MODULE: true,
+  ADD_PROPERTY: true,
+  MANAGE_LISTINGS: true,
 } as const;
