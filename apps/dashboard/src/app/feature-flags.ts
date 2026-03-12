@@ -62,4 +62,8 @@ export const FeatureFlags = {
   LANDLORD_MODULE: true,
   ADD_PROPERTY: true,
   MANAGE_LISTINGS: true,
+
+  // Sprint 018 — Night Shift 2026-03-12
+  MESSAGING_MODULE: false,
+  NOTIFICATION_BELL: false,
 } as const;

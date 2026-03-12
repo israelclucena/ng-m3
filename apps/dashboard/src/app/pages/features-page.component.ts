@@ -76,6 +76,13 @@ import {
   NewPropertyForm,
   ManageListingsComponent,
   LandlordListing,
+  // Sprint 018
+  MessageListComponent,
+  MessageThreadComponent,
+  MessagingService,
+  MessageThread,
+  NotificationBellComponent,
+  NotificationBellService,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -168,6 +175,10 @@ const SEARCH_DATA: SearchResult[] = [
     // Sprint 017
     AddPropertyComponent,
     ManageListingsComponent,
+    // Sprint 018
+    MessageListComponent,
+    MessageThreadComponent,
+    NotificationBellComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -930,6 +941,62 @@ const SEARCH_DATA: SearchResult[] = [
         </div>
       }
 
+      <!-- ── Sprint 018 — Messaging Module ────────────────────────── -->
+      @if (flags.MESSAGING_MODULE) {
+        <iu-divider></iu-divider>
+        <section id="feat-messaging">
+          <h2>💬 Mensagens</h2>
+          <p class="desc">
+            In-app messaging between tenants and landlords. Thread list with unread badges,
+            M3 chat bubbles, send/reply with Angular Signals. No RxJS.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: MESSAGING_MODULE
+            </span>
+          </p>
+          <div class="demo-block" style="display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start;">
+            <iu-message-list
+              [threads]="messagingService.threads()"
+              (threadSelected)="onThreadSelect($event)"
+            />
+            @if (activeThread()) {
+              <iu-message-thread
+                [thread]="activeThread()"
+                [showClose]="true"
+                (messageSent)="onMessageSend($event)"
+                (closed)="messagingService.closeThread()"
+              />
+            } @else {
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--md-sys-color-on-surface-variant);gap:12px;">
+                <span class="material-symbols-outlined" style="font-size:48px;">forum</span>
+                <p style="margin:0;font-size:14px;">Selecione uma conversa para começar</p>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ── Sprint 018 — Notification Bell ───────────────────────── -->
+      @if (flags.NOTIFICATION_BELL) {
+        <iu-divider></iu-divider>
+        <section id="feat-notification-bell">
+          <h2>🔔 Notification Bell</h2>
+          <p class="desc">
+            Header notification bell with animated badge, categorised dropdown panel,
+            mark-as-read, dismiss, and mark-all-read. Fully Signals-based.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: NOTIFICATION_BELL
+            </span>
+          </p>
+          <div class="demo-block" style="display:flex;align-items:center;gap:32px;padding:24px;background:var(--md-sys-color-surface-container);border-radius:12px;">
+            <span style="font-size:14px;color:var(--md-sys-color-on-surface-variant);">Clique no sino →</span>
+            <iu-notification-bell (notificationClicked)="onNotificationClicked($event)" />
+            <span style="font-size:13px;color:var(--md-sys-color-on-surface-variant);">
+              Não lidas: {{ notificationService.unreadCount() }}
+            </span>
+          </div>
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -1662,5 +1729,26 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
 
   onRegisterSuccess(): void {
     this.notif.show({ message: '🎉 Conta criada com sucesso!', type: 'success', duration: 3000 });
+  }
+
+  // ── Sprint 018 — Messaging & Notifications ──────────────────────
+
+  readonly messagingService = inject(MessagingService);
+  readonly notificationService = inject(NotificationBellService);
+
+  readonly activeThread = computed(() => this.messagingService.activeThread());
+
+  onThreadSelect(thread: MessageThread): void {
+    this.messagingService.openThread(thread.id);
+  }
+
+  onMessageSend(text: string): void {
+    const thread = this.activeThread();
+    if (!thread) return;
+    this.messagingService.sendMessage(thread.id, text);
+  }
+
+  onNotificationClicked(notif: import('@israel-ui/core').AppNotification): void {
+    this.notif.show({ message: `🔔 ${notif.title}`, type: 'info', duration: 3000 });
   }
 }

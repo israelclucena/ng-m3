@@ -139,3 +139,12 @@ export * from './lib/components/my-favourites/my-favourites.component';
 // Sprint 017 — Night Shift 2026-03-11
 export * from './lib/components/add-property/add-property.component';
 export * from './lib/components/manage-listings/manage-listings.component';
+
+// Sprint 018 — Night Shift 2026-03-12
+export * from './lib/components/messaging/messaging.types';
+export * from './lib/components/messaging/messaging.service';
+export * from './lib/components/messaging/message-thread.component';
+export * from './lib/components/messaging/message-list.component';
+export * from './lib/components/notification-bell/notification-bell.types';
+export * from './lib/components/notification-bell/notification-bell.service';
+export * from './lib/components/notification-bell/notification-bell.component';
