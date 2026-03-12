@@ -1,3 +1,4 @@
+import '@material/web/switch/switch.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

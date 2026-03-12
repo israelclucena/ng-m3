@@ -1,3 +1,4 @@
+import '@material/web/elevation/elevation.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

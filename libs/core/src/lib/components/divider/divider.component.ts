@@ -1,3 +1,4 @@
+import '@material/web/divider/divider.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

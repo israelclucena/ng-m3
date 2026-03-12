@@ -1,3 +1,4 @@
+import '@material/web/focus/md-focus-ring.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

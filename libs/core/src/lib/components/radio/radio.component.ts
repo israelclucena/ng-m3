@@ -1,3 +1,4 @@
+import '@material/web/radio/radio.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

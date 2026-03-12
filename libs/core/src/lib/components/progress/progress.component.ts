@@ -1,3 +1,5 @@
+import '@material/web/progress/linear-progress.js';
+import '@material/web/progress/circular-progress.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

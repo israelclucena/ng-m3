@@ -1,3 +1,6 @@
+import '@material/web/fab/fab.js';
+import '@material/web/fab/branded-fab.js';
+import '@material/web/icon/icon.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

@@ -1,5 +1,8 @@
 // Storybook preview setup for core
-// Ensure Material Web custom elements are defined (side-effect imports)
+// Ensure ALL Material Web custom elements are defined (side-effect imports)
+// Note: individual component files only import what they need (tree-shaking).
+// Storybook needs all registered for the component catalog.
+import '../src/lib/material/material-web';
 import '../src/index';
 
 export const parameters = {

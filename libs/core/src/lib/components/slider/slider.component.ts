@@ -1,3 +1,4 @@
+import '@material/web/slider/slider.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   AfterViewInit,

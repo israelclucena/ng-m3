@@ -1,3 +1,4 @@
+import '@material/web/ripple/ripple.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

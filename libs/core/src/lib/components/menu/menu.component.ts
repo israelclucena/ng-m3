@@ -1,3 +1,6 @@
+import '@material/web/menu/menu.js';
+import '@material/web/menu/menu-item.js';
+import '@material/web/menu/sub-menu.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

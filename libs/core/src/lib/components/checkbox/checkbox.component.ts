@@ -1,3 +1,4 @@
+import '@material/web/checkbox/checkbox.js';
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,

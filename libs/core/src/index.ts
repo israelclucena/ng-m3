@@ -1,7 +1,8 @@
 export * from './lib/core/core';
 
-// Material Web components (side-effect imports)
-import './lib/material/material-web';
+// NOTE: Material Web side-effect imports moved to individual component files
+// for proper tree-shaking. Each component imports only what it needs.
+// See: libs/core/src/lib/material/material-web.ts (kept for reference / Storybook)
 
 // ── israel-ui components ──
 
