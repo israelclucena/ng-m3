@@ -69,5 +69,5 @@ export const FeatureFlags = {
 
   // Sprint 019 — Night Shift 2026-03-13
   GLOBAL_SEARCH: true,
-  REVIEWS_MODULE: false,
+  REVIEWS_MODULE: true,
 } as const;

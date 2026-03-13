@@ -88,6 +88,9 @@ import {
   GlobalSearchSelectEvent,
   GlobalSearchSubmitEvent,
   PropertySearchService,
+  PropertyReviewsComponent,
+  PropertyReview,
+  RatingDisplayComponent,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -186,6 +189,8 @@ const SEARCH_DATA: SearchResult[] = [
     NotificationBellComponent,
     // Sprint 019
     GlobalSearchComponent,
+    PropertyReviewsComponent,
+    RatingDisplayComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1050,6 +1055,37 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 019 — Reviews Module ───────────────────────────── -->
+      @if (flags.REVIEWS_MODULE) {
+        <iu-divider></iu-divider>
+        <section id="feat-reviews">
+          <h2>⭐ Reviews Module</h2>
+          <p class="desc">
+            Full property reviews section: rating summary with animated breakdown bars,
+            sort controls, ReviewCards with expand/collapse, landlord reply, verified badge.
+            RatingDisplay widget available standalone (sm/md/lg sizes).
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: REVIEWS_MODULE
+            </span>
+          </p>
+
+          <!-- RatingDisplay standalone demo -->
+          <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-bottom:24px;padding:16px;background:var(--md-sys-color-surface-container-low);border-radius:12px;">
+            <iu-rating-display [rating]="4.5" [count]="128" size="lg" />
+            <iu-rating-display [rating]="3.7" [count]="42" size="md" />
+            <iu-rating-display [rating]="2" [count]="7" size="sm" />
+            <iu-rating-display [rating]="5" [showLabel]="false" size="md" />
+          </div>
+
+          <!-- Full property reviews -->
+          <iu-property-reviews
+            [reviews]="sampleReviews"
+            propertyTitle="Apartamento T2 no Chiado"
+            [pageSize]="4"
+          />
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -1808,6 +1844,42 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
   // ── Sprint 019 — Global Search ──────────────────────────────────────────────
   readonly searchService = inject(PropertySearchService);
   readonly globalSearchLog = signal('— sem pesquisa ainda —');
+
+  // ── Sprint 019 — Reviews Module ─────────────────────────────────────────────
+  readonly sampleReviews: PropertyReview[] = [
+    {
+      id: 'r1', authorName: 'Maria João Ferreira', rating: 5,
+      body: 'Apartamento fantástico no coração do Chiado. A localização é perfeita — a pé de tudo. O senhorio é muito atencioso e respondeu sempre rapidamente. Recomendo vivamente!',
+      date: '2026-02-14', verified: true,
+      landlordReply: 'Obrigado, Maria João! Foi um prazer tê-la como inquilina. Espero que volte a Lisboa em breve!',
+    },
+    {
+      id: 'r2', authorName: 'Pedro Alves', rating: 4,
+      body: 'Muito bom apartamento. Espaçoso, luminoso e com boas vistas. O único ponto negativo foi um pequeno problema com a canalização que demorou uns dias a resolver.',
+      date: '2026-01-28', verified: true,
+    },
+    {
+      id: 'r3', authorName: 'Sophie Martin', rating: 5,
+      body: 'Incrível! Fiquei 3 meses e não queria sair. O bairro é tranquilo mas animado, transporte público excelente.',
+      date: '2025-12-10', verified: false,
+    },
+    {
+      id: 'r4', authorName: 'Carlos Mendes', rating: 3,
+      body: 'Razoável. A localização é boa mas o apartamento precisa de algumas renovações. A cozinha é pequena e os electrodomésticos são antigos.',
+      date: '2025-11-05', verified: true,
+    },
+    {
+      id: 'r5', authorName: 'Ana Ribeiro', rating: 5,
+      body: 'Adorei! Tudo conforme descrito. Muito limpo, bem equipado e o senhorio foi super simpático.',
+      date: '2025-10-20', verified: true,
+    },
+    {
+      id: 'r6', authorName: 'João Costa', rating: 2,
+      body: 'Infelizmente não correspondeu às expectativas. Havia humidade numa das paredes e o aquecimento central não funcionava bem no Inverno.',
+      date: '2025-09-15', verified: false,
+      landlordReply: 'Pedimos desculpa pelos inconvenientes. O problema foi resolvido com obras realizadas em Outubro.',
+    },
+  ];
 
   onGlobalSearchSelect(event: GlobalSearchSelectEvent): void {
     this.globalSearchLog.set(`Seleccionado: ${event.suggestion.title} (€${event.suggestion.priceMonthly}/mês)`);
