@@ -63,7 +63,7 @@ export const FeatureFlags = {
   ADD_PROPERTY: true,
   MANAGE_LISTINGS: true,
 
-  // Sprint 018 — Night Shift 2026-03-12
-  MESSAGING_MODULE: false,
-  NOTIFICATION_BELL: false,
+  // Sprint 018 — Night Shift 2026-03-12 (activated 2026-03-13)
+  MESSAGING_MODULE: true,
+  NOTIFICATION_BELL: true,
 } as const;
