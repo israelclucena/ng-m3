@@ -83,6 +83,11 @@ import {
   MessageThread,
   NotificationBellComponent,
   NotificationBellService,
+  // Sprint 019
+  GlobalSearchComponent,
+  GlobalSearchSelectEvent,
+  GlobalSearchSubmitEvent,
+  PropertySearchService,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -179,6 +184,8 @@ const SEARCH_DATA: SearchResult[] = [
     MessageListComponent,
     MessageThreadComponent,
     NotificationBellComponent,
+    // Sprint 019
+    GlobalSearchComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -997,6 +1004,52 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 019 — Global Search ────────────────────────────── -->
+      @if (flags.GLOBAL_SEARCH) {
+        <iu-divider></iu-divider>
+        <section id="feat-global-search">
+          <h2>🔍 Global Search</h2>
+          <p class="desc">
+            AppBar-integrated property search powered by <code>PropertySearchService</code>
+            (Angular Signals, no RxJS). Live suggestions dropdown, keyboard navigation
+            (↑↓ Enter Escape), property type icons, price and location in each result.
+            <span style="color: var(--md-sys-color-primary); font-weight: 500;">
+              Feature flag: GLOBAL_SEARCH
+            </span>
+          </p>
+          <!-- Simulated AppBar context -->
+          <div style="
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 20px;
+            background: var(--md-sys-color-surface);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.12);
+            margin-bottom: 16px;
+          ">
+            <span class="material-symbols-outlined" style="font-size:28px;color:var(--md-sys-color-primary);">location_city</span>
+            <span style="font-weight:600;font-size:18px;color:var(--md-sys-color-on-surface);flex:1;">LisboaRent</span>
+            <iu-global-search
+              placeholder="Pesquisar propriedades…"
+              (select)="onGlobalSearchSelect($event)"
+              (search)="onGlobalSearchSubmit($event)"
+            />
+            <span class="material-symbols-outlined" style="font-size:24px;color:var(--md-sys-color-on-surface-variant);">account_circle</span>
+          </div>
+          <div style="
+            padding:12px 16px;
+            background:var(--md-sys-color-surface-container);
+            border-radius:8px;
+            font-size:13px;
+            color:var(--md-sys-color-on-surface-variant);
+          ">
+            <strong>Últimos resultados:</strong> {{ globalSearchLog() }}
+            <br>Resultados actuais: {{ searchService.totalCount() }} propriedades
+          </div>
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -1750,5 +1803,19 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
 
   onNotificationClicked(notif: import('@israel-ui/core').AppNotification): void {
     this.notif.show({ message: `🔔 ${notif.title}`, type: 'info', duration: 3000 });
+  }
+
+  // ── Sprint 019 — Global Search ──────────────────────────────────────────────
+  readonly searchService = inject(PropertySearchService);
+  readonly globalSearchLog = signal('— sem pesquisa ainda —');
+
+  onGlobalSearchSelect(event: GlobalSearchSelectEvent): void {
+    this.globalSearchLog.set(`Seleccionado: ${event.suggestion.title} (€${event.suggestion.priceMonthly}/mês)`);
+    this.notif.show({ message: `🏠 ${event.suggestion.title}`, type: 'success', duration: 3000 });
+  }
+
+  onGlobalSearchSubmit(event: GlobalSearchSubmitEvent): void {
+    this.globalSearchLog.set(`Pesquisa: "${event.query}" → ${event.count} resultado(s)`);
+    this.notif.show({ message: `🔍 ${event.count} resultado(s) para "${event.query}"`, type: 'info', duration: 3000 });
   }
 }

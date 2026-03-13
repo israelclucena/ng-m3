@@ -148,3 +148,7 @@ export * from './lib/components/messaging/message-list.component';
 export * from './lib/components/notification-bell/notification-bell.types';
 export * from './lib/components/notification-bell/notification-bell.service';
 export * from './lib/components/notification-bell/notification-bell.component';
+
+// Sprint 019 — Night Shift 2026-03-13
+export * from './lib/components/global-search/property-search.service';
+export * from './lib/components/global-search/global-search.component';
