@@ -70,4 +70,8 @@ export const FeatureFlags = {
   // Sprint 019 — Night Shift 2026-03-13
   GLOBAL_SEARCH: true,
   REVIEWS_MODULE: true,
+
+  // Sprint 020 — Night Shift 2026-03-14
+  PAYMENT_MODULE: true,
+  LANDLORD_ANALYTICS: true,
 } as const;

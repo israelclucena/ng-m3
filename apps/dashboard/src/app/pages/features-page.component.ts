@@ -91,6 +91,18 @@ import {
   PropertyReviewsComponent,
   PropertyReview,
   RatingDisplayComponent,
+  // Sprint 020
+  PaymentSummaryCardComponent,
+  BookingConfirmationComponent,
+  BookingPaymentSummary,
+  BookingConfirmationData,
+  PaymentSubmitEvent,
+  OccupancyChartComponent,
+  RevenueWidgetComponent,
+  ListingStatsCardComponent,
+  OccupancySummary,
+  RevenueSummary,
+  ListingStats,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -191,6 +203,12 @@ const SEARCH_DATA: SearchResult[] = [
     GlobalSearchComponent,
     PropertyReviewsComponent,
     RatingDisplayComponent,
+    // Sprint 020
+    PaymentSummaryCardComponent,
+    BookingConfirmationComponent,
+    OccupancyChartComponent,
+    RevenueWidgetComponent,
+    ListingStatsCardComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1086,6 +1104,66 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 020 — Payment / Checkout Flow ────────────────────── -->
+      @if (flags.PAYMENT_MODULE) {
+        <section class="feature-section" id="payment">
+          <h2>💳 Payment / Checkout Flow</h2>
+          <p class="desc">
+            <code>iu-payment-summary-card</code> + <code>iu-booking-confirmation</code>.
+            Fecha o loop booking → pagamento → confirmação.
+            Flag: <code>PAYMENT_MODULE</code>
+          </p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; flex-wrap:wrap;">
+            <div>
+              <h4 style="margin:0 0 12px;">Checkout</h4>
+              <iu-payment-summary-card
+                [summary]="paymentSummary"
+                (paymentSubmit)="onPaymentSubmit($event)"
+              />
+            </div>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <div>
+                <h4 style="margin:0 0 12px;">Confirmação — ✅ Sucesso</h4>
+                <iu-booking-confirmation
+                  [data]="bookingConfirmed"
+                  (contactLandlord)="notif.show({message:'📩 Chat com senhorio', type:'info'})"
+                  (backToSearch)="notif.show({message:'🔍 De volta à pesquisa', type:'info'})"
+                />
+              </div>
+              <div>
+                <h4 style="margin:0 0 12px;">Confirmação — ⏳ Pendente</h4>
+                <iu-booking-confirmation [data]="bookingPending" />
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ── Sprint 020 — Landlord Analytics ───────────────────────── -->
+      @if (flags.LANDLORD_ANALYTICS) {
+        <section class="feature-section" id="landlord-analytics">
+          <h2>📊 Landlord Analytics Dashboard</h2>
+          <p class="desc">
+            <code>iu-occupancy-chart</code>, <code>iu-revenue-widget</code>, <code>iu-listing-stats-card</code>.
+            Métricas para senhorios. Flag: <code>LANDLORD_ANALYTICS</code>
+          </p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+            <iu-occupancy-chart [summary]="occupancySummary" />
+            <iu-revenue-widget [summary]="revenueSummary" />
+          </div>
+          <h4 style="margin:0 0 12px;">Imóveis do Senhorio</h4>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;">
+            @for (listing of analyticsListings; track listing.propertyId) {
+              <iu-listing-stats-card
+                [stats]="listing"
+                (viewDetails)="notif.show({message:'👁 ' + $event, type:'info'})"
+                (editListing)="notif.show({message:'✏️ edit: ' + $event, type:'success'})"
+              />
+            }
+          </div>
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -1890,4 +1968,135 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
     this.globalSearchLog.set(`Pesquisa: "${event.query}" → ${event.count} resultado(s)`);
     this.notif.show({ message: `🔍 ${event.count} resultado(s) para "${event.query}"`, type: 'info', duration: 3000 });
   }
+
+  // ── Sprint 020 — Payment Flow ────────────────────────────────────────────────
+
+  readonly paymentSummary: BookingPaymentSummary = {
+    propertyTitle: 'Apartamento T2 no Chiado',
+    propertyAddress: 'Rua do Alecrim 45, Lisboa',
+    checkIn: '2026-04-01',
+    months: 6,
+    currency: 'EUR',
+    depositAmount: 1200,
+    total: 8200,
+    lineItems: [
+      { label: 'Renda mensal × 6 meses', amount: 7200, type: 'charge' },
+      { label: 'Taxa de serviço LisboaRent', amount: 200, type: 'fee' },
+      { label: 'Depósito de garantia (1 mês)', amount: 1200, type: 'deposit' },
+      { label: 'Desconto de longa-duração (5%)', amount: 400, type: 'discount' },
+    ],
+  };
+
+  readonly bookingConfirmed: BookingConfirmationData = {
+    bookingRef: 'LR-2026-CH045-7F3',
+    status: 'confirmed',
+    propertyTitle: 'Apartamento T2 no Chiado',
+    propertyAddress: 'Rua do Alecrim 45, Lisboa',
+    checkIn: '2026-04-01',
+    landlordName: 'António Ferreira',
+    landlordPhone: '+351 912 345 678',
+    total: 8200,
+    currency: 'EUR',
+  };
+
+  readonly bookingPending: BookingConfirmationData = {
+    ...this.bookingConfirmed,
+    bookingRef: 'LR-2026-CH045-7F4',
+    status: 'pending',
+    message: 'Transferência bancária a aguardar confirmação (1–2 dias úteis).',
+  };
+
+  onPaymentSubmit(event: PaymentSubmitEvent): void {
+    this.notif.show({ message: `💳 Pagamento submetido via ${event.form.method}`, type: 'success', duration: 4000 });
+  }
+
+  // ── Sprint 020 — Landlord Analytics ─────────────────────────────────────────
+
+  readonly occupancySummary: OccupancySummary = {
+    propertyId: 'p1',
+    propertyTitle: 'Apartamento T2 no Chiado',
+    yearlyAverage: 87,
+    data: [
+      { month: 'Jan', occupancyRate: 100, occupied: true },
+      { month: 'Fev', occupancyRate: 100, occupied: true },
+      { month: 'Mar', occupancyRate: 100, occupied: true },
+      { month: 'Abr', occupancyRate: 67,  occupied: true },
+      { month: 'Mai', occupancyRate: 0,   occupied: false },
+      { month: 'Jun', occupancyRate: 100, occupied: true },
+      { month: 'Jul', occupancyRate: 100, occupied: true },
+      { month: 'Ago', occupancyRate: 100, occupied: true },
+      { month: 'Set', occupancyRate: 100, occupied: true },
+      { month: 'Out', occupancyRate: 100, occupied: true },
+      { month: 'Nov', occupancyRate: 100, occupied: true },
+      { month: 'Dez', occupancyRate: 77,  occupied: true },
+    ],
+  };
+
+  readonly revenueSummary: RevenueSummary = {
+    currency: 'EUR',
+    totalRevenue: 14400,
+    totalExpenses: 3100,
+    netProfit: 11300,
+    growthPercent: 12,
+    data: [
+      { month: 'Jan', revenue: 1200, expenses: 250, net: 950 },
+      { month: 'Fev', revenue: 1200, expenses: 400, net: 800 },
+      { month: 'Mar', revenue: 1200, expenses: 200, net: 1000 },
+      { month: 'Abr', revenue: 800,  expenses: 300, net: 500 },
+      { month: 'Mai', revenue: 0,    expenses: 600, net: -600 },
+      { month: 'Jun', revenue: 1200, expenses: 200, net: 1000 },
+      { month: 'Jul', revenue: 1200, expenses: 250, net: 950 },
+      { month: 'Ago', revenue: 1200, expenses: 150, net: 1050 },
+      { month: 'Set', revenue: 1200, expenses: 250, net: 950 },
+      { month: 'Out', revenue: 1200, expenses: 200, net: 1000 },
+      { month: 'Nov', revenue: 1200, expenses: 300, net: 900 },
+      { month: 'Dez', revenue: 900,  expenses: 300, net: 600 },
+    ],
+  };
+
+  readonly analyticsListings: ListingStats[] = [
+    {
+      propertyId: 'p1',
+      propertyTitle: 'Apartamento T2 no Chiado',
+      propertyAddress: 'Rua do Alecrim 45, Lisboa',
+      status: 'occupied',
+      monthlyRent: 1200,
+      currency: 'EUR',
+      occupancyRate: 87,
+      totalViews: 1420,
+      totalInquiries: 34,
+      activeBookings: 1,
+      lastActivity: '2026-03-10',
+      rating: 4.7,
+      reviewCount: 12,
+    },
+    {
+      propertyId: 'p2',
+      propertyTitle: 'Studio em Alfama',
+      propertyAddress: 'Beco do Espírito Santo 8, Lisboa',
+      status: 'vacant',
+      monthlyRent: 850,
+      currency: 'EUR',
+      occupancyRate: 62,
+      totalViews: 780,
+      totalInquiries: 21,
+      activeBookings: 0,
+      lastActivity: '2026-03-01',
+      rating: 4.2,
+      reviewCount: 7,
+    },
+    {
+      propertyId: 'p3',
+      propertyTitle: 'Moradia T3 na Ajuda',
+      propertyAddress: 'Calçada da Ajuda 120, Lisboa',
+      status: 'maintenance',
+      monthlyRent: 1600,
+      currency: 'EUR',
+      occupancyRate: 45,
+      totalViews: 320,
+      totalInquiries: 8,
+      activeBookings: 0,
+      lastActivity: '2026-02-20',
+    },
+  ];
 }

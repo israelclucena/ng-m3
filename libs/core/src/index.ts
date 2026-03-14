@@ -156,3 +156,12 @@ export * from './lib/components/reviews/reviews.types';
 export * from './lib/components/reviews/rating-display.component';
 export * from './lib/components/reviews/review-card.component';
 export * from './lib/components/reviews/property-reviews.component';
+
+// Sprint 020 — Night Shift 2026-03-14
+export * from './lib/components/payment/payment.types';
+export * from './lib/components/payment/payment-summary-card.component';
+export * from './lib/components/payment/booking-confirmation.component';
+export * from './lib/components/landlord-analytics/landlord-analytics.types';
+export * from './lib/components/landlord-analytics/occupancy-chart.component';
+export * from './lib/components/landlord-analytics/revenue-widget.component';
+export * from './lib/components/landlord-analytics/listing-stats-card.component';
