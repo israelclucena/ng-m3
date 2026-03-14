@@ -74,4 +74,5 @@ export const FeatureFlags = {
   // Sprint 020 — Night Shift 2026-03-14
   PAYMENT_MODULE: true,
   LANDLORD_ANALYTICS: true,
+  PWA_MODULE: true,
 } as const;
