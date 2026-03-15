@@ -9,7 +9,7 @@ const config: StorybookConfig = {
       angularBrowserTarget: 'demo:build',
     },
   },
-  staticDirs: ['.'],
+  staticDirs: ['.', { from: '../../apps/dashboard/public', to: '/' }],
 };
 
 export default config;
