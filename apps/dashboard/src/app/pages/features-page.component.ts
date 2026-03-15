@@ -113,6 +113,8 @@ import {
   AdminBookingActionEvent,
   AdminReviewActionEvent,
   AdminPropertyActionEvent,
+  LocaleSwitcherComponent,
+  I18nService,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -221,6 +223,7 @@ const SEARCH_DATA: SearchResult[] = [
     ListingStatsCardComponent,
     // Sprint 021
     AdminPanelComponent,
+    LocaleSwitcherComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1176,6 +1179,44 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 021 — i18n ─────────────────────────────────────── -->
+      @if (flags.I18N_PT) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="i18n">
+          <h2>🌍 Internacionalização (PT-PT / EN-GB)</h2>
+          <p class="desc">
+            <code>I18nService</code> Signal-based + <code>iu-locale-switcher</code>.
+            Carrega <code>/locale/messages.pt.json</code> ou <code>messages.en.json</code>.
+            Sem RxJS. Suporta interpolação de variáveis <code>&#123;&#123;key&#125;&#125;</code>.
+            Flag: <code>I18N_PT</code>
+          </p>
+          <div class="demo-block">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+              <span style="font-size:14px;font-weight:600;color:var(--md-sys-color-on-surface-variant)">Mudar idioma:</span>
+              <iu-locale-switcher />
+              @if (i18n.loading()) {
+                <span style="font-size:12px;color:var(--md-sys-color-on-surface-variant)">A carregar traduções…</span>
+              }
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">
+              @for (key of i18nDemoKeys; track key) {
+                <div style="
+                  padding:10px 14px;
+                  background:var(--md-sys-color-surface-container);
+                  border-radius:10px;
+                  display:flex;
+                  flex-direction:column;
+                  gap:4px;
+                ">
+                  <code style="font-size:0.72rem;color:var(--md-sys-color-on-surface-variant)">{{ key }}</code>
+                  <span style="font-size:0.9rem;font-weight:500;color:var(--md-sys-color-on-surface)">{{ translate(key) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+      }
+
       <!-- ── Sprint 021 — Admin Panel ──────────────────────────────── -->
       @if (flags.ADMIN_PANEL) {
         <iu-divider></iu-divider>
@@ -2122,6 +2163,23 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
       listedAt: '2026-02-01', inquiryCount: 8, bookingCount: 2, viewCount: 320,
     },
   ];
+
+  // ── Sprint 021 — i18n ────────────────────────────────────────────────────
+
+  readonly i18n = inject(I18nService);
+
+  readonly i18nDemoKeys = [
+    'nav.search', 'nav.bookings', 'nav.messages', 'nav.profile', 'nav.admin',
+    'property.contact', 'property.schedule', 'booking.status.confirmed',
+    'booking.status.pending', 'auth.login.title', 'auth.register.title',
+    'payment.title', 'payment.submit', 'confirmation.status.confirmed',
+    'admin.tab.inquiries', 'admin.tab.reviews', 'error.generic',
+    'action.save', 'action.cancel', 'action.loading',
+  ];
+
+  translate(key: string): string {
+    return this.i18n.t(key);
+  }
 
   onAdminInquiryAction(ev: AdminInquiryActionEvent): void {
     const labels: Record<string, string> = { reply: '✉️ Responder', archive: '📁 Arquivar', mark_read: '✅ Lido' };

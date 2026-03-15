@@ -78,5 +78,5 @@ export const FeatureFlags = {
 
   // Sprint 021 — Night Shift 2026-03-15
   ADMIN_PANEL: true,
-  I18N_PT: false,
+  I18N_PT: true,
 } as const;

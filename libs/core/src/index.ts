@@ -169,3 +169,5 @@ export * from './lib/components/landlord-analytics/listing-stats-card.component'
 // Sprint 021 — Night Shift 2026-03-15
 export * from './lib/components/admin-panel/admin-panel.types';
 export * from './lib/components/admin-panel/admin-panel.component';
+export * from './lib/services/i18n.service';
+export * from './lib/components/locale-switcher/locale-switcher.component';
