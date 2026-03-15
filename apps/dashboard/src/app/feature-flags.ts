@@ -75,4 +75,8 @@ export const FeatureFlags = {
   PAYMENT_MODULE: true,
   LANDLORD_ANALYTICS: true,
   PWA_MODULE: true,
+
+  // Sprint 021 — Night Shift 2026-03-15
+  ADMIN_PANEL: true,
+  I18N_PT: false,
 } as const;

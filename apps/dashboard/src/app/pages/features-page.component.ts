@@ -103,6 +103,16 @@ import {
   OccupancySummary,
   RevenueSummary,
   ListingStats,
+  // Sprint 021
+  AdminPanelComponent,
+  AdminInquiry,
+  AdminBooking,
+  AdminReview,
+  AdminProperty,
+  AdminInquiryActionEvent,
+  AdminBookingActionEvent,
+  AdminReviewActionEvent,
+  AdminPropertyActionEvent,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -209,6 +219,8 @@ const SEARCH_DATA: SearchResult[] = [
     OccupancyChartComponent,
     RevenueWidgetComponent,
     ListingStatsCardComponent,
+    // Sprint 021
+    AdminPanelComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1164,6 +1176,29 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 021 — Admin Panel ──────────────────────────────── -->
+      @if (flags.ADMIN_PANEL) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="admin-panel">
+          <h2>🛡️ Admin / Moderation Panel</h2>
+          <p class="desc">
+            Painel de gestão centralizado para landlords e admins.
+            4 tabs: <strong>Inquéritos</strong> · <strong>Reservas</strong> · <strong>Reviews</strong> · <strong>Imóveis</strong>.
+            Angular Signals, M3 tokens. Flag: <code>ADMIN_PANEL</code>
+          </p>
+          <iu-admin-panel
+            [inquiries]="adminInquiries"
+            [bookings]="adminBookings"
+            [reviews]="adminReviews"
+            [properties]="adminProperties"
+            (inquiryAction)="onAdminInquiryAction($event)"
+            (bookingAction)="onAdminBookingAction($event)"
+            (reviewAction)="onAdminReviewAction($event)"
+            (propertyAction)="onAdminPropertyAction($event)"
+          />
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -2008,6 +2043,104 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
 
   onPaymentSubmit(event: PaymentSubmitEvent): void {
     this.notif.show({ message: `💳 Pagamento submetido via ${event.form.method}`, type: 'success', duration: 4000 });
+  }
+
+  // ── Sprint 021 — Admin Panel ─────────────────────────────────────────────
+
+  readonly adminInquiries: AdminInquiry[] = [
+    {
+      id: 'i1', tenantName: 'Maria João Ferreira', tenantEmail: 'maria@example.com',
+      propertyTitle: 'Apartamento T2 no Chiado', propertyId: 'p1',
+      message: 'Olá! Estou interessada no apartamento. Seria possível agendar uma visita para o próximo fim de semana?',
+      receivedAt: '2026-03-14T10:30:00Z', status: 'new', unread: true,
+    },
+    {
+      id: 'i2', tenantName: 'Pedro Alves', tenantEmail: 'pedro.alves@email.pt',
+      propertyTitle: 'Studio em Alfama', propertyId: 'p2',
+      message: 'Bom dia. O estúdio ainda está disponível? Tenho interesse em arrendar a partir de Abril.',
+      receivedAt: '2026-03-13T14:15:00Z', status: 'replied', unread: false,
+    },
+    {
+      id: 'i3', tenantName: 'Sophie Martin', tenantEmail: 'sophie.martin@paris.fr',
+      propertyTitle: 'Moradia T3 na Ajuda', propertyId: 'p3',
+      message: 'Hi, I am a French expat moving to Lisbon in May. I would love to visit this property.',
+      receivedAt: '2026-03-12T09:00:00Z', status: 'new', unread: true,
+    },
+  ];
+
+  readonly adminBookings: AdminBooking[] = [
+    {
+      id: 'ab1', tenantName: 'Maria João Ferreira', tenantEmail: 'maria@example.com',
+      propertyTitle: 'Apartamento T2 no Chiado', propertyId: 'p1',
+      bookingType: 'visit', requestedDate: '2026-03-22',
+      status: 'pending_approval', submittedAt: '2026-03-14T11:00:00Z',
+      notes: 'Prefere visita entre as 14h e as 17h.',
+    },
+    {
+      id: 'ab2', tenantName: 'Sophie Martin', tenantEmail: 'sophie.martin@paris.fr',
+      propertyTitle: 'Studio em Alfama', propertyId: 'p2',
+      bookingType: 'rental', requestedDate: '2026-05-01',
+      durationMonths: 12, monthlyRent: 850, currency: 'EUR',
+      status: 'approved', submittedAt: '2026-03-12T09:30:00Z',
+    },
+  ];
+
+  readonly adminReviews: AdminReview[] = [
+    {
+      id: 'ar1', authorName: 'Maria João Ferreira',
+      propertyTitle: 'Apartamento T2 no Chiado', propertyId: 'p1',
+      rating: 5,
+      body: 'Apartamento fantástico! Senhorio muito atencioso e rápido a resolver problemas. Recomendo vivamente.',
+      submittedAt: '2026-03-10T08:00:00Z', status: 'pending', flagged: false, landlordReplied: false,
+    },
+    {
+      id: 'ar2', authorName: 'João Costa',
+      propertyTitle: 'Studio em Alfama', propertyId: 'p2',
+      rating: 2,
+      body: 'O apartamento tinha humidade e o aquecimento não funcionava. Muito dececionante para o preço pedido.',
+      submittedAt: '2026-03-08T14:30:00Z', status: 'pending', flagged: true, landlordReplied: true,
+    },
+  ];
+
+  readonly adminProperties: AdminProperty[] = [
+    {
+      id: 'p1', title: 'Apartamento T2 no Chiado', location: 'Rua do Alecrim 45, Lisboa',
+      landlordName: 'António Ferreira', landlordEmail: 'antonio@lisboarent.pt',
+      monthlyRent: 1200, currency: 'EUR', status: 'active',
+      listedAt: '2026-01-15', inquiryCount: 34, bookingCount: 8, viewCount: 1420,
+    },
+    {
+      id: 'p2', title: 'Studio em Alfama', location: 'Beco do Espírito Santo 8, Lisboa',
+      landlordName: 'Luísa Rodrigues', landlordEmail: 'luisa@lisboarent.pt',
+      monthlyRent: 850, currency: 'EUR', status: 'pending_review',
+      listedAt: '2026-03-12', inquiryCount: 4, bookingCount: 1, viewCount: 120,
+    },
+    {
+      id: 'p3', title: 'Moradia T3 na Ajuda', location: 'Calçada da Ajuda 120, Lisboa',
+      landlordName: 'Miguel Santos', landlordEmail: 'miguel@lisboarent.pt',
+      monthlyRent: 1600, currency: 'EUR', status: 'paused',
+      listedAt: '2026-02-01', inquiryCount: 8, bookingCount: 2, viewCount: 320,
+    },
+  ];
+
+  onAdminInquiryAction(ev: AdminInquiryActionEvent): void {
+    const labels: Record<string, string> = { reply: '✉️ Responder', archive: '📁 Arquivar', mark_read: '✅ Lido' };
+    this.notif.show({ message: `${labels[ev.action] ?? ev.action}: "${ev.inquiry.tenantName}"`, type: 'info', duration: 2500 });
+  }
+
+  onAdminBookingAction(ev: AdminBookingActionEvent): void {
+    const labels: Record<string, string> = { approve: '✅ Aprovado', reject: '❌ Rejeitado', cancel: '🚫 Cancelado' };
+    this.notif.show({ message: `${labels[ev.action] ?? ev.action}: ${ev.booking.tenantName}`, type: ev.action === 'approve' ? 'success' : 'warning', duration: 3000 });
+  }
+
+  onAdminReviewAction(ev: AdminReviewActionEvent): void {
+    const labels: Record<string, string> = { approve: '✅ Aprovada', reject: '❌ Rejeitada', flag: '🚩 Sinalizada' };
+    this.notif.show({ message: `${labels[ev.action] ?? ev.action}: review de ${ev.review.authorName}`, type: 'info', duration: 2500 });
+  }
+
+  onAdminPropertyAction(ev: AdminPropertyActionEvent): void {
+    const labels: Record<string, string> = { activate: '▶️ Activada', pause: '⏸️ Pausada', approve: '✅ Aprovada', reject: '❌ Rejeitada' };
+    this.notif.show({ message: `${labels[ev.action] ?? ev.action}: "${ev.property.title}"`, type: 'success', duration: 3000 });
   }
 
   // ── Sprint 020 — Landlord Analytics ─────────────────────────────────────────
