@@ -4,6 +4,11 @@ export * from './lib/core/core';
 // for proper tree-shaking. Each component imports only what it needs.
 // See: libs/core/src/lib/material/material-web.ts (kept for reference / Storybook)
 
+// ── israel-ui utilities ──
+
+// Sprint 022 — Signal debounce utilities
+export * from './lib/utils/signal-debounce';
+
 // ── israel-ui components ──
 
 // Sprint 001

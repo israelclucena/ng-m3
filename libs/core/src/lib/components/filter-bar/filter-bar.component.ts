@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   OnInit,
   ViewEncapsulation,
   computed,
@@ -11,6 +10,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { debouncedSignal } from '../../utils/signal-debounce';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -495,13 +495,26 @@ export class FilterBarComponent implements OnInit {
    */
   filtersChange = output<FilterValues>();
 
-  /** Internal state: signal map of key → current value */
+  /** Internal state: signal map of key → current value (immediate, for UI binding) */
   private readonly _values = signal<FilterValues>({});
 
-  /** Text debounce timers per key */
-  private readonly _debounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  /**
+   * Tracks the most recent text input change as a {key, value} pair.
+   * Sprint-022: replaces manual `Map<string, setTimeout>` with signal-based debounce.
+   * Debounced via `debouncedSignal` — only emits after 300 ms of inactivity.
+   */
+  private readonly _lastTextChange = signal<{ key: string; value: string } | null>(null);
+  private readonly _debouncedTextChange = debouncedSignal(this._lastTextChange, 300);
 
-  private readonly _destroyRef = inject(DestroyRef);
+  constructor() {
+    // Apply the debounced text change to values and emit once stable
+    effect(() => {
+      const change = this._debouncedTextChange();
+      if (change === null) return;
+      this._values.update(prev => ({ ...prev, [change.key]: change.value }));
+      this.filtersChange.emit({ ...this._values() });
+    });
+  }
 
   ngOnInit(): void {
     // Initialise default values from filter configs
@@ -559,11 +572,10 @@ export class FilterBarComponent implements OnInit {
 
   onTextInput(key: string, event: Event): void {
     const value = (event.target as HTMLInputElement).value;
-    // Debounce 300ms
-    clearTimeout(this._debounceTimers.get(key));
-    this._debounceTimers.set(key, setTimeout(() => {
-      this._updateValue(key, value);
-    }, 300));
+    // Update the raw values signal immediately for UI responsiveness (cursor position, etc.)
+    this._values.update(prev => ({ ...prev, [key]: value }));
+    // Signal the latest text change — debouncedTextChange will emit after 300 ms of inactivity
+    this._lastTextChange.set({ key, value });
   }
 
   onSelectChange(key: string, event: Event): void {

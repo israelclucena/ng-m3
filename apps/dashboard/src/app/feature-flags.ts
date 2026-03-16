@@ -79,4 +79,9 @@ export const FeatureFlags = {
   // Sprint 021 — Night Shift 2026-03-15
   ADMIN_PANEL: true,
   I18N_PT: true,
+
+  // Sprint 022 — Night Shift 2026-03-16
+  LAZY_ROUTING: true,        // Angular Router with route-level code splitting
+  SIGNAL_DEBOUNCE: true,     // debouncedSignal() utility in PropertySearchService + FilterBar
+  NPM_PUBLISH_READY: true,   // @israel-ui/core published to npm
 } as const;

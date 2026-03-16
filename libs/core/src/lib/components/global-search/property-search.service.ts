@@ -1,5 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { PropertyData, PropertyType } from '../property-card/property-card.component';
+import { debouncedSignal } from '../../utils/signal-debounce';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -93,22 +94,37 @@ export class PropertySearchService {
   private readonly _isLoading = signal(false);
   private readonly _allProperties = signal<PropertySuggestion[]>(MOCK_PROPERTIES);
 
+  /**
+   * Debounced version of the text query (300 ms).
+   * Derived signals (`results`, `suggestions`) read from this instead of the
+   * raw `_filters().query` — prevents excessive re-computation on every keystroke.
+   *
+   * Sprint-022: signal debounce utility (@see utils/signal-debounce.ts)
+   */
+  private readonly _rawQuery = computed(() => this._filters().query);
+  readonly debouncedQuery = debouncedSignal(this._rawQuery, 300);
+
   // ─── Public signals ─────────────────────────────────────────────────────────
 
-  /** Current filter state */
+  /** Current filter state (raw — including un-debounced query for UI binding) */
   readonly filters = this._filters.asReadonly();
 
   /** Loading state */
   readonly isLoading = this._isLoading.asReadonly();
 
-  /** Filtered results — derived from filters + data, no subscription needed */
+  /**
+   * Filtered results — computed from the debounced query + other filters.
+   * Text search waits 300 ms after the last keystroke before re-filtering;
+   * structural filters (price, bedrooms, type) apply immediately.
+   */
   readonly results = computed<PropertySuggestion[]>(() => {
+    // Use debounced query for text filtering
+    const dq = this.debouncedQuery().toLowerCase().trim();
     const f = this._filters();
     const all = this._allProperties();
-    const q = f.query.toLowerCase().trim();
 
     return all.filter(p => {
-      if (q && !p.title.toLowerCase().includes(q) && !p.location.toLowerCase().includes(q)) {
+      if (dq && !p.title.toLowerCase().includes(dq) && !p.location.toLowerCase().includes(dq)) {
         return false;
       }
       if (f.priceMin !== null && p.priceMonthly < f.priceMin) return false;
@@ -119,7 +135,7 @@ export class PropertySearchService {
     });
   });
 
-  /** Quick suggestions — top 5 results for the AppBar dropdown */
+  /** Quick suggestions — top 5 debounced results for the AppBar dropdown */
   readonly suggestions = computed<PropertySuggestion[]>(() =>
     this.results().slice(0, 5)
   );

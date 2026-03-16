@@ -1,5 +1,6 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, signal, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import {
   TopAppBarComponent,
   NavRailComponent,
@@ -7,22 +8,11 @@ import {
   NavRailConfig,
   NavRailNavigationEvent,
   DividerComponent,
-  StatCardComponent,
   NotificationContainerComponent,
   NotificationService,
   ThemeService,
 } from '@israel-ui/core';
 import { FeatureFlags } from './feature-flags';
-import { SprintWidgetComponent } from './widgets/sprint-widget.component';
-import { InvestmentWidgetComponent } from './widgets/investment-widget.component';
-import { WeatherWidgetComponent } from './widgets/weather-widget.component';
-import { CountdownWidgetComponent } from './widgets/countdown-widget.component';
-import { StreakWidgetComponent } from './widgets/streak-widget.component';
-import { QuickLinksWidgetComponent } from './widgets/quick-links-widget.component';
-// ComponentsPageComponent, SettingsPageComponent, FeaturesPageComponent
-// are loaded lazily via @defer blocks in the template — no eager import needed.
-import { MetricsChartWidgetComponent } from './widgets/metrics-chart-widget.component';
-import { DraggableDashboardComponent } from './widgets/draggable-dashboard.component';
 
 export interface ComponentCategory {
   name: string;
@@ -41,18 +31,10 @@ export interface ComponentEntry {
   standalone: true,
   imports: [
     CommonModule,
+    RouterOutlet,
     TopAppBarComponent,
     NavRailComponent,
     DividerComponent,
-    SprintWidgetComponent,
-    InvestmentWidgetComponent,
-    WeatherWidgetComponent,
-    CountdownWidgetComponent,
-    StreakWidgetComponent,
-    QuickLinksWidgetComponent,
-    MetricsChartWidgetComponent,
-    DraggableDashboardComponent,
-    StatCardComponent,
     NotificationContainerComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -63,6 +45,7 @@ export class AppComponent implements OnInit {
   flags = FeatureFlags;
   themeService = inject(ThemeService);
   notificationService = inject(NotificationService);
+  router = inject(Router);
 
   greeting = (() => {
     const h = new Date().getHours();
@@ -72,11 +55,39 @@ export class AppComponent implements OnInit {
     return `Good evening, ${name} 🌙`;
   })();
 
-  activeNav = signal(0);
+  /**
+   * Current route path — updated on NavigationEnd.
+   * Sprint 022: replaces `activeNav` integer with semantic route names.
+   */
+  currentRoute = signal('dashboard');
+
+  /** Headline text derived from the current route */
+  readonly pageHeadline = computed(() => {
+    const r = this.currentRoute();
+    if (r.startsWith('components')) return 'Component Catalog';
+    if (r.startsWith('settings')) return 'Settings';
+    if (r.startsWith('features')) return 'Features';
+    return this.greeting;
+  });
+
+  /** True when the Components page is active (sidebar needed) */
+  readonly isComponentsPage = computed(() =>
+    this.currentRoute().startsWith('components')
+  );
+
   darkMode = signal(true);
   activeComponent = signal<string | null>(null);
   navExpanded = signal(false);
   activeItemId = signal('dashboard');
+
+  // Legacy compat — kept for template bindings that still reference activeNav
+  readonly activeNav = computed(() => {
+    const r = this.currentRoute();
+    if (r.startsWith('components')) return 1;
+    if (r.startsWith('settings')) return 2;
+    if (r.startsWith('features')) return 3;
+    return 0;
+  });
 
   // ── Nav Rail Config ──
   railConfig: NavRailConfig = {
@@ -280,6 +291,23 @@ export class AppComponent implements OnInit {
       this.darkMode.set(saved === 'dark');
       document.documentElement.classList.toggle('dark-theme', this.darkMode());
     }
+
+    // Sprint 022 — sync currentRoute signal with Angular Router navigation events
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        // Strip leading slash and use first segment as page key
+        const path = event.urlAfterRedirects.replace(/^\//, '');
+        this.currentRoute.set(path || 'dashboard');
+        // Sync nav rail active item
+        const segment = path.split('/')[0] || 'dashboard';
+        this.activeItemId.set(segment);
+      }
+    });
+
+    // Set initial route from current URL
+    const initialPath = this.router.url.replace(/^\//, '') || 'dashboard';
+    this.currentRoute.set(initialPath);
+    this.activeItemId.set(initialPath.split('/')[0] || 'dashboard');
   }
 
   get today(): string {
@@ -311,27 +339,23 @@ export class AppComponent implements OnInit {
   onNavigate(event: NavRailNavigationEvent): void {
     this.activeItemId.set(event.item.id);
 
-    // Map route to page index
-    if (event.route === 'dashboard') {
-      this.activeNav.set(0);
-    } else if (event.route.startsWith('components')) {
-      this.activeNav.set(1);
-      const parts = event.route.split('/');
+    // Sprint 022 — use Angular Router for navigation (route-level code splitting)
+    const parts = event.route.split('/');
+    const page = parts[0] || 'dashboard';
+
+    this.router.navigate([page]).then(() => {
+      // Handle deep-link scroll after navigation resolves
       if (parts.length > 1) {
-        this.scrollToComponent(parts[1]);
-      }
-    } else if (event.route.startsWith('features')) {
-      this.activeNav.set(3);
-      const parts = event.route.split('/');
-      if (parts.length > 1) {
+        const subId = parts[1];
         setTimeout(() => {
-          const el = document.getElementById('feat-' + parts[1]);
+          const el = document.getElementById(
+            page === 'components' ? 'comp-' + subId : 'feat-' + subId
+          );
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+          if (page === 'components') this.activeComponent.set(subId);
+        }, 150);
       }
-    } else if (event.route === 'settings') {
-      this.activeNav.set(2);
-    }
+    });
   }
 
   onDarkModeChange(isDark: boolean): void {

@@ -20,16 +20,18 @@
   <div class="main">
 
     <!-- Top App Bar -->
-    <iu-top-app-bar
-      [headline]="activeNav() === 1 ? 'Component Catalog' : activeNav() === 2 ? 'Settings' : activeNav() === 3 ? 'Features' : greeting"
-    >
-    </iu-top-app-bar>
+    <iu-top-app-bar [headline]="pageHeadline()"></iu-top-app-bar>
 
     <!-- Page Content -->
-    <div class="page-wrapper" [class.with-sidebar]="activeNav() === 1">
+    <!--
+      Sprint 022: replaced @defer/activeNav pattern with Angular Router + RouterOutlet.
+      Each page is a separate lazy-loaded chunk (route-level code splitting).
+      See app.routes.ts for route configuration.
+    -->
+    <div class="page-wrapper" [class.with-sidebar]="isComponentsPage()">
 
       <!-- ═══ SIDE PANEL (Components page only) ═══ -->
-      @if (activeNav() === 1) {
+      @if (isComponentsPage()) {
         <aside class="side-panel">
           <div class="side-panel__header">
             <h3>Components</h3>
@@ -74,81 +76,11 @@
         </aside>
       }
 
-      <!-- ═══ MAIN CONTENT ═══ -->
+      <!-- ═══ MAIN CONTENT — Router Outlet ═══ -->
       <div class="page-content">
-
-        <!-- Dashboard Page -->
-        @if (activeNav() === 0) {
-          <!-- Stat Cards (always shown, not draggable) -->
-          @if (flags.CARD_VARIANTS) {
-            <div class="stat-cards-row">
-              <iu-stat-card
-                label="Components"
-                [value]="'' + totalComponents"
-                [change]="readyComponents + ' ready'"
-                trend="up"
-                icon="widgets"
-                class="widget--animate"
-              ></iu-stat-card>
-              <iu-stat-card
-                label="Sprint Progress"
-                value="85%"
-                change="+12%"
-                trend="up"
-                icon="sprint"
-                class="widget--animate"
-              ></iu-stat-card>
-              <iu-stat-card
-                label="Days to Brazil"
-                value="14"
-                change="14 Mar"
-                trend="neutral"
-                icon="flight"
-                class="widget--animate"
-              ></iu-stat-card>
-            </div>
-          }
-
-          <!-- Draggable widget grid (when flag on) or static grid -->
-          @if (flags.DRAG_DROP_WIDGETS) {
-            <app-draggable-dashboard></app-draggable-dashboard>
-          } @else {
-            <div class="dashboard-grid">
-              <app-sprint-widget class="widget--animate"></app-sprint-widget>
-              <app-investment-widget class="widget--animate"></app-investment-widget>
-              <app-weather-widget class="widget--animate"></app-weather-widget>
-              <app-countdown-widget class="widget--animate"></app-countdown-widget>
-              <app-streak-widget class="widget--animate"></app-streak-widget>
-              <app-quick-links-widget class="widget--animate"></app-quick-links-widget>
-              @if (flags.CHART_COMPONENTS) {
-                <app-metrics-chart-widget class="widget--animate widget--wide"></app-metrics-chart-widget>
-              }
-            </div>
-          }
-        }
-
-        <!-- Components Page — lazy (deferred until navigation) -->
-        @defer (when activeNav() === 1) {
-          <app-components-page></app-components-page>
-        } @placeholder {
-          <div></div>
-        }
-
-        <!-- Settings Page — lazy (deferred until navigation) -->
-        @defer (when activeNav() === 2) {
-          <app-settings-page></app-settings-page>
-        } @placeholder {
-          <div></div>
-        }
-
-        <!-- Features Page — lazy (deferred until navigation) -->
-        @defer (when activeNav() === 3) {
-          <app-features-page></app-features-page>
-        } @placeholder {
-          <div></div>
-        }
-
+        <router-outlet></router-outlet>
       </div>
+
     </div>
   </div>
 </div>
