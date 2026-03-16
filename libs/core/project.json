@@ -15,7 +15,7 @@
       },
       "configurations": {
         "production": {
-          "tsConfig": "libs/core/tsconfig.lib.json",
+          "tsConfig": "libs/core/tsconfig.lib.prod.json",
           "project": "libs/core/ng-package.json"
         }
       }

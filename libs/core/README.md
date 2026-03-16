@@ -235,6 +235,41 @@ Explore all components with live examples:
 
 ---
 
+## 🛠️ Utilities (Sprint 022)
+
+| Utility | Description |
+|---------|-------------|
+| `debouncedSignal(source, ms)` | Creates a debounced read-only signal — emits only after `ms` ms of inactivity |
+| `debouncedSignalWithImmediate(source, ms)` | Leading-edge debounce — first emission is immediate, subsequent ones are debounced |
+
+```ts
+import { debouncedSignal } from '@israelclucena/core';
+
+// In a component or service (injection context required)
+readonly rawQuery = signal('');
+readonly query = debouncedSignal(this.rawQuery, 300);
+readonly results = computed(() => this.search(this.query()));
+```
+
+---
+
+## 📋 Requirements
+
+- **Angular 17+** (tested on Angular 21)
+- **Angular Signals** (used internally — no RxJS)
+- **Standalone components** (no NgModules)
+- **M3 CSS tokens** (`--md-sys-*` variables configured in your project)
+
+---
+
+## 📖 Storybook
+
+Explore all components with live examples:
+
+👉 [Open Storybook](/storybook)
+
+---
+
 ## 📄 License
 
 MIT © [Israel Lucena](https://github.com/israelclucena)

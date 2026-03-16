@@ -1,19 +1,37 @@
 {
   "name": "@israelclucena/core",
   "version": "1.0.0",
-  "description": "Israel UI — Angular M3 component library",
-  "keywords": ["angular", "material3", "components", "ui"],
-  "author": "Israel Lucena",
+  "description": "Israel UI — Angular 17+ Material 3 component library. Signal-based, standalone components, M3 design tokens.",
+  "keywords": [
+    "angular",
+    "material",
+    "material3",
+    "m3",
+    "components",
+    "ui",
+    "design-system",
+    "signals",
+    "standalone",
+    "lisboarent"
+  ],
+  "author": "Israel Lucena <israel@israelclucena.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/israelclucena/ng-m3.git"
   },
+  "bugs": {
+    "url": "https://github.com/israelclucena/ng-m3/issues"
+  },
+  "homepage": "https://github.com/israelclucena/ng-m3#readme",
   "peerDependencies": {
     "@angular/core": ">=17.0.0",
-    "@angular/common": ">=17.0.0"
+    "@angular/common": ">=17.0.0",
+    "@material/web": ">=2.0.0"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+  "peerDependenciesMeta": {
+    "@material/web": {
+      "optional": true
+    }
   }
 }
