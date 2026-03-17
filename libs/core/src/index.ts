@@ -176,3 +176,10 @@ export * from './lib/components/admin-panel/admin-panel.types';
 export * from './lib/components/admin-panel/admin-panel.component';
 export * from './lib/services/i18n.service';
 export * from './lib/components/locale-switcher/locale-switcher.component';
+
+// Sprint 023 — Night Shift 2026-03-17
+export * from './lib/components/error-pages/not-found-page.component';
+export * from './lib/components/error-pages/error-page.component';
+export * from './lib/services/http-error/http-error.service';
+export * from './lib/services/http-error/http-error.interceptor';
+export * from './lib/services/http-error/global-error-handler';

@@ -81,9 +81,19 @@ export const appRoutes: Routes = [
       loadRemoteModule('remoteProperties', './Routes').then(m => m.appRoutes),
   },
 
-  // ── Fallback ───────────────────────────────────────────────────────────────
+  // ── Error pages (Sprint 023 — ERROR_PAGES flag) ───────────────────────────
+  {
+    path: 'error',
+    loadComponent: () =>
+      import('./pages/error-page-wrapper.component').then(m => m.ErrorPageWrapperComponent),
+    title: 'Error — Israel UI',
+  },
+
+  // ── Fallback → 404 ────────────────────────────────────────────────────────
   {
     path: '**',
-    redirectTo: 'dashboard',
+    loadComponent: () =>
+      import('./pages/not-found-page-wrapper.component').then(m => m.NotFoundPageWrapperComponent),
+    title: '404 — Israel UI',
   },
 ];

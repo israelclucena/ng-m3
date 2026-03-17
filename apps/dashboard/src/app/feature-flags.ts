@@ -84,4 +84,10 @@ export const FeatureFlags = {
   LAZY_ROUTING: true,        // Angular Router with route-level code splitting
   SIGNAL_DEBOUNCE: true,     // debouncedSignal() utility in PropertySearchService + FilterBar
   NPM_PUBLISH_READY: true,   // @israel-ui/core published to npm
+
+  // Sprint 023 — Night Shift 2026-03-17
+  SSR_MODULE: true,           // @angular/ssr — server.ts + main.server.ts + app.config.server.ts
+  HYDRATION_MODULE: true,     // provideClientHydration() + withIncrementalHydration()
+  ERROR_PAGES: true,          // NotFoundPageComponent + ErrorPageComponent (404, 500)
+  HTTP_ERROR_INTERCEPTOR: true, // HttpErrorInterceptor + HttpErrorService + GlobalErrorHandler
 } as const;

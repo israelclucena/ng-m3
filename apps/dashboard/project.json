@@ -81,6 +81,57 @@
       },
       "defaultConfiguration": "production"
     },
+    "esbuild-ssr": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/dashboard",
+        "browser": "apps/dashboard/src/main.ts",
+        "server": "apps/dashboard/src/main.server.ts",
+        "ssrEntry": "apps/dashboard/server.ts",
+        "prerender": true,
+        "tsConfig": "apps/dashboard/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/dashboard/public"
+          }
+        ],
+        "styles": [
+          "apps/dashboard/src/styles.scss"
+        ],
+        "polyfills": [
+          "es-module-shims"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "16kb",
+              "maximumError": "32kb"
+            }
+          ],
+          "outputHashing": "all",
+          "serviceWorker": "apps/dashboard/ngsw-config.json"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "serve-original": {
       "continuous": true,
       "executor": "@angular/build:dev-server",

@@ -115,6 +115,10 @@ import {
   AdminPropertyActionEvent,
   LocaleSwitcherComponent,
   I18nService,
+  // Sprint 023
+  NotFoundPageComponent,
+  ErrorPageComponent,
+  HttpErrorService,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -224,6 +228,9 @@ const SEARCH_DATA: SearchResult[] = [
     // Sprint 021
     AdminPanelComponent,
     LocaleSwitcherComponent,
+    // Sprint 023
+    NotFoundPageComponent,
+    ErrorPageComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1240,6 +1247,70 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 023 — Error Pages ──────────────────────────────────── -->
+      @if (flags.ERROR_PAGES) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="error-pages">
+          <h2>⚠️ Error Pages</h2>
+          <p class="desc">
+            <code>iu-not-found-page</code> (404) + <code>iu-error-page</code> (500/generic).
+            M3 tokens, signal inputs, Go Home + Retry actions.
+            Routes: <code>/error</code> · wildcard <code>**</code> → 404.
+            Flag: <code>ERROR_PAGES</code>
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <h3 style="margin: 0 0 8px; font-size: 14px; color: var(--md-sys-color-on-surface-variant)">404 — Not Found</h3>
+              <div style="border: 1px solid var(--md-sys-color-outline-variant, #cac4d0); border-radius: 12px; overflow: hidden; min-height: 240px;">
+                <iu-not-found-page />
+              </div>
+            </div>
+            <div>
+              <h3 style="margin: 0 0 8px; font-size: 14px; color: var(--md-sys-color-on-surface-variant)">500 — Server Error</h3>
+              <div style="border: 1px solid var(--md-sys-color-outline-variant, #cac4d0); border-radius: 12px; overflow: hidden; min-height: 240px;">
+                <iu-error-page
+                  [errorCode]="500"
+                  [title]="'Something went wrong'"
+                  [message]="'An unexpected server error occurred. Please try again.'"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ── Sprint 023 — SSR + Hydration ──────────────────────────────── -->
+      @if (flags.SSR_MODULE) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="ssr">
+          <h2>🚀 Server-Side Rendering (SSR)</h2>
+          <p class="desc">
+            <strong>@angular/ssr</strong> wired up with <code>server.ts</code> (Express),
+            <code>main.server.ts</code>, and <code>app.config.server.ts</code>.
+            <br />
+            Static routes (<code>/dashboard</code>, <code>/components</code>, <code>/features</code>, <code>/settings</code>)
+            use <code>RenderMode.Prerender</code> (build-time HTML).
+            Dynamic routes use <code>RenderMode.Server</code>.
+            Module Federation remote (<code>/properties</code>) is CSR-only.
+            <br /><br />
+            Hydration (<code>HYDRATION_MODULE</code>): <code>provideClientHydration(withIncrementalHydration())</code> —
+            the browser "adopts" the SSR-rendered HTML without a full re-render.
+            Build with <code>nx run dashboard:esbuild-ssr</code>.
+          </p>
+          <div style="background: var(--md-sys-color-surface-container, #f3edf7); border-radius: 12px; padding: 20px; font-family: monospace; font-size: 13px; line-height: 1.8; color: var(--md-sys-color-on-surface-variant, #49454f)">
+            <div>📄 apps/dashboard/<strong>server.ts</strong> — Express SSR handler</div>
+            <div>📄 apps/dashboard/src/<strong>main.server.ts</strong> — server entry point</div>
+            <div>📄 apps/dashboard/src/app/<strong>app.config.server.ts</strong> — server providers</div>
+            <div>📄 apps/dashboard/src/app/<strong>app.routes.server.ts</strong> — render mode per route</div>
+            <div>📄 apps/dashboard/<strong>project.json</strong>:esbuild-ssr — SSR build target</div>
+            <br/>
+            <div>🟢 Static prerender: /dashboard · /components · /features · /settings</div>
+            <div>🔵 SSR on request: /components/:id · /features/:id</div>
+            <div>⬜ CSR only: /properties (Module Federation)</div>
+          </div>
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -2167,6 +2238,9 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
   // ── Sprint 021 — i18n ────────────────────────────────────────────────────
 
   readonly i18n = inject(I18nService);
+
+  // Sprint 023 — HTTP Error Service (signal-based error state)
+  readonly httpErrorService = inject(HttpErrorService);
 
   readonly i18nDemoKeys = [
     'nav.search', 'nav.bookings', 'nav.messages', 'nav.profile', 'nav.admin',
