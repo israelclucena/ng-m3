@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { debouncedSignal } from '../../utils/signal-debounce';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -99,7 +98,7 @@ export type FilterValues = Record<string, string | string[] | FilterDateRange>;
 @Component({
   selector: 'iu-filter-bar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   template: `

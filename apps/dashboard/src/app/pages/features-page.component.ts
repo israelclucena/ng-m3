@@ -119,6 +119,8 @@ import {
   NotFoundPageComponent,
   ErrorPageComponent,
   HttpErrorService,
+  // Sprint 024
+  WebVitalsWidgetComponent,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -231,6 +233,8 @@ const SEARCH_DATA: SearchResult[] = [
     // Sprint 023
     NotFoundPageComponent,
     ErrorPageComponent,
+    // Sprint 024
+    WebVitalsWidgetComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1308,6 +1312,21 @@ const SEARCH_DATA: SearchResult[] = [
             <div>🔵 SSR on request: /components/:id · /features/:id</div>
             <div>⬜ CSR only: /properties (Module Federation)</div>
           </div>
+        </section>
+      }
+
+      <!-- ── Sprint 024 — Web Vitals ───────────────────────────────────── -->
+      @if (flags.WEB_VITALS) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="web-vitals">
+          <h2>📊 Core Web Vitals</h2>
+          <p class="desc">
+            <strong>WebVitalsService</strong> uses native <code>PerformanceObserver</code> APIs
+            to track LCP, CLS, INP and TTFB in real-time. All metrics are Angular Signals —
+            fully reactive, zero RxJS. The <code>iu-web-vitals-widget</code> renders live ratings
+            with M3 colour-coded tiles. Feature flag: <code>WEB_VITALS</code>.
+          </p>
+          <iu-web-vitals-widget title="Live Vitals — this page" />
         </section>
       }
 

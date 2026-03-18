@@ -183,3 +183,8 @@ export * from './lib/components/error-pages/error-page.component';
 export * from './lib/services/http-error/http-error.service';
 export * from './lib/services/http-error/http-error.interceptor';
 export * from './lib/services/http-error/global-error-handler';
+
+// Sprint 024 — Night Shift 2026-03-18
+export * from './lib/services/web-vitals.service';
+export * from './lib/components/web-vitals/web-vitals-widget.component';
+export * from './lib/utils/signal-form';

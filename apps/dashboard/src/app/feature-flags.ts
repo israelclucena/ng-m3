@@ -90,4 +90,9 @@ export const FeatureFlags = {
   HYDRATION_MODULE: true,     // provideClientHydration() + withIncrementalHydration()
   ERROR_PAGES: true,          // NotFoundPageComponent + ErrorPageComponent (404, 500)
   HTTP_ERROR_INTERCEPTOR: true, // HttpErrorInterceptor + HttpErrorService + GlobalErrorHandler
+
+  // Sprint 024 — Night Shift 2026-03-18
+  WEB_VITALS: true,           // WebVitalsService + WebVitalsWidget — CWV monitoring with signals
+  SIGNAL_FORMS: true,         // createSignalForm() utility + validators (required, email, etc.)
+  E2E_SMOKE: true,            // Playwright smoke tests setup (e2e/ directory)
 } as const;
