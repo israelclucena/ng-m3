@@ -9,6 +9,13 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PropertyData } from '../property-card/property-card.component';
+import {
+  createSignalForm,
+  required,
+  minLength,
+  maxLength,
+  emailValidator,
+} from '../../utils/signal-form';
 
 // ─── Models ──────────────────────────────────────────────────────────────────
 
@@ -61,6 +68,9 @@ const TIME_SLOTS = [
  * - Tab selector: "Agendar Visita" vs "Enviar Mensagem"
  * - Form with name, email, phone, preferred dates, message
  * - Success confirmation state after submit
+ *
+ * Uses `createSignalForm()` for signal-based form state + validation.
+ * No RxJS, no ReactiveFormsModule. Sprint 025 migration.
  *
  * Feature flag: `PROPERTY_BOOKING`
  *
@@ -163,15 +173,16 @@ const TIME_SLOTS = [
                 <input
                   id="pb-name"
                   class="iu-pb__input"
-                  [class.iu-pb__input--error]="nameError()"
+                  [class.iu-pb__input--error]="form.fields.name.showError()"
                   type="text"
                   placeholder="O seu nome completo"
-                  [value]="nameVal()"
-                  (input)="nameVal.set($any($event.target).value)"
+                  [value]="form.fields.name.value()"
+                  (input)="form.fields.name.setValue($any($event.target).value)"
+                  (blur)="form.fields.name.touch()"
                   autocomplete="name"
                 />
-                @if (nameError()) {
-                  <span class="iu-pb__error">{{ nameError() }}</span>
+                @if (form.fields.name.showError()) {
+                  <span class="iu-pb__error">{{ form.fields.name.firstError() }}</span>
                 }
               </div>
 
@@ -180,15 +191,16 @@ const TIME_SLOTS = [
                 <input
                   id="pb-email"
                   class="iu-pb__input"
-                  [class.iu-pb__input--error]="emailError()"
+                  [class.iu-pb__input--error]="form.fields.email.showError()"
                   type="email"
                   placeholder="nome@exemplo.com"
-                  [value]="emailVal()"
-                  (input)="emailVal.set($any($event.target).value)"
+                  [value]="form.fields.email.value()"
+                  (input)="form.fields.email.setValue($any($event.target).value)"
+                  (blur)="form.fields.email.touch()"
                   autocomplete="email"
                 />
-                @if (emailError()) {
-                  <span class="iu-pb__error">{{ emailError() }}</span>
+                @if (form.fields.email.showError()) {
+                  <span class="iu-pb__error">{{ form.fields.email.firstError() }}</span>
                 }
               </div>
             </div>
@@ -201,8 +213,8 @@ const TIME_SLOTS = [
                 class="iu-pb__input"
                 type="tel"
                 placeholder="+351 9XX XXX XXX"
-                [value]="phoneVal()"
-                (input)="phoneVal.set($any($event.target).value)"
+                [value]="form.fields.phone.value()"
+                (input)="form.fields.phone.setValue($any($event.target).value)"
                 autocomplete="tel"
               />
             </div>
@@ -217,8 +229,8 @@ const TIME_SLOTS = [
                     class="iu-pb__input"
                     type="date"
                     [min]="todayISO"
-                    [value]="visitDateVal()"
-                    (input)="visitDateVal.set($any($event.target).value)"
+                    [value]="form.fields.visitDate.value()"
+                    (input)="form.fields.visitDate.setValue($any($event.target).value)"
                   />
                 </div>
 
@@ -227,8 +239,8 @@ const TIME_SLOTS = [
                   <select
                     id="pb-time-slot"
                     class="iu-pb__select"
-                    [value]="visitTimeSlotVal()"
-                    (change)="visitTimeSlotVal.set($any($event.target).value)"
+                    [value]="form.fields.visitTimeSlot.value()"
+                    (change)="form.fields.visitTimeSlot.setValue($any($event.target).value)"
                   >
                     <option value="">-- Escolher período --</option>
                     @for (slot of timeSlots; track slot.value) {
@@ -248,8 +260,8 @@ const TIME_SLOTS = [
                   class="iu-pb__input"
                   type="date"
                   [min]="todayISO"
-                  [value]="moveInDateVal()"
-                  (input)="moveInDateVal.set($any($event.target).value)"
+                  [value]="form.fields.moveInDate.value()"
+                  (input)="form.fields.moveInDate.setValue($any($event.target).value)"
                 />
               </div>
             }
@@ -262,10 +274,14 @@ const TIME_SLOTS = [
                 class="iu-pb__textarea"
                 rows="4"
                 [placeholder]="messagePlaceholder()"
-                [value]="messageVal()"
-                (input)="messageVal.set($any($event.target).value)"
+                [value]="form.fields.message.value()"
+                (input)="form.fields.message.setValue($any($event.target).value)"
+                [class.iu-pb__textarea--error]="form.fields.message.showError()"
               ></textarea>
-              <span class="iu-pb__char-count">{{ messageVal().length }}/500</span>
+              <span class="iu-pb__char-count">{{ form.fields.message.value().length }}/500</span>
+              @if (form.fields.message.showError()) {
+                <span class="iu-pb__error">{{ form.fields.message.firstError() }}</span>
+              }
             </div>
 
             <!-- Actions -->
@@ -276,7 +292,7 @@ const TIME_SLOTS = [
               <button
                 type="submit"
                 class="iu-pb__btn iu-pb__btn--filled"
-                [disabled]="!isFormValid()"
+                [disabled]="form.invalid()"
               >
                 <span class="material-symbols-outlined">send</span>
                 {{ bookingType() === 'visit' ? 'Solicitar Visita' : 'Enviar Mensagem' }}
@@ -473,7 +489,8 @@ const TIME_SLOTS = [
       border-color: var(--md-sys-color-primary, #6750a4);
       box-shadow: 0 0 0 3px rgba(103,80,164,.15);
     }
-    .iu-pb__input--error { border-color: var(--md-sys-color-error, #b3261e); }
+    .iu-pb__input--error,
+    .iu-pb__textarea--error { border-color: var(--md-sys-color-error, #b3261e); }
     .iu-pb__select { cursor: pointer; }
     .iu-pb__textarea { resize: vertical; min-height: 88px; }
 
@@ -584,13 +601,19 @@ export class PropertyBookingComponent {
   readonly bookingType = signal<'visit' | 'inquiry'>('visit');
   readonly isSuccess = signal(false);
 
-  readonly nameVal = signal('');
-  readonly emailVal = signal('');
-  readonly phoneVal = signal('');
-  readonly visitDateVal = signal('');
-  readonly visitTimeSlotVal = signal('');
-  readonly moveInDateVal = signal('');
-  readonly messageVal = signal('');
+  /**
+   * Signal-based form using createSignalForm().
+   * Replaces raw signal fields + manual computed validators (Sprint 025).
+   */
+  readonly form = createSignalForm({
+    name:          { value: '', validators: [required('Nome é obrigatório.'), minLength(2, 'Nome deve ter pelo menos 2 caracteres.')] },
+    email:         { value: '', validators: [required('Email é obrigatório.'), emailValidator('Email inválido.')] },
+    phone:         { value: '' },
+    visitDate:     { value: '' },
+    visitTimeSlot: { value: '' },
+    moveInDate:    { value: '' },
+    message:       { value: '', validators: [maxLength(500, 'Mensagem não pode exceder 500 caracteres.')] },
+  });
 
   readonly timeSlots = TIME_SLOTS;
   readonly todayISO = new Date().toISOString().split('T')[0];
@@ -606,28 +629,6 @@ export class PropertyBookingComponent {
     }).format(this.property().priceMonthly)
   );
 
-  /** Validation error for name field; empty string when valid. */
-  nameError = computed(() => {
-    const v = this.nameVal();
-    if (!v) return '';
-    return v.trim().length < 2 ? 'Nome deve ter pelo menos 2 caracteres' : '';
-  });
-
-  /** Validation error for email field; empty string when valid. */
-  emailError = computed(() => {
-    const v = this.emailVal();
-    if (!v) return '';
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Email inválido';
-  });
-
-  /** True when the form can be submitted. */
-  isFormValid = computed(() =>
-    this.nameVal().trim().length >= 2 &&
-    !this.nameError() &&
-    this.emailVal().trim().length > 0 &&
-    !this.emailError()
-  );
-
   /** Context-aware placeholder text for the message textarea. */
   messagePlaceholder = computed(() =>
     this.bookingType() === 'visit'
@@ -640,6 +641,7 @@ export class PropertyBookingComponent {
   /** Switch between visit scheduling and general inquiry. */
   setBookingType(type: 'visit' | 'inquiry'): void {
     this.bookingType.set(type);
+    this.form.reset();
   }
 
   /** Close/dismiss the booking panel. */
@@ -647,22 +649,27 @@ export class PropertyBookingComponent {
     this.closed.emit();
   }
 
-  /** Submit the booking form, show success state, emit event. */
+  /**
+   * Submit the booking form.
+   * Uses form.submit() to mark all fields touched and validate.
+   * Emits bookingSubmitted on success and shows the success state.
+   */
   onSubmit(): void {
-    if (!this.isFormValid()) return;
+    if (!this.form.submit()) return;
 
+    const v = this.form.value();
     const formData: BookingFormData = {
-      name: this.nameVal().trim(),
-      email: this.emailVal().trim(),
-      phone: this.phoneVal().trim() || undefined,
+      name:        v.name.trim(),
+      email:       v.email.trim(),
+      phone:       v.phone.trim() || undefined,
       bookingType: this.bookingType(),
-      message: this.messageVal().trim() || undefined,
+      message:     v.message.trim() || undefined,
       ...(this.bookingType() === 'visit'
         ? {
-            visitDate: this.visitDateVal() || undefined,
-            visitTimeSlot: (this.visitTimeSlotVal() as BookingFormData['visitTimeSlot']) || undefined,
+            visitDate:     v.visitDate || undefined,
+            visitTimeSlot: (v.visitTimeSlot as BookingFormData['visitTimeSlot']) || undefined,
           }
-        : { moveInDate: this.moveInDateVal() || undefined }),
+        : { moveInDate: v.moveInDate || undefined }),
     };
 
     this.isSuccess.set(true);
