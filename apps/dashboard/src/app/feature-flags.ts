@@ -95,4 +95,8 @@ export const FeatureFlags = {
   WEB_VITALS: true,           // WebVitalsService + WebVitalsWidget — CWV monitoring with signals
   SIGNAL_FORMS: true,         // createSignalForm() utility + validators (required, email, etc.)
   E2E_SMOKE: true,            // Playwright smoke tests setup (e2e/ directory)
+
+  // Sprint 025 — Night Shift 2026-03-19
+  SIGNAL_FORM_BOOKING: true,  // PropertyBookingComponent migrated to createSignalForm() — signals-only form
+  E2E_USER_FLOWS: true,       // Playwright user flow tests: auth, property search, booking, mobile, perf
 } as const;
