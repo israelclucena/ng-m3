@@ -99,4 +99,9 @@ export const FeatureFlags = {
   // Sprint 025 — Night Shift 2026-03-19
   SIGNAL_FORM_BOOKING: true,  // PropertyBookingComponent migrated to createSignalForm() — signals-only form
   E2E_USER_FLOWS: true,       // Playwright user flow tests: auth, property search, booking, mobile, perf
+
+  // Sprint 026 — Night Shift 2026-03-20
+  SIGNAL_FORM_AUTH: true,     // AuthLoginComponent + AuthRegisterComponent migrated to createSignalForm()
+  CI_ENHANCED: true,          // Enhanced CI pipeline: lint + E2E + npm audit + parallel jobs
+  TS59_COMPAT: true,          // TypeScript 5.9.3 compat: moduleResolution bundler + signal-form InferFormValues fix
 } as const;

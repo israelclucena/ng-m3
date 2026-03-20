@@ -9,6 +9,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService, LoginCredentials } from '../../services/auth.service';
+import {
+  createSignalForm,
+  emailValidator,
+  minLength,
+  required,
+} from '../../utils/signal-form';
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
@@ -21,6 +27,9 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
  * - Loading state during auth
  * - Error display from AuthService
  * - "Register" and "Forgot password" links
+ *
+ * Uses `createSignalForm()` for signal-based form state + validation (Sprint 026).
+ * Replaces 6 manual signal/computed pairs from the previous implementation.
  *
  * Feature flag: `AUTH_MODULE`
  *
@@ -65,18 +74,18 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
             <input
               id="al-email"
               class="iu-al__input"
-              [class.iu-al__input--error]="emailTouched() && emailError()"
+              [class.iu-al__input--error]="form.fields.email.showError()"
               type="email"
               placeholder="nome@exemplo.com"
-              [value]="email()"
-              (input)="email.set($any($event.target).value)"
-              (blur)="emailTouched.set(true)"
+              [value]="form.fields.email.value()"
+              (input)="form.fields.email.setValue($any($event.target).value)"
+              (blur)="form.fields.email.touch()"
               autocomplete="email"
               [disabled]="loading()"
             />
           </div>
-          @if (emailTouched() && emailError()) {
-            <span class="iu-al__field-error">{{ emailError() }}</span>
+          @if (form.fields.email.showError()) {
+            <span class="iu-al__field-error">{{ form.fields.email.firstError() }}</span>
           }
         </div>
 
@@ -88,12 +97,12 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
             <input
               id="al-password"
               class="iu-al__input"
-              [class.iu-al__input--error]="passwordTouched() && passwordError()"
+              [class.iu-al__input--error]="form.fields.password.showError()"
               [type]="showPassword() ? 'text' : 'password'"
               placeholder="A sua password"
-              [value]="password()"
-              (input)="password.set($any($event.target).value)"
-              (blur)="passwordTouched.set(true)"
+              [value]="form.fields.password.value()"
+              (input)="form.fields.password.setValue($any($event.target).value)"
+              (blur)="form.fields.password.touch()"
               autocomplete="current-password"
               [disabled]="loading()"
             />
@@ -108,8 +117,8 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
               </span>
             </button>
           </div>
-          @if (passwordTouched() && passwordError()) {
-            <span class="iu-al__field-error">{{ passwordError() }}</span>
+          @if (form.fields.password.showError()) {
+            <span class="iu-al__field-error">{{ form.fields.password.firstError() }}</span>
           }
         </div>
 
@@ -347,14 +356,24 @@ export class AuthLoginComponent {
   /** Emitted when the user clicks "Esqueci a password". */
   forgotPassword = output<void>();
 
-  // ── State ──────────────────────────────────────────────────────────────────
+  // ── UI state ───────────────────────────────────────────────────────────────
 
-  readonly email = signal('');
-  readonly password = signal('');
-  readonly rememberMe = signal(false);
+  /** Whether to display password as plain text. */
   readonly showPassword = signal(false);
-  readonly emailTouched = signal(false);
-  readonly passwordTouched = signal(false);
+
+  /** Whether the "remember me" checkbox is checked. */
+  readonly rememberMe = signal(false);
+
+  // ── Signal form ────────────────────────────────────────────────────────────
+  /**
+   * Signal-based form using createSignalForm().
+   * Replaces 6 manual signal/computed pairs from the Sprint 015 implementation.
+   * Sprint 026 — Signal Forms Migration.
+   */
+  readonly form = createSignalForm({
+    email:    { value: '', validators: [required('Email é obrigatório.'), emailValidator('Email inválido.')] },
+    password: { value: '', validators: [required('Password é obrigatória.'), minLength(6, 'Mínimo 6 caracteres.')] },
+  });
 
   // ── Proxied from service ───────────────────────────────────────────────────
 
@@ -363,31 +382,19 @@ export class AuthLoginComponent {
 
   // ── Computed ───────────────────────────────────────────────────────────────
 
-  emailError = computed(() => {
-    const v = this.email();
-    if (!v) return 'Email é obrigatório';
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Email inválido';
-  });
-
-  passwordError = computed(() => {
-    const v = this.password();
-    if (!v) return 'Password é obrigatória';
-    if (v.length < 6) return 'Mínimo 6 caracteres';
-    return '';
-  });
-
-  canSubmit = computed(() => !this.emailError() && !this.passwordError());
+  /** True when the form is valid (no field errors). */
+  readonly canSubmit = computed(() => this.form.valid());
 
   // ── Methods ────────────────────────────────────────────────────────────────
 
+  /** Submit handler — marks all fields touched, then calls AuthService. */
   async onSubmit(): Promise<void> {
-    this.emailTouched.set(true);
-    this.passwordTouched.set(true);
-    if (!this.canSubmit()) return;
+    if (!this.form.submit()) return; // marks all fields touched, returns false if invalid
 
+    const v = this.form.value();
     const creds: LoginCredentials = {
-      email: this.email().trim(),
-      password: this.password(),
+      email:      (v['email'] as string).trim(),
+      password:   v['password'] as string,
       rememberMe: this.rememberMe(),
     };
 

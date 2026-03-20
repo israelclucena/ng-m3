@@ -9,6 +9,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService, RegisterData } from '../../services/auth.service';
+import {
+  createSignalForm,
+  emailValidator,
+  minLength,
+  required,
+} from '../../utils/signal-form';
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
@@ -22,6 +28,10 @@ import { AuthService, RegisterData } from '../../services/auth.service';
  * - Show/hide password toggle
  * - Success state after registration
  * - Links back to login
+ *
+ * Uses `createSignalForm()` for signal-based form state + validation (Sprint 026).
+ * Note: `confirmVal` remains a standalone signal to support the cross-field
+ * password-match validator, which reads `form.fields.password.value()`.
  *
  * Feature flag: `AUTH_MODULE`
  *
@@ -65,7 +75,7 @@ import { AuthService, RegisterData } from '../../services/auth.service';
           </div>
           <h2 class="iu-ar__success-title">Conta criada!</h2>
           <p class="iu-ar__success-body">
-            Bem-vindo, {{ nameVal() }}! A sua conta foi criada com sucesso.
+            Bem-vindo, {{ form.fields.name.value() }}! A sua conta foi criada com sucesso.
           </p>
           <button class="iu-ar__submit" (click)="loginRequested.emit()">
             <span class="material-symbols-outlined">login</span>
@@ -106,18 +116,18 @@ import { AuthService, RegisterData } from '../../services/auth.service';
               <input
                 id="ar-name"
                 class="iu-ar__input"
-                [class.iu-ar__input--error]="nameTouched() && nameError()"
+                [class.iu-ar__input--error]="form.fields.name.showError()"
                 type="text"
                 placeholder="O seu nome completo"
-                [value]="nameVal()"
-                (input)="nameVal.set($any($event.target).value)"
-                (blur)="nameTouched.set(true)"
+                [value]="form.fields.name.value()"
+                (input)="form.fields.name.setValue($any($event.target).value)"
+                (blur)="form.fields.name.touch()"
                 autocomplete="name"
                 [disabled]="loading()"
               />
             </div>
-            @if (nameTouched() && nameError()) {
-              <span class="iu-ar__field-error">{{ nameError() }}</span>
+            @if (form.fields.name.showError()) {
+              <span class="iu-ar__field-error">{{ form.fields.name.firstError() }}</span>
             }
           </div>
 
@@ -129,18 +139,18 @@ import { AuthService, RegisterData } from '../../services/auth.service';
               <input
                 id="ar-email"
                 class="iu-ar__input"
-                [class.iu-ar__input--error]="emailTouched() && emailError()"
+                [class.iu-ar__input--error]="form.fields.email.showError()"
                 type="email"
                 placeholder="nome@exemplo.com"
-                [value]="emailVal()"
-                (input)="emailVal.set($any($event.target).value)"
-                (blur)="emailTouched.set(true)"
+                [value]="form.fields.email.value()"
+                (input)="form.fields.email.setValue($any($event.target).value)"
+                (blur)="form.fields.email.touch()"
                 autocomplete="email"
                 [disabled]="loading()"
               />
             </div>
-            @if (emailTouched() && emailError()) {
-              <span class="iu-ar__field-error">{{ emailError() }}</span>
+            @if (form.fields.email.showError()) {
+              <span class="iu-ar__field-error">{{ form.fields.email.firstError() }}</span>
             }
           </div>
 
@@ -152,12 +162,12 @@ import { AuthService, RegisterData } from '../../services/auth.service';
               <input
                 id="ar-password"
                 class="iu-ar__input"
-                [class.iu-ar__input--error]="passwordTouched() && passwordError()"
+                [class.iu-ar__input--error]="form.fields.password.showError()"
                 [type]="showPassword() ? 'text' : 'password'"
                 placeholder="Mínimo 8 caracteres"
-                [value]="passwordVal()"
-                (input)="passwordVal.set($any($event.target).value)"
-                (blur)="passwordTouched.set(true)"
+                [value]="form.fields.password.value()"
+                (input)="form.fields.password.setValue($any($event.target).value)"
+                (blur)="form.fields.password.touch()"
                 autocomplete="new-password"
                 [disabled]="loading()"
               />
@@ -174,7 +184,7 @@ import { AuthService, RegisterData } from '../../services/auth.service';
             </div>
 
             <!-- Strength bar -->
-            @if (passwordVal()) {
+            @if (form.fields.password.value()) {
               <div class="iu-ar__strength" [attr.aria-label]="'Força: ' + strengthLabel()">
                 @for (bar of [0,1,2,3]; track bar) {
                   <div
@@ -189,12 +199,12 @@ import { AuthService, RegisterData } from '../../services/auth.service';
               </div>
             }
 
-            @if (passwordTouched() && passwordError()) {
-              <span class="iu-ar__field-error">{{ passwordError() }}</span>
+            @if (form.fields.password.showError()) {
+              <span class="iu-ar__field-error">{{ form.fields.password.firstError() }}</span>
             }
           </div>
 
-          <!-- Confirm Password -->
+          <!-- Confirm Password — cross-field validation via standalone signal -->
           <div class="iu-ar__field">
             <label class="iu-ar__label" for="ar-confirm">Confirmar password</label>
             <div class="iu-ar__input-wrap">
@@ -510,54 +520,58 @@ export class AuthRegisterComponent {
   /** Emitted when the user clicks "Entrar agora". */
   loginRequested = output<void>();
 
-  // ── State ──────────────────────────────────────────────────────────────────
+  // ── UI state ───────────────────────────────────────────────────────────────
 
-  readonly nameVal = signal('');
-  readonly emailVal = signal('');
-  readonly passwordVal = signal('');
-  readonly confirmVal = signal('');
-  readonly role = signal<'tenant' | 'landlord'>('tenant');
-  readonly acceptedTerms = signal(false);
+  /** Whether to display password as plain text. */
   readonly showPassword = signal(false);
+
+  /** Whether registration succeeded (shows success screen). */
   readonly isSuccess = signal(false);
 
-  readonly nameTouched = signal(false);
-  readonly emailTouched = signal(false);
-  readonly passwordTouched = signal(false);
+  /** User role selection — not part of the form validator chain. */
+  readonly role = signal<'tenant' | 'landlord'>('tenant');
+
+  /** Terms checkbox — standalone because it has no text-based validators. */
+  readonly acceptedTerms = signal(false);
+
+  // ── Signal form (name + email + password) ─────────────────────────────────
+  /**
+   * Core form fields managed by createSignalForm().
+   * Replaces 8 manual signal/computed pairs from the old implementation.
+   * Sprint 026 — Signal Forms Migration.
+   */
+  readonly form = createSignalForm({
+    name:     { value: '', validators: [required('Nome é obrigatório.'), minLength(2, 'Mínimo 2 caracteres.')] },
+    email:    { value: '', validators: [required('Email é obrigatório.'), emailValidator('Email inválido.')] },
+    password: { value: '', validators: [required('Password é obrigatória.'), minLength(8, 'Mínimo 8 caracteres.')] },
+  });
+
+  // ── Confirm password — cross-field signal ──────────────────────────────────
+  /**
+   * Confirm-password is kept as a standalone signal pair because it needs to
+   * read `form.fields.password.value()` — a cross-field dependency that the
+   * single-field `SignalValidator` type cannot express cleanly.
+   */
+  readonly confirmVal = signal('');
   readonly confirmTouched = signal(false);
+
+  /** Cross-field validation: confirm must match password. */
+  readonly confirmError = computed(() => {
+    const v = this.confirmVal();
+    if (!v) return 'Confirme a password.';
+    return v !== (this.form.fields.password.value() as string) ? 'As passwords não coincidem.' : '';
+  });
+
+  // ── Proxied from service ───────────────────────────────────────────────────
 
   readonly loading = this.auth.loading;
   readonly authError = this.auth.authError;
 
-  // ── Computed ───────────────────────────────────────────────────────────────
+  // ── Password strength ──────────────────────────────────────────────────────
 
-  nameError = computed(() => {
-    const v = this.nameVal().trim();
-    if (!v) return 'Nome é obrigatório';
-    return v.length < 2 ? 'Mínimo 2 caracteres' : '';
-  });
-
-  emailError = computed(() => {
-    const v = this.emailVal();
-    if (!v) return 'Email é obrigatório';
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Email inválido';
-  });
-
-  passwordError = computed(() => {
-    const v = this.passwordVal();
-    if (!v) return 'Password é obrigatória';
-    return v.length < 8 ? 'Mínimo 8 caracteres' : '';
-  });
-
-  confirmError = computed(() => {
-    const v = this.confirmVal();
-    if (!v) return 'Confirme a password';
-    return v !== this.passwordVal() ? 'As passwords não coincidem' : '';
-  });
-
-  /** 0–4 password strength score */
-  passwordStrength = computed(() => {
-    const p = this.passwordVal();
+  /** 0–4 password strength score. */
+  readonly passwordStrength = computed(() => {
+    const p = this.form.fields.password.value() as string;
     if (!p) return 0;
     let score = 0;
     if (p.length >= 8) score++;
@@ -567,7 +581,8 @@ export class AuthRegisterComponent {
     return score;
   });
 
-  strengthLabel = computed(() => {
+  /** Human-readable strength label in Portuguese. */
+  readonly strengthLabel = computed(() => {
     const s = this.passwordStrength();
     if (s === 0) return 'Muito fraca';
     if (s === 1) return 'Fraca';
@@ -576,7 +591,8 @@ export class AuthRegisterComponent {
     return 'Forte';
   });
 
-  strengthColor = computed(() => {
+  /** Colour associated with current strength level. */
+  readonly strengthColor = computed(() => {
     const s = this.passwordStrength();
     if (s <= 1) return '#b3261e';
     if (s === 2) return '#e65100';
@@ -584,28 +600,30 @@ export class AuthRegisterComponent {
     return '#1b5e20';
   });
 
-  canSubmit = computed(() =>
-    !this.nameError() &&
-    !this.emailError() &&
-    !this.passwordError() &&
+  /** True when all validations pass and terms are accepted. */
+  readonly canSubmit = computed(() =>
+    this.form.valid() &&
     !this.confirmError() &&
     this.acceptedTerms()
   );
 
   // ── Methods ────────────────────────────────────────────────────────────────
 
+  /** Submit handler — triggers full validation then calls AuthService. */
   async onSubmit(): Promise<void> {
-    this.nameTouched.set(true);
-    this.emailTouched.set(true);
-    this.passwordTouched.set(true);
+    // Mark all form fields as touched via the form utility
+    const formValid = this.form.submit();
+    // Mark confirm field touched manually (cross-field)
     this.confirmTouched.set(true);
-    if (!this.canSubmit()) return;
 
+    if (!formValid || this.confirmError() || !this.acceptedTerms()) return;
+
+    const v = this.form.value();
     const data: RegisterData = {
-      name: this.nameVal().trim(),
-      email: this.emailVal().trim().toLowerCase(),
-      password: this.passwordVal(),
-      role: this.role(),
+      name:     (v['name'] as string).trim(),
+      email:    (v['email'] as string).trim().toLowerCase(),
+      password: v['password'] as string,
+      role:     this.role(),
     };
 
     const result = await this.auth.register(data);

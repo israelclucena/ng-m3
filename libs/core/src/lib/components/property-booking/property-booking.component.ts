@@ -278,7 +278,7 @@ const TIME_SLOTS = [
                 (input)="form.fields.message.setValue($any($event.target).value)"
                 [class.iu-pb__textarea--error]="form.fields.message.showError()"
               ></textarea>
-              <span class="iu-pb__char-count">{{ form.fields.message.value().length }}/500</span>
+              <span class="iu-pb__char-count">{{ $any(form.fields.message.value()).length }}/500</span>
               @if (form.fields.message.showError()) {
                 <span class="iu-pb__error">{{ form.fields.message.firstError() }}</span>
               }
@@ -657,19 +657,21 @@ export class PropertyBookingComponent {
   onSubmit(): void {
     if (!this.form.submit()) return;
 
-    const v = this.form.value();
+    // Explicit casts required: TS 5.9+ narrowed conditional type inference for
+    // generic mapped types; the form value shape is correct at runtime.
+    const v = this.form.value() as Record<string, string>;
     const formData: BookingFormData = {
-      name:        v.name.trim(),
-      email:       v.email.trim(),
-      phone:       v.phone.trim() || undefined,
+      name:        v['name'].trim(),
+      email:       v['email'].trim(),
+      phone:       v['phone'].trim() || undefined,
       bookingType: this.bookingType(),
-      message:     v.message.trim() || undefined,
+      message:     v['message'].trim() || undefined,
       ...(this.bookingType() === 'visit'
         ? {
-            visitDate:     v.visitDate || undefined,
-            visitTimeSlot: (v.visitTimeSlot as BookingFormData['visitTimeSlot']) || undefined,
+            visitDate:     v['visitDate'] || undefined,
+            visitTimeSlot: (v['visitTimeSlot'] as BookingFormData['visitTimeSlot']) || undefined,
           }
-        : { moveInDate: v.moveInDate || undefined }),
+        : { moveInDate: v['moveInDate'] || undefined }),
     };
 
     this.isSuccess.set(true);

@@ -240,7 +240,8 @@ export class WebVitalsService implements OnDestroy {
           }
         }
       });
-      obs.observe({ type: 'event', buffered: true, durationThreshold: 40 });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      obs.observe({ type: 'event', buffered: true, durationThreshold: 40 } as any);
       this._observers.push(obs);
     } catch { /* unsupported */ }
   }

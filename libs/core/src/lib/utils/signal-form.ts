@@ -34,6 +34,7 @@
  * ```
  *
  * Sprint 024 — Signal Forms — Night Shift 2026-03-18
+ * Sprint 026 — Type inference fix for TypeScript 5.9.x stricter generic inference
  */
 import {
   Signal,
@@ -87,19 +88,40 @@ export interface SignalField<T> {
 }
 
 /**
- * Config map shape: object with SignalFieldConfig values.
+ * Config map shape: maps string keys to `SignalFieldConfig` entries.
+ *
+ * Uses `SignalFieldConfig<any>` (not `unknown`) so that validators typed for concrete
+ * types like `SignalValidator<string>` remain assignable — validators are contravariant
+ * on their parameter, so `(v: string) => string | null` is NOT assignable to
+ * `(v: unknown) => string | null`. The `any` here is intentional and scoped.
  */
-export type SignalFormConfig<T extends Record<string, unknown>> = {
-  [K in keyof T]: SignalFieldConfig<T[K]>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SignalFormConfig = { [K: string]: SignalFieldConfig<any> };
+
+/**
+ * Extracts the exact per-field value types from a config object.
+ *
+ * The `as string extends K ? never : K` remapping filters OUT the `string` index key
+ * (where `string extends string` is true) while KEEPING literal keys like `'name'`
+ * (where `string extends 'name'` is false). This avoids both TS4111 index-signature
+ * errors AND the problem of `keyof` including the bare `string` index, which caused
+ * value types to collapse to `unknown` in TypeScript 5.9+.
+ *
+ * @example
+ * `InferFormValues<{ name: { value: '' }, age: { value: 0 } }>` → `{ name: string; age: number }`
+ */
+export type InferFormValues<C extends SignalFormConfig> = {
+  [K in keyof C as string extends K ? never : K]: C[K] extends SignalFieldConfig<infer V> ? V : never;
 };
 
 /**
  * The return type of `createSignalForm`.
+ * `T` is derived from the config via `InferFormValues<C>` to preserve exact value types.
  */
 export interface SignalForm<T extends Record<string, unknown>> {
   /** Map of field names to reactive field objects */
   readonly fields: { [K in keyof T]: SignalField<T[K]> };
-  /** Current values of all fields as a plain object */
+  /** Current values of all fields as a plain object (fully typed) */
   readonly value: Signal<T>;
   /** True if ALL fields are valid */
   readonly valid: Signal<boolean>;
@@ -191,16 +213,21 @@ export function pattern(
 /**
  * Creates a signal-based form from a config object.
  *
+ * Uses `InferFormValues<C>` to derive the value types directly from the config,
+ * preserving per-field types without relying on `T extends Record<string, unknown>`
+ * inference (which broke under TypeScript 5.9.x's stricter generic inference).
+ *
  * Call inside an Angular injection context (component constructor, service).
  * No `inject()` calls are made internally, so it is safe to call anywhere.
  *
- * @template T  Shape of the form values
+ * @template C  Config object shape (inferred automatically)
  * @param config Field definitions with initial values and optional validators
- * @returns A reactive `SignalForm<T>` object
+ * @returns A reactive `SignalForm<InferFormValues<C>>` object
  */
-export function createSignalForm<T extends Record<string, unknown>>(
-  config: SignalFormConfig<T>
-): SignalForm<T> {
+export function createSignalForm<C extends SignalFormConfig>(
+  config: C
+): SignalForm<InferFormValues<C>> {
+  type T = InferFormValues<C>;
   const keys = Object.keys(config) as (keyof T)[];
 
   // Build individual fields

@@ -1,5 +1,5 @@
 /**
- * Playwright E2E Configuration — Sprint 024
+ * Playwright E2E Configuration — Sprint 024 / Enhanced Sprint 026
  *
  * Smoke tests for the Israel UI dashboard.
  * Targets a locally running dev server on port 4200 by default.
@@ -58,11 +58,19 @@ export default defineConfig({
     },
   ],
 
-  // Uncomment to auto-start the Angular dev server:
-  // webServer: {
-  //   command: 'npx nx run dashboard:serve',
-  //   url: 'http://localhost:4200',
-  //   reuseExistingServer: !process.env['CI'],
-  //   timeout: 120 * 1000,
-  // },
+  // Web server — auto-started in CI when no external server is running.
+  // In CI the dashboard is pre-built with `npx nx build dashboard --configuration=development`
+  // and served via `npx nx serve dashboard` or a static server.
+  // Locally, set E2E_BASE_URL or let the dev server spin up.
+  webServer: process.env['CI']
+    ? {
+        // Serve the pre-built dashboard from dist in CI
+        command: 'npx serve dist/apps/dashboard -l 4200 --no-clipboard 2>/dev/null || npx nx serve dashboard --port=4200 --no-open',
+        url: 'http://localhost:4200',
+        reuseExistingServer: false,
+        timeout: 120_000,
+        stdout: 'pipe',
+        stderr: 'pipe',
+      }
+    : undefined,
 });
