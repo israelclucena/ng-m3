@@ -121,6 +121,8 @@ import {
   HttpErrorService,
   // Sprint 024
   WebVitalsWidgetComponent,
+  // Sprint 027
+  PropertyAvailabilityComponent,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -235,6 +237,8 @@ const SEARCH_DATA: SearchResult[] = [
     ErrorPageComponent,
     // Sprint 024
     WebVitalsWidgetComponent,
+    // Sprint 027
+    PropertyAvailabilityComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1330,6 +1334,28 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 027 — Property Availability Calendar ─────────────────── -->
+      @if (flags.AVAILABILITY_CALENDAR) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="availability-calendar">
+          <h2>📅 Property Availability Calendar</h2>
+          <p class="desc">
+            <strong>PropertyAvailabilityComponent</strong> renders a two-month booking calendar
+            with signal-based state, M3 design tokens, and zero RxJS. Booked ranges are highlighted
+            in error/red; user selections emit <code>dateRangeSelected</code> and
+            <code>inquiryRequested</code> events. Feature flag: <code>AVAILABILITY_CALENDAR</code>.
+          </p>
+          <iu-property-availability
+            propertyId="demo-prop-027"
+            [bookedDates]="demoBookedDates()"
+            [minStay]="2"
+            [maxAdvanceDays]="90"
+            (dateRangeSelected)="onAvailabilityRangeSelected($event)"
+            (inquiryRequested)="onAvailabilityInquiry($event)"
+          />
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -2292,6 +2318,34 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
   onAdminPropertyAction(ev: AdminPropertyActionEvent): void {
     const labels: Record<string, string> = { activate: '▶️ Activada', pause: '⏸️ Pausada', approve: '✅ Aprovada', reject: '❌ Rejeitada' };
     this.notif.show({ message: `${labels[ev.action] ?? ev.action}: "${ev.property.title}"`, type: 'success', duration: 3000 });
+  }
+
+  // ── Sprint 027 — Availability Calendar ──────────────────────────────────────
+
+  private addDays(d: Date, n: number): Date {
+    const r = new Date(d);
+    r.setDate(r.getDate() + n);
+    return r;
+  }
+
+  readonly demoBookedDates = computed<Array<{ start: Date; end: Date }>>(() => {
+    const today = new Date();
+    return [
+      { start: this.addDays(today, 4),  end: this.addDays(today, 7) },
+      { start: this.addDays(today, 15), end: this.addDays(today, 19) },
+      { start: this.addDays(today, 28), end: this.addDays(today, 33) },
+    ];
+  });
+
+  onAvailabilityRangeSelected(range: { start: Date; end: Date }): void {
+    const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    this.notif.show({ message: `📅 Range selected: ${fmt(range.start)} → ${fmt(range.end)}`, type: 'info', duration: 3000 });
+  }
+
+  onAvailabilityInquiry(range: { start: Date; end: Date }): void {
+    const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    const nights = Math.round((range.end.getTime() - range.start.getTime()) / 86_400_000);
+    this.notif.show({ message: `🔍 Inquiry requested: ${fmt(range.start)} → ${fmt(range.end)} (${nights} nights)`, type: 'success', duration: 4000 });
   }
 
   // ── Sprint 020 — Landlord Analytics ─────────────────────────────────────────
