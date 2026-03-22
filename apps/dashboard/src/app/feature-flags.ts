@@ -107,4 +107,5 @@ export const FeatureFlags = {
 
   // Sprint 027 — Night Shift 2026-03-22
   STORYBOOK_PATCH_1031: true, // Storybook upgraded from 10.3.0 to 10.3.1
+  RESOURCE_API: true,         // createHttpResource() — signal-based async data fetching utility
 } as const;
