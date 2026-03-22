@@ -104,4 +104,7 @@ export const FeatureFlags = {
   SIGNAL_FORM_AUTH: true,     // AuthLoginComponent + AuthRegisterComponent migrated to createSignalForm()
   CI_ENHANCED: true,          // Enhanced CI pipeline: lint + E2E + npm audit + parallel jobs
   TS59_COMPAT: true,          // TypeScript 5.9.3 compat: moduleResolution bundler + signal-form InferFormValues fix
+
+  // Sprint 027 — Night Shift 2026-03-22
+  STORYBOOK_PATCH_1031: true, // Storybook upgraded from 10.3.0 to 10.3.1
 } as const;
