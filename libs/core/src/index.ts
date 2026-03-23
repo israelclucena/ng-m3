@@ -192,3 +192,7 @@ export * from './lib/utils/signal-form';
 // Sprint 027 — Night Shift 2026-03-22
 export * from './lib/services/resource.service';
 export { PropertyAvailabilityComponent } from './lib/components/property-availability/property-availability.component';
+
+// Sprint 028 — Night Shift 2026-03-23
+export * from './lib/services/availability-resource.service';
+export * from './lib/components/booking-checkout/booking-checkout.component';

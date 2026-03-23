@@ -109,4 +109,8 @@ export const FeatureFlags = {
   STORYBOOK_PATCH_1031: true,    // Storybook upgraded from 10.3.0 to 10.3.1
   RESOURCE_API: true,            // createHttpResource() — signal-based async data fetching utility
   AVAILABILITY_CALENDAR: true,   // PropertyAvailabilityComponent — signal-based booking calendar
+
+  // Sprint 028 — Night Shift 2026-03-23
+  BOOKING_CONFIRMATION_FLOW: true, // BookingCheckoutComponent — multi-step checkout (review → payment → confirmation)
+  AVAILABILITY_REALTIME: true,     // AvailabilityResourceService — signal-driven real-time availability polling
 } as const;

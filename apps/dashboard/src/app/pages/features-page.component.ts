@@ -123,6 +123,9 @@ import {
   WebVitalsWidgetComponent,
   // Sprint 027
   PropertyAvailabilityComponent,
+  // Sprint 028
+  BookingCheckoutComponent,
+  AvailabilityResourceService,
 } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
@@ -239,6 +242,8 @@ const SEARCH_DATA: SearchResult[] = [
     WebVitalsWidgetComponent,
     // Sprint 027
     PropertyAvailabilityComponent,
+    // Sprint 028
+    BookingCheckoutComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1356,6 +1361,34 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 028 — Booking Checkout Flow ──────────────────────────── -->
+      @if (flags.BOOKING_CONFIRMATION_FLOW) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="booking-checkout">
+          <h2>🛒 Booking Checkout Flow</h2>
+          <p class="desc">
+            <strong>BookingCheckoutComponent</strong> — multi-step checkout (Review → Payment → Confirmation).
+            Signal-based state machine using <code>createSignalForm()</code> for inline card/MBWay validation.
+            Supports Cartão de Débito/Crédito, MB WAY, and Transferência Bancária.
+            Feature flag: <code>BOOKING_CONFIRMATION_FLOW</code>.
+          </p>
+          <button class="iu-checkout-demo-btn" (click)="openCheckoutDemo()">
+            <span class="material-symbols-outlined">shopping_cart_checkout</span>
+            Abrir Demo de Checkout
+          </button>
+          @if (checkoutDemoOpen()) {
+            <iu-booking-checkout
+              [property]="checkoutDemoProperty()"
+              [selectedRange]="checkoutDemoRange()"
+              landlordName="Ana Ferreira"
+              landlordPhone="+351 912 345 678"
+              (checkoutComplete)="onCheckoutComplete($event)"
+              (cancelled)="checkoutDemoOpen.set(false)"
+            />
+          }
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -1380,6 +1413,21 @@ const SEARCH_DATA: SearchResult[] = [
       margin-bottom: 16px;
       font-size: 0.95rem;
     }
+    .iu-checkout-demo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 100px;
+      background: var(--md-sys-color-primary, #6750A4);
+      color: var(--md-sys-color-on-primary, #fff);
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .iu-checkout-demo-btn:hover { opacity: .88; }
     section { margin: 32px 0; }
     h2 {
       font-size: 1.5rem;
@@ -2346,6 +2394,44 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
     const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
     const nights = Math.round((range.end.getTime() - range.start.getTime()) / 86_400_000);
     this.notif.show({ message: `🔍 Inquiry requested: ${fmt(range.start)} → ${fmt(range.end)} (${nights} nights)`, type: 'success', duration: 4000 });
+  }
+
+  // ── Sprint 028 — Booking Checkout Flow ───────────────────────────────────────
+
+  readonly checkoutDemoOpen = signal(false);
+
+  readonly checkoutDemoProperty = computed(() => ({
+    id: 'demo-checkout-028',
+    title: 'Apartamento T2 — Príncipe Real',
+    location: 'Príncipe Real, Lisboa',
+    priceMonthly: 1650,
+    beds: 2,
+    baths: 1,
+    area: 75,
+    imageUrl: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=80',
+    type: 'apartment' as const,
+    available: true,
+  }));
+
+  readonly checkoutDemoRange = computed(() => {
+    const today = new Date();
+    return {
+      start: this.addDays(today, 7),
+      end:   this.addDays(today, 14),
+    };
+  });
+
+  openCheckoutDemo(): void {
+    this.checkoutDemoOpen.set(true);
+  }
+
+  onCheckoutComplete(ev: { step: string; confirmation: { bookingRef: string; status: string } }): void {
+    this.checkoutDemoOpen.set(false);
+    this.notif.show({
+      message: `✅ Checkout completo! Ref: ${ev.confirmation.bookingRef} — ${ev.confirmation.status}`,
+      type: 'success',
+      duration: 5000,
+    });
   }
 
   // ── Sprint 020 — Landlord Analytics ─────────────────────────────────────────
