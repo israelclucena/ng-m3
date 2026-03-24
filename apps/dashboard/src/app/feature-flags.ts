@@ -113,4 +113,7 @@ export const FeatureFlags = {
   // Sprint 028 — Night Shift 2026-03-23
   BOOKING_CONFIRMATION_FLOW: true, // BookingCheckoutComponent — multi-step checkout (review → payment → confirmation)
   AVAILABILITY_REALTIME: true,     // AvailabilityResourceService — signal-driven real-time availability polling
+
+  // Sprint 029 — Night Shift 2026-03-24
+  STORYBOOK_PATCH_1033: true,      // Storybook upgraded from 10.3.1 to 10.3.3
 } as const;
