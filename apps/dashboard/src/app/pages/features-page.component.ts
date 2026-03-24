@@ -126,7 +126,11 @@ import {
   // Sprint 028
   BookingCheckoutComponent,
   AvailabilityResourceService,
+  // Sprint 029
+  PaymentService,
+  PaymentGatewayDemoComponent,
 } from '@israel-ui/core';
+import type { PaymentStatus } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
 // ─── Sample Data ───────────────────────────────────────────────────
@@ -244,6 +248,8 @@ const SEARCH_DATA: SearchResult[] = [
     PropertyAvailabilityComponent,
     // Sprint 028
     BookingCheckoutComponent,
+    // Sprint 029
+    PaymentGatewayDemoComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1389,6 +1395,24 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 029 — Payment Gateway Demo ────────────────────────────── -->
+      @if (flags.PAYMENT_GATEWAY) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="payment-gateway">
+          <h2>💳 Payment Gateway (Mock Stripe)</h2>
+          <p class="desc">
+            <strong>PaymentService</strong> — mock Stripe-compatible gateway using Angular Signals.
+            Simulates network latency (800–1200ms), 90% success rate, card decline detection (4000* prefix).
+            Ready for real Stripe SDK swap without changing callers.
+            Feature flag: <code>PAYMENT_GATEWAY</code>.
+          </p>
+          <p class="payment-gateway-status">
+            Gateway status: <strong>{{ paymentStatus() }}</strong>
+          </p>
+          <iu-payment-gateway-demo />
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -2433,6 +2457,11 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
       duration: 5000,
     });
   }
+
+  // ── Sprint 029 — Payment Gateway ─────────────────────────────────────────────
+
+  private readonly paymentService = inject(PaymentService);
+  readonly paymentStatus = computed<PaymentStatus>(() => this.paymentService.status());
 
   // ── Sprint 020 — Landlord Analytics ─────────────────────────────────────────
 

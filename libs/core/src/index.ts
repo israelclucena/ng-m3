@@ -196,3 +196,8 @@ export { PropertyAvailabilityComponent } from './lib/components/property-availab
 // Sprint 028 — Night Shift 2026-03-23
 export * from './lib/services/availability-resource.service';
 export * from './lib/components/booking-checkout/booking-checkout.component';
+
+// Sprint 029 — Night Shift 2026-03-24
+export { PaymentService } from './lib/services/payment.service';
+export type { PaymentIntent, PaymentResult, ProcessPaymentOptions, PaymentStatus } from './lib/services/payment.service';
+export { PaymentGatewayDemoComponent } from './lib/components/payment/payment-gateway-demo.component';
