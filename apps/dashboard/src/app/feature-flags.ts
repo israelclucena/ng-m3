@@ -116,4 +116,5 @@ export const FeatureFlags = {
 
   // Sprint 029 — Night Shift 2026-03-24
   STORYBOOK_PATCH_1033: true,      // Storybook upgraded from 10.3.1 to 10.3.3
+  TS60_COMPAT: false,              // TS 6.0 upgrade BLOCKED: Angular compiler requires <6.0.0 (stays on 5.9.3 until Angular supports 6.0)
 } as const;
