@@ -129,8 +129,12 @@ import {
   // Sprint 029
   PaymentService,
   PaymentGatewayDemoComponent,
+  // Sprint 030
+  PaymentReceiptComponent,
+  LandlordRevenueComponent,
+  InvoiceService,
 } from '@israel-ui/core';
-import type { PaymentStatus } from '@israel-ui/core';
+import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
 // ─── Sample Data ───────────────────────────────────────────────────
@@ -250,6 +254,9 @@ const SEARCH_DATA: SearchResult[] = [
     BookingCheckoutComponent,
     // Sprint 029
     PaymentGatewayDemoComponent,
+    // Sprint 030
+    PaymentReceiptComponent,
+    LandlordRevenueComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1413,6 +1420,38 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ── Sprint 030 — Payment Receipt ─────────────────────────────────── -->
+      @if (flags.PAYMENT_RECEIPT) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="payment-receipt">
+          <h2>🧾 Payment Receipt</h2>
+          <p class="desc">
+            <strong>PaymentReceiptComponent</strong> + <strong>InvoiceService</strong> —
+            Post-payment receipt with printable M3 layout, IVA breakdown, PDF download link,
+            and status badge (paid/pending). InvoiceService generates INV-YYYY-NNNN references
+            and tracks all session invoices via signals.
+            Feature flag: <code>PAYMENT_RECEIPT</code>.
+          </p>
+          <iu-payment-receipt [invoice]="sampleInvoice()" />
+        </section>
+      }
+
+      <!-- ── Sprint 030 — Landlord Revenue Dashboard ───────────────────────── -->
+      @if (flags.LANDLORD_REVENUE) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="landlord-revenue">
+          <h2>📊 Landlord Revenue Dashboard</h2>
+          <p class="desc">
+            <strong>LandlordRevenueComponent</strong> + <strong>RevenueAnalyticsService</strong> —
+            Full revenue analytics: MRR, ARR, net profit (TTM), bookings, average occupancy,
+            12-month bar chart (revenue vs expenses), and top-properties leaderboard with trend arrows.
+            Signal-based — all KPIs are computed signals derived from the analytics state.
+            Feature flag: <code>LANDLORD_REVENUE</code>.
+          </p>
+          <iu-landlord-revenue landlordId="dashboard-demo" />
+        </section>
+      }
+
     </div>
   `,
   styles: [`
@@ -2462,6 +2501,37 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
 
   private readonly paymentService = inject(PaymentService);
   readonly paymentStatus = computed<PaymentStatus>(() => this.paymentService.status());
+
+  // ── Sprint 030 — Payment Receipt ──────────────────────────────────────────────
+
+  private readonly invoiceService = inject(InvoiceService);
+
+  /** Sample invoice displayed in the receipt demo */
+  readonly sampleInvoice = computed<Invoice>(() => ({
+    invoiceRef: 'INV-2026-0001',
+    issuedAt: new Date().toISOString(),
+    dueDate: new Date().toISOString(),
+    status: 'paid' as const,
+    paymentIntentId: 'pi_mock_demo12345',
+    propertyTitle: 'Apartamento T2 — Bairro Alto',
+    propertyAddress: 'Rua do Norte, 42, 1200-000 Lisboa',
+    tenantName: 'Maria Santos',
+    landlordName: 'João Silva',
+    bookingRef: 'LR-2026-0042',
+    checkIn: '2026-04-01',
+    checkOut: '2026-05-01',
+    lineItems: [
+      { description: 'Arrendamento — Apartamento T2 — Bairro Alto', quantity: 1, unitPrice: 1063.60, total: 1063.60 },
+      { description: 'Taxa de limpeza', quantity: 1, unitPrice: 40.00, total: 40.00 },
+      { description: 'Taxa de serviço (5%)', quantity: 1, unitPrice: 60.00, total: 60.00 },
+    ],
+    subtotal: 1100.00,
+    taxRate: 0.06,
+    taxAmount: 63.82,
+    total: 1200.00,
+    currency: 'EUR',
+    pdfUrl: 'https://api.lisboarent.pt/invoices/pi_mock_demo12345.pdf',
+  }));
 
   // ── Sprint 020 — Landlord Analytics ─────────────────────────────────────────
 

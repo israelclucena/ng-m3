@@ -118,4 +118,9 @@ export const FeatureFlags = {
   STORYBOOK_PATCH_1033: true,      // Storybook upgraded from 10.3.1 to 10.3.3
   TS60_COMPAT: false,              // TS 6.0 upgrade BLOCKED: Angular compiler requires <6.0.0 (stays on 5.9.3 until Angular supports 6.0)
   PAYMENT_GATEWAY: true,           // PaymentService mock Stripe gateway + PaymentGatewayDemoComponent
+
+  // Sprint 030 — Night Shift 2026-03-25
+  PAYMENT_RECEIPT: true,           // InvoiceService + PaymentReceiptComponent — post-payment receipt with printable M3 layout
+  LANDLORD_REVENUE: true,          // RevenueAnalyticsService + LandlordRevenueComponent — MRR, ARR, bar chart, top properties
+  SIGNAL_FORM_UNIONS: true,        // oneOf() validator + createSelectField() — generic union type support for signal forms
 } as const;

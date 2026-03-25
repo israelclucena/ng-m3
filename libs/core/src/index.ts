@@ -201,3 +201,13 @@ export * from './lib/components/booking-checkout/booking-checkout.component';
 export { PaymentService } from './lib/services/payment.service';
 export type { PaymentIntent, PaymentResult, ProcessPaymentOptions, PaymentStatus } from './lib/services/payment.service';
 export { PaymentGatewayDemoComponent } from './lib/components/payment/payment-gateway-demo.component';
+
+// Sprint 030 — Night Shift 2026-03-25
+export { InvoiceService } from './lib/services/invoice.service';
+export type { Invoice, InvoiceLineItem } from './lib/services/invoice.service';
+export { PaymentReceiptComponent } from './lib/components/payment/payment-receipt.component';
+export { RevenueAnalyticsService } from './lib/services/revenue-analytics.service';
+export type { MonthlyRevenue, PropertyRevenueSummary, RevenueKPIs, LandlordAnalytics } from './lib/services/revenue-analytics.service';
+export { LandlordRevenueComponent } from './lib/components/landlord-analytics/landlord-revenue.component';
+export { oneOf, createSelectField } from './lib/utils/signal-form';
+export type { UnionOption, SignalUnionFieldConfig, SignalUnionField } from './lib/utils/signal-form';

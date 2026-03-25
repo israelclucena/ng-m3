@@ -10,6 +10,11 @@
  * - Touched state is manually controlled (set on blur)
  * - `submit()` marks all fields as touched for error visibility
  *
+ * Sprint 030 — Generic Union Types support:
+ * - `oneOf<T>()` validator: enforces membership in a fixed string union
+ * - `SignalUnionFieldConfig<T>` for select/radio fields with typed options
+ * - `createSelectField()` helper for union-typed select fields
+ *
  * @example
  * ```ts
  * // In a component
@@ -304,6 +309,161 @@ export function createSignalForm<C extends SignalFormConfig>(
       for (const key of keys) {
         fields[key].reset();
       }
+    },
+  };
+}
+
+// ─── Union Type support — Sprint 030 ─────────────────────────────────────────
+
+/**
+ * Validates that a value is one of the allowed union members.
+ *
+ * Aligns with Angular pre-release "generic unions in signal form schemas".
+ * Use for select/radio fields where the value must be a specific string literal.
+ *
+ * @template T  Union type (e.g. `'apartment' | 'studio' | 'villa'`)
+ * @param allowed  Array of allowed values — must match the union members
+ * @param message  Custom error message (optional)
+ *
+ * @example
+ * ```ts
+ * type PropertyType = 'apartment' | 'studio' | 'villa';
+ * const form = createSignalForm({
+ *   type: {
+ *     value: '' as PropertyType | '',
+ *     validators: [oneOf<PropertyType>(['apartment', 'studio', 'villa'])],
+ *   },
+ * });
+ * ```
+ */
+export function oneOf<T extends string>(
+  allowed: readonly T[],
+  message?: string
+): SignalValidator<T | string> {
+  return (value) => {
+    const msg = message ?? `Value must be one of: ${allowed.join(', ')}.`;
+    return (allowed as readonly string[]).includes(value) ? null : msg;
+  };
+}
+
+/**
+ * Option descriptor for union-typed select/radio fields.
+ * @template T  The union type (e.g. `'apartment' | 'studio' | 'villa'`)
+ */
+export interface UnionOption<T extends string> {
+  /** The value submitted to the form */
+  value: T;
+  /** Human-readable display label */
+  label: string;
+  /** Optional description shown as helper text */
+  description?: string;
+  /** Whether this option is disabled */
+  disabled?: boolean;
+}
+
+/**
+ * Extended field config for union/select fields.
+ * Adds `options` array for rendering select/radio groups.
+ * @template T  The union type
+ */
+export interface SignalUnionFieldConfig<T extends string> extends SignalFieldConfig<T | ''> {
+  /** Available options to display in a select or radio group */
+  options: UnionOption<T>[];
+  /** Whether the empty/placeholder option is allowed (i.e. field is optional) */
+  allowEmpty?: boolean;
+}
+
+/**
+ * A union-typed signal field — extends `SignalField` with options metadata.
+ * @template T  The union type
+ */
+export interface SignalUnionField<T extends string> extends SignalField<T | ''> {
+  /** Available select/radio options */
+  readonly options: UnionOption<T>[];
+  /** Whether the empty value is allowed */
+  readonly allowEmpty: boolean;
+  /** Set the value — only allows members of T or '' (if allowEmpty) */
+  setUnionValue(v: T | ''): void;
+  /** True if the current value is a valid union member (not '') */
+  readonly hasSelection: Signal<boolean>;
+  /** The current value as T (throws if empty — only call when hasSelection is true) */
+  readonly selected: Signal<T | null>;
+}
+
+/**
+ * Create a union-typed signal field for select/radio group scenarios.
+ *
+ * Unlike `createSignalForm()` which handles the whole form, this creates
+ * a standalone union field — useful when you need just one select with
+ * full union type-safety.
+ *
+ * @template T  The string union type
+ * @param config  Field configuration including options array
+ * @returns A `SignalUnionField<T>` with all standard field methods + union extras
+ *
+ * @example
+ * ```ts
+ * type PropertyType = 'apartment' | 'studio' | 'villa';
+ *
+ * readonly typeField = createSelectField<PropertyType>({
+ *   value: '',
+ *   options: [
+ *     { value: 'apartment', label: 'Apartamento' },
+ *     { value: 'studio',    label: 'Studio' },
+ *     { value: 'villa',     label: 'Moradia' },
+ *   ],
+ *   validators: [oneOf(['apartment', 'studio', 'villa'], 'Tipo obrigatório')],
+ * });
+ * ```
+ */
+export function createSelectField<T extends string>(
+  config: SignalUnionFieldConfig<T>
+): SignalUnionField<T> {
+  const initial: T | '' = config.value ?? '';
+  const validators = config.validators ?? [];
+  const allowEmpty = config.allowEmpty ?? false;
+
+  const valueSignal: WritableSignal<T | ''> = signal(initial);
+  const touchedSignal: WritableSignal<boolean> = signal(false);
+  const dirtySignal = computed(() => valueSignal() !== initial);
+
+  const errorsSignal = computed<string[]>(() => {
+    const v = valueSignal();
+    const errs: string[] = [];
+    for (const validator of validators) {
+      const err = validator(v);
+      if (err !== null) errs.push(err);
+    }
+    return errs;
+  });
+
+  const firstErrorSignal = computed(() => errorsSignal()[0] ?? null);
+  const invalidSignal = computed(() => errorsSignal().length > 0);
+  const showErrorSignal = computed(() => touchedSignal() && invalidSignal());
+  const hasSelectionSignal = computed(() => valueSignal() !== '');
+  const selectedSignal = computed<T | null>(() => {
+    const v = valueSignal();
+    return v === '' ? null : v as T;
+  });
+
+  return {
+    value: valueSignal.asReadonly(),
+    touched: touchedSignal.asReadonly(),
+    dirty: dirtySignal,
+    errors: errorsSignal,
+    firstError: firstErrorSignal,
+    invalid: invalidSignal,
+    showError: showErrorSignal,
+    options: config.options,
+    allowEmpty,
+    hasSelection: hasSelectionSignal,
+    selected: selectedSignal,
+    setValue(v: T | '') { valueSignal.set(v); },
+    setUnionValue(v: T | '') { valueSignal.set(v); },
+    touch() { touchedSignal.set(true); },
+    reset() {
+      valueSignal.set(initial);
+      touchedSignal.set(false);
     },
   };
 }
