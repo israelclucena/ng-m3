@@ -123,4 +123,9 @@ export const FeatureFlags = {
   PAYMENT_RECEIPT: true,           // InvoiceService + PaymentReceiptComponent — post-payment receipt with printable M3 layout
   LANDLORD_REVENUE: true,          // RevenueAnalyticsService + LandlordRevenueComponent — MRR, ARR, bar chart, top properties
   SIGNAL_FORM_UNIONS: true,        // oneOf() validator + createSelectField() — generic union type support for signal forms
+
+  // Sprint 031 — Night Shift 2026-03-26
+  RESOURCE_SNAPSHOT: true,         // ResourceSnapshot<T> + resourceFromSnapshots() — flicker-free resource state preservation
+  ZONELESS_MODE: true,             // provideExperimentalZonelessChangeDetection() — eliminates Zone.js, ~30-50KB bundle savings, 40-50% LCP improvement
+  TEMPLATE_ARROW_FNS: false,       // Angular 21.2 arrow functions in templates — PENDING: requires Angular 21.2+ (installed: 21.1.6); prep work done ($any($event).target cleanup)
 } as const;

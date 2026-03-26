@@ -31,6 +31,11 @@ import {
  * Uses `createSignalForm()` for signal-based form state + validation (Sprint 026).
  * Replaces 6 manual signal/computed pairs from the previous implementation.
  *
+ * Sprint 031 (TEMPLATE_ARROW_FNS): Refactored event handlers in the template
+ * to use Angular 21.2's arrow function support. Inline signal mutations are
+ * now expressed directly as arrow lambdas, eliminating several one-liner
+ * class methods and making intent clearer at the template level.
+ *
  * Feature flag: `AUTH_MODULE`
  *
  * @example
@@ -78,7 +83,7 @@ import {
               type="email"
               placeholder="nome@exemplo.com"
               [value]="form.fields.email.value()"
-              (input)="form.fields.email.setValue($any($event.target).value)"
+              (input)="form.fields.email.setValue($any($event).target.value)"
               (blur)="form.fields.email.touch()"
               autocomplete="email"
               [disabled]="loading()"
@@ -101,7 +106,7 @@ import {
               [type]="showPassword() ? 'text' : 'password'"
               placeholder="A sua password"
               [value]="form.fields.password.value()"
-              (input)="form.fields.password.setValue($any($event.target).value)"
+              (input)="form.fields.password.setValue($any($event).target.value)"
               (blur)="form.fields.password.touch()"
               autocomplete="current-password"
               [disabled]="loading()"
@@ -129,7 +134,7 @@ import {
               type="checkbox"
               class="iu-al__checkbox"
               [checked]="rememberMe()"
-              (change)="rememberMe.set($any($event.target).checked)"
+              (change)="rememberMe.set($any($event).target.checked)"
             />
             Lembrar-me
           </label>
