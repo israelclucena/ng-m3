@@ -61,6 +61,16 @@
       "style": "scss"
     }
   },
+  "release": {
+    "projects": ["core"],
+    "version": {
+      "conventionalCommits": true
+    },
+    "changelog": {
+      "workspaceChangelog": true,
+      "projectChangelogs": true
+    }
+  },
   "plugins": [
     {
       "plugin": "@nx/storybook/plugin",

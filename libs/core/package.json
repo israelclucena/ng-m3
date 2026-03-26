@@ -1,7 +1,7 @@
 {
   "name": "@israelclucena/core",
   "version": "1.0.0",
-  "description": "Israel UI — Angular 17+ Material 3 component library. Signal-based, standalone components, M3 design tokens.",
+  "description": "Israel UI \u2014 Angular 17+ Material 3 component library. Signal-based, standalone components, M3 design tokens.",
   "keywords": [
     "angular",
     "material",
@@ -24,6 +24,9 @@
     "url": "https://github.com/israelclucena/ng-m3/issues"
   },
   "homepage": "https://github.com/israelclucena/ng-m3#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@angular/core": ">=17.0.0",
     "@angular/common": ">=17.0.0",
