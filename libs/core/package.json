@@ -1,7 +1,7 @@
 {
   "name": "@israelclucena/core",
-  "version": "1.0.0",
-  "description": "Israel UI \u2014 Angular 17+ Material 3 component library. Signal-based, standalone components, M3 design tokens.",
+  "version": "1.0.1",
+  "description": "Israel UI — Angular 17+ Material 3 component library. Signal-based, standalone components, M3 design tokens.",
   "keywords": [
     "angular",
     "material",
