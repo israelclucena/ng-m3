@@ -116,7 +116,7 @@ export const FeatureFlags = {
 
   // Sprint 029 — Night Shift 2026-03-24
   STORYBOOK_PATCH_1033: true,      // Storybook upgraded from 10.3.1 to 10.3.3
-  TS60_COMPAT: false,              // TS 6.0 upgrade BLOCKED: Angular compiler requires <6.0.0 (stays on 5.9.3 until Angular supports 6.0)
+  TS60_COMPAT: true,               // TS 6.0.2 — Angular 21.2 peer deps: >=5.9 <6.1 — ACTIVATED sprint-032
   PAYMENT_GATEWAY: true,           // PaymentService mock Stripe gateway + PaymentGatewayDemoComponent
 
   // Sprint 030 — Night Shift 2026-03-25
@@ -127,5 +127,5 @@ export const FeatureFlags = {
   // Sprint 031 — Night Shift 2026-03-26
   RESOURCE_SNAPSHOT: true,         // ResourceSnapshot<T> + resourceFromSnapshots() — flicker-free resource state preservation
   ZONELESS_MODE: true,             // provideExperimentalZonelessChangeDetection() — eliminates Zone.js, ~30-50KB bundle savings, 40-50% LCP improvement
-  TEMPLATE_ARROW_FNS: false,       // Angular 21.2 arrow functions in templates — PENDING: requires Angular 21.2+ (installed: 21.1.6); prep work done ($any($event).target cleanup)
+  TEMPLATE_ARROW_FNS: true,        // Angular 21.2 arrow functions in templates — ACTIVATED sprint-032 (Angular 21.2.6 installed)
 } as const;
