@@ -133,6 +133,8 @@ import {
   PaymentReceiptComponent,
   LandlordRevenueComponent,
   InvoiceService,
+  // Sprint 033
+  TenantDashboardComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -257,6 +259,8 @@ const SEARCH_DATA: SearchResult[] = [
     // Sprint 030
     PaymentReceiptComponent,
     LandlordRevenueComponent,
+    // Sprint 033
+    TenantDashboardComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1449,6 +1453,22 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>LANDLORD_REVENUE</code>.
           </p>
           <iu-landlord-revenue landlordId="dashboard-demo" />
+        </section>
+      }
+
+      @if (flags.TENANT_DASHBOARD) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="tenant-dashboard">
+          <h2>🏠 Tenant Dashboard</h2>
+          <p class="desc">
+            <strong>TenantDashboardComponent</strong> + <strong>TenantDashboardService</strong> —
+            Renter-side analytics: KPI cards (total paid TTM, avg monthly, active bookings, saved favourites),
+            active rental banner, 12-month spending bar chart (rent + fees), upcoming lease card,
+            full payment history table with invoice refs, and saved favourite properties grid.
+            Signal-based — all KPIs are computed signals. Counterpart to LandlordRevenueComponent.
+            Feature flag: <code>TENANT_DASHBOARD</code>.
+          </p>
+          <iu-tenant-dashboard tenantId="demo-tenant-001" />
         </section>
       }
 

@@ -128,4 +128,8 @@ export const FeatureFlags = {
   RESOURCE_SNAPSHOT: true,         // ResourceSnapshot<T> + resourceFromSnapshots() — flicker-free resource state preservation
   ZONELESS_MODE: true,             // provideExperimentalZonelessChangeDetection() — eliminates Zone.js, ~30-50KB bundle savings, 40-50% LCP improvement
   TEMPLATE_ARROW_FNS: true,        // Angular 21.2 arrow functions in templates — ACTIVATED sprint-032 (Angular 21.2.6 installed)
+
+  // Sprint 033 — Night Shift 2026-03-28
+  TENANT_DASHBOARD: true,          // TenantDashboardService + TenantDashboardComponent — renter analytics: KPIs, spending chart, payment history, favourites
+  STORYBOOK_PATCH_1040: true,      // Storybook upgraded from 10.3.3 to 10.4.0-alpha.5 — angularChangeDetection feature flag enabled
 } as const;

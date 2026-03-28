@@ -211,3 +211,8 @@ export type { MonthlyRevenue, PropertyRevenueSummary, RevenueKPIs, LandlordAnaly
 export { LandlordRevenueComponent } from './lib/components/landlord-analytics/landlord-revenue.component';
 export { oneOf, createSelectField } from './lib/utils/signal-form';
 export type { UnionOption, SignalUnionFieldConfig, SignalUnionField } from './lib/utils/signal-form';
+
+// Sprint 033 — Night Shift 2026-03-28
+export { TenantDashboardService } from './lib/services/tenant-dashboard.service';
+export type { TenantDashboard, TenantKPIs, TenantPayment, TenantBooking, TenantFavouriteProperty, TenantSpendingPoint } from './lib/services/tenant-dashboard.service';
+export { TenantDashboardComponent } from './lib/components/tenant-dashboard/tenant-dashboard.component';
