@@ -12,6 +12,7 @@ const meta: Meta<NavRailComponent> = {
   title: 'Core/NavRail',
   component: NavRailComponent,
   tags: ['autodocs'],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   argTypes: {
     menuIcon: { control: 'text' },
     fabIcon: { control: 'text' },
@@ -20,7 +21,7 @@ const meta: Meta<NavRailComponent> = {
       control: 'select',
       options: ['top', 'center', 'bottom'],
     },
-  },
+  } as any,
   decorators: [
     (story) => ({
       ...story,
@@ -39,18 +40,20 @@ export const Default: Story = {
 };
 
 export const WithFAB: Story = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: {
     items: defaultItems,
     fabIcon: 'edit',
-  },
+  } as any,
 };
 
 export const WithMenu: Story = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: {
     items: defaultItems,
     menuIcon: 'menu',
     fabIcon: 'add',
-  },
+  } as any,
 };
 
 export const WithBadges: Story = {

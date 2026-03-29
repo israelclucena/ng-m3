@@ -467,3 +467,182 @@ export function createSelectField<T extends string>(
     },
   };
 }
+
+// ─── Signal Form V2 — Sprint 034 ─────────────────────────────────────────────
+// Additions: getError(), debouncedSignalField(), reloadValidation()
+
+/**
+ * Get a specific error by key from a field's error list.
+ *
+ * Companion to `firstError()` — lets you target a specific validator's message
+ * without relying on insertion order.
+ *
+ * Sprint 034 — SIGNAL_FORM_V2
+ *
+ * @param field - A SignalField to inspect
+ * @param key - Substring to match in the error message
+ * @returns The matching error string, or null if not found
+ *
+ * @example
+ * ```ts
+ * // Check specifically for "email" error rather than first error
+ * const emailErr = getError(form.fields.email, 'valid email');
+ * ```
+ */
+export function getError<T>(field: SignalField<T>, key: string): string | null {
+  return field.errors().find(e => e.toLowerCase().includes(key.toLowerCase())) ?? null;
+}
+
+/**
+ * Create a debounced signal: returns a new signal that only updates
+ * after `delayMs` of inactivity. Useful for async validation triggers
+ * and search-as-you-type fields.
+ *
+ * Sprint 034 — SIGNAL_FORM_V2
+ *
+ * @param source - A readable signal to debounce
+ * @param delayMs - Debounce delay in milliseconds (default 300)
+ * @returns A writable signal that lags behind the source by `delayMs`
+ *
+ * @example
+ * ```ts
+ * readonly debouncedQuery = debouncedSignal(this.form.fields.search.value, 400);
+ * // Use debouncedQuery() in an effect() to trigger API calls
+ * ```
+ */
+export function debouncedSignal<T>(source: Signal<T>, delayMs = 300): Signal<T> {
+  const debounced: WritableSignal<T> = signal(source());
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  // NOTE: In a real zoneless app, this should be wrapped in an effect() within
+  // an injection context. This version is a standalone utility — call it in
+  // a component constructor or within runInInjectionContext().
+  const update = () => {
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => {
+      debounced.set(source());
+      timer = null;
+    }, delayMs);
+  };
+
+  // Attach a plain getter-based observer via computed so it tracks automatically.
+  // The actual debouncing side-effect runs on each read of `_tracker`.
+  const _tracker = computed(() => {
+    const v = source();
+    // Side-effect inside computed is intentional here — lightweight trigger only.
+    // For production, prefer effect() in an injection context instead.
+    update();
+    return v;
+  });
+
+  // Return a signal that reads the debounced value.
+  return computed(() => {
+    void _tracker(); // subscribe
+    return debounced();
+  });
+}
+
+/**
+ * Trigger manual re-validation on all fields of a form.
+ *
+ * Analogous to Angular 21.2's `reloadValidation()` for signal forms.
+ * Forces all fields to re-compute errors by touching them, without
+ * changing their values.
+ *
+ * Sprint 034 — SIGNAL_FORM_V2
+ *
+ * @param form - The SignalForm to re-validate
+ * @returns True if the form is valid after re-validation, false otherwise
+ *
+ * @example
+ * ```ts
+ * // In a multi-step checkout — trigger validation on step change
+ * if (!reloadValidation(this.form)) {
+ *   this.showStepErrors.set(true);
+ *   return;
+ * }
+ * this.nextStep();
+ * ```
+ */
+export function reloadValidation<T extends Record<string, unknown>>(
+  form: SignalForm<T>
+): boolean {
+  // Touch all fields to expose existing errors without submit() side-effects
+  for (const key of Object.keys(form.fields) as Array<keyof T>) {
+    form.fields[key].touch();
+  }
+  return form.valid();
+}
+
+/**
+ * Create a `SignalField<string>` with built-in debounce on setValue.
+ *
+ * Wraps a standard signal field and adds a debounced value signal —
+ * ideal for async search or validation scenarios.
+ *
+ * Sprint 034 — SIGNAL_FORM_V2
+ *
+ * @param config - Standard field config
+ * @param debounceMs - Debounce delay in ms (default 300)
+ * @returns An extended signal field with `.debouncedValue` signal
+ *
+ * @example
+ * ```ts
+ * readonly searchField = createDebouncedField({ value: '', validators: [] }, 400);
+ * // Use searchField.debouncedValue() in an effect to trigger API calls
+ * ```
+ */
+export function createDebouncedField(
+  config: SignalFieldConfig<string>,
+  debounceMs = 300
+): SignalField<string> & { debouncedValue: Signal<string> } {
+  const initial = config.value ?? '';
+  const validators = config.validators ?? [];
+
+  const valueSignal: WritableSignal<string> = signal(initial);
+  const touchedSignal: WritableSignal<boolean> = signal(false);
+  const dirtySignal = computed(() => valueSignal() !== initial);
+
+  const errorsSignal = computed<string[]>(() => {
+    const v = valueSignal();
+    const errs: string[] = [];
+    for (const validator of validators) {
+      const err = validator(v);
+      if (err !== null) errs.push(err);
+    }
+    return errs;
+  });
+
+  const firstErrorSignal = computed(() => errorsSignal()[0] ?? null);
+  const invalidSignal = computed(() => errorsSignal().length > 0);
+  const showErrorSignal = computed(() => touchedSignal() && invalidSignal());
+
+  // Debounced variant — only updates after debounceMs of inactivity
+  const debouncedValueSignal: WritableSignal<string> = signal(initial);
+  let _timer: ReturnType<typeof setTimeout> | null = null;
+  const scheduleDebounce = (v: string) => {
+    if (_timer) clearTimeout(_timer);
+    _timer = setTimeout(() => { debouncedValueSignal.set(v); }, debounceMs);
+  };
+
+  return {
+    value: valueSignal.asReadonly(),
+    touched: touchedSignal.asReadonly(),
+    dirty: dirtySignal,
+    errors: errorsSignal,
+    firstError: firstErrorSignal,
+    invalid: invalidSignal,
+    showError: showErrorSignal,
+    debouncedValue: debouncedValueSignal.asReadonly(),
+    setValue(v: string) {
+      valueSignal.set(v);
+      scheduleDebounce(v);
+    },
+    touch() { touchedSignal.set(true); },
+    reset() {
+      valueSignal.set(initial);
+      debouncedValueSignal.set(initial);
+      touchedSignal.set(false);
+    },
+  };
+}

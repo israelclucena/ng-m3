@@ -22,9 +22,9 @@ export const WithResults: Story = {
   args: {
     placeholder: 'Search users...',
     results: [
-      { label: 'Alice Johnson', icon: 'person', category: 'Users' },
-      { label: 'Bob Smith', icon: 'person', category: 'Users' },
-      { label: 'Project Alpha', icon: 'folder', category: 'Projects' },
+      { id: "1", label: "Alice Johnson", icon: "person" },
+      { id: "2", label: "Bob Smith", icon: "person" },
+      { id: "3", label: "Project Alpha", icon: "folder" },
     ],
     loading: false,
   },

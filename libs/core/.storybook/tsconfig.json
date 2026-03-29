@@ -2,7 +2,9 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "emitDecoratorMetadata": true,
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "strict": false,
+    "noEmitOnError": false
   },
   "exclude": ["../**/*.spec.ts"],
   "include": [

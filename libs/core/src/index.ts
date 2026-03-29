@@ -216,3 +216,13 @@ export type { UnionOption, SignalUnionFieldConfig, SignalUnionField } from './li
 export { TenantDashboardService } from './lib/services/tenant-dashboard.service';
 export type { TenantDashboard, TenantKPIs, TenantPayment, TenantBooking, TenantFavouriteProperty, TenantSpendingPoint } from './lib/services/tenant-dashboard.service';
 export { TenantDashboardComponent } from './lib/components/tenant-dashboard/tenant-dashboard.component';
+
+// Sprint 034 — Night Shift 2026-03-29
+export { MaintenanceRequestService } from './lib/services/maintenance-request.service';
+export type { MaintenanceRequest, MaintenanceStatus, MaintenancePriority, MaintenanceCategory, CreateMaintenanceRequestPayload, UpdateMaintenanceStatusPayload } from './lib/services/maintenance-request.service';
+export { MaintenanceRequestFormComponent } from './lib/components/maintenance-request/maintenance-request-form.component';
+export { MaintenanceRequestListComponent } from './lib/components/maintenance-request/maintenance-request-list.component';
+export { DocumentUploadComponent } from './lib/components/document-upload/document-upload.component';
+export type { UploadFile, FileValidationOptions, FileValidationResult } from './lib/utils/file-validators';
+export { validateFile, createUploadFile, formatFileSize, getExtension, fileIcon } from './lib/utils/file-validators';
+export { getError, debouncedSignal, reloadValidation, createDebouncedField } from './lib/utils/signal-form';

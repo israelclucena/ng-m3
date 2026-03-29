@@ -3,7 +3,7 @@ import { DataTableV2Component, DataTableV2Column, DataTableV2BulkAction } from '
 
 // ─── Sample data ──────────────────────────────────────────────────────────────
 
-interface User {
+interface User extends Record<string, unknown> {
   id: number;
   name: string;
   role: string;

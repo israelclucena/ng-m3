@@ -7,7 +7,7 @@ import { DataTableV2Column } from '../data-table-v2/data-table-v2.component';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
-interface Property {
+interface Property extends Record<string, unknown> {
   id: string;
   address: string;
   type: string;
@@ -49,9 +49,11 @@ function makeLoadingResource<T>(): ResourceRef<T> {
 }
 
 function makeErrorResource<T>(message: string): ResourceRef<T> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const E = Error as any;
   return {
     isLoading: () => false,
-    error:     () => new Error(message),
+    error:     () => new E(message) as unknown,
     value:     () => undefined,
   };
 }

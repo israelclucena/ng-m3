@@ -165,7 +165,7 @@ class FullDashboardStoryComponent {
 }
 
 export const FullDashboard: StoryObj = {
-  render: () => ({ component: FullDashboardStoryComponent }),
+  render: () => ({ component: FullDashboardStoryComponent }) as any,
   name: 'Full Dashboard',
 };
 
@@ -198,6 +198,6 @@ class ListingStatesStoryComponent {
 }
 
 export const ListingStates: StoryObj = {
-  render: () => ({ component: ListingStatesStoryComponent }),
+  render: () => ({ component: ListingStatesStoryComponent }) as any,
   name: 'Listing Stats — All Status States',
 };

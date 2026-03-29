@@ -15,14 +15,14 @@ export const Default: Story = {
     title: 'Monthly Revenue',
     series: [
       {
-        label: 'Revenue',
+        name: "Revenue",
         color: '#6750A4',
         data: [
-          { x: 'Jan', y: 100 },
-          { x: 'Feb', y: 150 },
-          { x: 'Mar', y: 130 },
-          { x: 'Apr', y: 200 },
-          { x: 'May', y: 180 },
+          { label: "Jan", value: 100 },
+          { label: "Feb", value: 150 },
+          { label: "Mar", value: 130 },
+          { label: "Apr", value: 200 },
+          { label: "May", value: 180 },
         ],
       },
     ],
@@ -34,21 +34,21 @@ export const MultipleSeries: Story = {
     title: 'Revenue vs Expenses',
     series: [
       {
-        label: 'Revenue',
+        name: "Revenue",
         color: '#6750A4',
         data: [
-          { x: 'Jan', y: 100 },
-          { x: 'Feb', y: 150 },
-          { x: 'Mar', y: 200 },
+          { label: "Jan", value: 100 },
+          { label: "Feb", value: 150 },
+          { label: "Mar", value: 200 },
         ],
       },
       {
-        label: 'Expenses',
+        name: "Expenses",
         color: '#B3261E',
         data: [
-          { x: 'Jan', y: 80 },
-          { x: 'Feb', y: 90 },
-          { x: 'Mar', y: 110 },
+          { label: "Jan", value: 80 },
+          { label: "Feb", value: 90 },
+          { label: "Mar", value: 110 },
         ],
       },
     ],
@@ -64,12 +64,12 @@ export const CustomSize: Story = {
     showLegend: false,
     series: [
       {
-        label: 'Data',
+        name: "Data",
         color: '#625B71',
         data: [
-          { x: 'A', y: 10 },
-          { x: 'B', y: 40 },
-          { x: 'C', y: 25 },
+          { label: 'A', value: 10 },
+          { label: 'B', value: 40 },
+          { label: 'C', value: 25 },
         ],
       },
     ],

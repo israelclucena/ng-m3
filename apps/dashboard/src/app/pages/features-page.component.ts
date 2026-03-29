@@ -135,6 +135,10 @@ import {
   InvoiceService,
   // Sprint 033
   TenantDashboardComponent,
+  // Sprint 034
+  MaintenanceRequestFormComponent,
+  MaintenanceRequestListComponent,
+  DocumentUploadComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -261,6 +265,10 @@ const SEARCH_DATA: SearchResult[] = [
     LandlordRevenueComponent,
     // Sprint 033
     TenantDashboardComponent,
+    // Sprint 034
+    MaintenanceRequestFormComponent,
+    MaintenanceRequestListComponent,
+    DocumentUploadComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1469,6 +1477,58 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>TENANT_DASHBOARD</code>.
           </p>
           <iu-tenant-dashboard tenantId="demo-tenant-001" />
+        </section>
+      }
+
+      <!-- ── Sprint 034 ── -->
+
+      @if (flags.MAINTENANCE_MODULE) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="maintenance-module">
+          <h2>🔧 Maintenance Module</h2>
+          <p class="desc">
+            <strong>MaintenanceRequestFormComponent</strong> + <strong>MaintenanceRequestListComponent</strong>
+            + <strong>MaintenanceRequestService</strong> — Two-sided maintenance workflow.
+            Tenants submit requests (category, priority, title, description via <code>createSignalForm()</code>).
+            Landlords view all requests with expandable detail and status transitions
+            (pending → in-progress → resolved/rejected). Signal-based CRUD with in-memory mock store.
+            Feature flag: <code>MAINTENANCE_MODULE</code>.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:24px;">
+            <iu-maintenance-request-form
+              tenantId="demo-tenant-001"
+              tenantName="Demo Tenant"
+              landlordId="demo-landlord-001"
+              propertyId="p1"
+              propertyTitle="Apartamento T2 no Chiado" />
+            <iu-maintenance-request-list landlordId="demo-landlord-001" view="landlord" />
+          </div>
+        </section>
+      }
+
+      @if (flags.DOCUMENT_UPLOAD) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="document-upload">
+          <h2>📎 Document Upload</h2>
+          <p class="desc">
+            <strong>DocumentUploadComponent</strong> — Drag-and-drop M3-styled file upload.
+            Supports single/multiple files, MIME type + size + extension validation,
+            image preview thumbnails, remove/clear-all controls, and accessible keyboard/ARIA support.
+            Pure Angular Signals — no RxJS. Uses <code>FileValidationOptions</code> utilities.
+            Feature flag: <code>DOCUMENT_UPLOAD</code>.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:24px;max-width:640px;">
+            <iu-document-upload
+              label="Upload Rental Agreement"
+              [maxSizeMb]="5"
+              [allowedTypes]="['application/pdf','image/jpeg','image/png']"
+              [allowedExtensions]="['.pdf','.jpg','.jpeg','.png']" />
+            <iu-document-upload
+              label="Upload Supporting Documents (multiple)"
+              [multiple]="true"
+              [maxFiles]="10"
+              [maxSizeMb]="10" />
+          </div>
         </section>
       }
 

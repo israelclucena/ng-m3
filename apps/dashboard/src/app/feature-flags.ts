@@ -132,4 +132,9 @@ export const FeatureFlags = {
   // Sprint 033 — Night Shift 2026-03-28
   TENANT_DASHBOARD: true,          // TenantDashboardService + TenantDashboardComponent — renter analytics: KPIs, spending chart, payment history, favourites
   STORYBOOK_PATCH_1040: true,      // Storybook upgraded from 10.3.3 to 10.4.0-alpha.5 — angularChangeDetection feature flag enabled
+
+  // Sprint 034 — Night Shift 2026-03-29
+  MAINTENANCE_MODULE: true,        // MaintenanceRequestService + MaintenanceRequestFormComponent + MaintenanceRequestListComponent — tenant/landlord maintenance workflow
+  DOCUMENT_UPLOAD: true,           // DocumentUploadComponent — drag-and-drop M3 file upload with MIME/size/ext validation + image previews
+  SIGNAL_FORM_V2: true,            // signal-form v2 additions: getError(), debouncedSignal(), reloadValidation(), createDebouncedField()
 } as const;

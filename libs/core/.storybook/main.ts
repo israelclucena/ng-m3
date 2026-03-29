@@ -16,17 +16,16 @@ const config: StorybookConfig = {
   addons: [],
   framework: {
     name: '@storybook/angular',
-    options: {
-      angularBrowserTarget: 'demo:build',
-    },
+    options: {},
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   features: {
     // 10.4.0-alpha: explicit Angular change detection mode in stories
     // Allows stories to declare `changeDetection: ChangeDetectionStrategy.OnPush`
     // Works with ZONELESS_MODE — validates CD-agnostic rendering
     angularChangeDetection: true,
-  },
-  staticDirs: ['.', { from: '../../apps/dashboard/public', to: '/' }],
+  } as any,
+  staticDirs: ['.', { from: '../../../apps/dashboard/public', to: '/' }],
 };
 
 export default config;

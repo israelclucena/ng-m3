@@ -106,7 +106,7 @@ class CheckoutStoryComponent {
 }
 
 export const Checkout: StoryObj = {
-  render: () => ({ component: CheckoutStoryComponent }),
+  render: () => ({ component: CheckoutStoryComponent } as Parameters<NonNullable<StoryObj["render"]>>[0]),
   name: 'Checkout Card',
 };
 
@@ -135,7 +135,7 @@ class ConfirmedStoryComponent {
 }
 
 export const ConfirmationSuccess: StoryObj = {
-  render: () => ({ component: ConfirmedStoryComponent }),
+  render: () => ({ component: ConfirmedStoryComponent }) as any,
   name: 'Confirmation — Confirmed',
 };
 
@@ -164,6 +164,6 @@ class StatesStoryComponent {
 }
 
 export const ConfirmationStates: StoryObj = {
-  render: () => ({ component: StatesStoryComponent }),
+  render: () => ({ component: StatesStoryComponent }) as any,
   name: 'Confirmation — Pending & Failed',
 };

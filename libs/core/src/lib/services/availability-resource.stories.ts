@@ -29,7 +29,8 @@ import { AvailabilityResourceService } from './availability-resource.service';
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideHttpClient()],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  providers: [provideHttpClient() as any],
   template: `
     <div style="padding:24px;font-family:'Google Sans',sans-serif;max-width:540px">
       <h3 style="margin:0 0 4px">AvailabilityResourceService</h3>

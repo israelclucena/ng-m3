@@ -13,8 +13,8 @@ type Story = StoryObj<FormBuilderComponent>;
 export const Default: Story = {
   args: {
     fields: [
-      { key: 'name', label: 'Full Name', type: 'text', required: true },
-      { key: 'email', label: 'Email', type: 'email', required: true },
+      { key: 'name', label: 'Full Name', type: 'text', validation: { required: true } },
+      { key: 'email', label: 'Email', type: 'email', validation: { required: true } },
     ],
   },
 };
@@ -22,7 +22,7 @@ export const Default: Story = {
 export const WithSelect: Story = {
   args: {
     fields: [
-      { key: 'name', label: 'Name', type: 'text', required: true },
+      { key: 'name', label: 'Name', type: 'text', validation: { required: true } },
       {
         key: 'role',
         label: 'Role',

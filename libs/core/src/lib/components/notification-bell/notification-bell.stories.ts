@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { NotificationBellComponent } from '@israel-ui/core';
 import { NotificationBellService } from './notification-bell.service';
-import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { applicationConfig } from '@storybook/angular';
 
 const meta: Meta<NotificationBellComponent> = {
