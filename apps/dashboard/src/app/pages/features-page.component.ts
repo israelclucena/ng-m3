@@ -139,6 +139,11 @@ import {
   MaintenanceRequestFormComponent,
   MaintenanceRequestListComponent,
   DocumentUploadComponent,
+  // Sprint 035
+  LeaseAgreementFormComponent,
+  LeaseAgreementViewerComponent,
+  TenantApplicationFormComponent,
+  ApplicationStatusComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -269,6 +274,11 @@ const SEARCH_DATA: SearchResult[] = [
     MaintenanceRequestFormComponent,
     MaintenanceRequestListComponent,
     DocumentUploadComponent,
+    // Sprint 035
+    LeaseAgreementFormComponent,
+    LeaseAgreementViewerComponent,
+    TenantApplicationFormComponent,
+    ApplicationStatusComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1529,6 +1539,88 @@ const SEARCH_DATA: SearchResult[] = [
               [maxFiles]="10"
               [maxSizeMb]="10" />
           </div>
+        </section>
+      }
+
+      <!-- ── Sprint 035 ── -->
+
+      @if (flags.LEASE_MODULE) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="lease-agreement-form">
+          <h2>📄 Lease Agreement Form</h2>
+          <p class="desc">
+            <strong>LeaseAgreementFormComponent</strong> — Landlord-facing signal form to create lease agreements.
+            Lease type selector (fixed / monthly / short-term), start/end dates, monthly rent, deposit,
+            full terms textarea, and internal notes. Activates to "active" when both parties sign.
+            Feature flag: <code>LEASE_MODULE</code>.
+          </p>
+          <iu-lease-agreement-form
+            landlordId="landlord-001"
+            landlordName="Carlos Mendes"
+            propertyId="p1"
+            propertyTitle="Apartamento T2 no Chiado"
+            propertyAddress="Rua Garrett 42, 2º Dto, 1200-204 Lisboa"
+            tenantId="tenant-001"
+            tenantName="Ana Ferreira" />
+        </section>
+      }
+
+      @if (flags.LEASE_VIEWER) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="lease-agreement-viewer">
+          <h2>🔍 Lease Agreement Viewer</h2>
+          <p class="desc">
+            <strong>LeaseAgreementViewerComponent</strong> — Full lease viewer with status badge, parties,
+            financial terms grid, terms scroll box, document attachments, and dual-signature CTA.
+            Draft leases show a sign button; active leases show both signatures with timestamps.
+            Feature flag: <code>LEASE_VIEWER</code>.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:24px;">
+            <iu-lease-agreement-viewer
+              leaseId="lease-001"
+              currentUserId="tenant-001"
+              currentUserRole="tenant" />
+            <iu-lease-agreement-viewer
+              leaseId="lease-002"
+              currentUserId="tenant-001"
+              currentUserRole="tenant" />
+          </div>
+        </section>
+      }
+
+      @if (flags.TENANT_APPLICATION) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="tenant-application-form">
+          <h2>📋 Tenant Application Form</h2>
+          <p class="desc">
+            <strong>TenantApplicationFormComponent</strong> — 5-step rental application form.
+            Steps: Personal Info (phone, NIF with 9-digit pattern validation, nationality, occupants, pets)
+            → Employment & Income → References (up to 3, with relationship type) → Cover Letter
+            → Review & Submit. Pure Angular Signals, no RxJS.
+            Feature flag: <code>TENANT_APPLICATION</code>.
+          </p>
+          <iu-tenant-application-form
+            tenantId="tenant-001"
+            tenantName="Ana Ferreira"
+            tenantEmail="ana.ferreira@email.pt"
+            propertyId="p1"
+            propertyTitle="Apartamento T2 no Chiado"
+            landlordId="landlord-001" />
+        </section>
+      }
+
+      @if (flags.APPLICATION_REVIEW) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="application-review">
+          <h2>🗂️ Application Review Panel</h2>
+          <p class="desc">
+            <strong>ApplicationStatusComponent</strong> — Landlord panel to review, approve, or reject
+            tenant applications. Filter by status (All / New / Under Review / Approved / Rejected).
+            Expandable cards showing full applicant details, income ratio bar, references, cover letter,
+            and action buttons. Approve/Reject with optional rejection reason.
+            Feature flag: <code>APPLICATION_REVIEW</code>.
+          </p>
+          <iu-application-status landlordId="landlord-001" />
         </section>
       }
 

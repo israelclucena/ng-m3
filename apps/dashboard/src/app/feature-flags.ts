@@ -137,4 +137,11 @@ export const FeatureFlags = {
   MAINTENANCE_MODULE: true,        // MaintenanceRequestService + MaintenanceRequestFormComponent + MaintenanceRequestListComponent — tenant/landlord maintenance workflow
   DOCUMENT_UPLOAD: true,           // DocumentUploadComponent — drag-and-drop M3 file upload with MIME/size/ext validation + image previews
   SIGNAL_FORM_V2: true,            // signal-form v2 additions: getError(), debouncedSignal(), reloadValidation(), createDebouncedField()
+
+  // Sprint 035 — Night Shift 2026-03-30
+  LEASE_MODULE: true,              // LeaseAgreementService + LeaseAgreementFormComponent — landlord creates leases, draft→active lifecycle
+  LEASE_VIEWER: true,              // LeaseAgreementViewerComponent — full lease viewer with dual-signature CTA
+  TENANT_APPLICATION: true,        // TenantApplicationService + TenantApplicationFormComponent — multi-step rental application (5 steps, NIF validation, references)
+  APPLICATION_REVIEW: true,        // ApplicationStatusComponent — landlord review panel: approve/reject/under-review with income ratio
+  MAINTENANCE_NOTIFICATIONS: true, // MaintenanceNotificationHandler — status transitions push in-app notifications via NotificationBellService
 } as const;

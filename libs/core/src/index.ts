@@ -226,3 +226,14 @@ export { DocumentUploadComponent } from './lib/components/document-upload/docume
 export type { UploadFile, FileValidationOptions, FileValidationResult } from './lib/utils/file-validators';
 export { validateFile, createUploadFile, formatFileSize, getExtension, fileIcon } from './lib/utils/file-validators';
 export { getError, debouncedSignal, reloadValidation, createDebouncedField } from './lib/utils/signal-form';
+
+// Sprint 035 — Night Shift 2026-03-30
+export { LeaseAgreementService } from './lib/services/lease-agreement.service';
+export type { LeaseAgreement, LeaseStatus, LeaseType, LeaseDocument, CreateLeasePayload } from './lib/services/lease-agreement.service';
+export { LeaseAgreementFormComponent } from './lib/components/lease-agreement/lease-agreement-form.component';
+export { LeaseAgreementViewerComponent } from './lib/components/lease-agreement/lease-agreement-viewer.component';
+export { TenantApplicationService } from './lib/services/tenant-application.service';
+export type { TenantApplication, ApplicationStatus, EmploymentType, TenantReference, CreateApplicationPayload } from './lib/services/tenant-application.service';
+export { TenantApplicationFormComponent } from './lib/components/tenant-application/tenant-application-form.component';
+export { ApplicationStatusComponent } from './lib/components/tenant-application/application-status.component';
+export { MaintenanceNotificationHandler } from './lib/services/maintenance-notification.handler';
