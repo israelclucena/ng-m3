@@ -144,6 +144,11 @@ import {
   LeaseAgreementViewerComponent,
   TenantApplicationFormComponent,
   ApplicationStatusComponent,
+  // Sprint 036
+  SignaturePadComponent,
+  LeaseSigningFlowComponent,
+  ApplicationKanbanComponent,
+  NotificationCenterComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -279,6 +284,11 @@ const SEARCH_DATA: SearchResult[] = [
     LeaseAgreementViewerComponent,
     TenantApplicationFormComponent,
     ApplicationStatusComponent,
+    // Sprint 036
+    SignaturePadComponent,
+    LeaseSigningFlowComponent,
+    ApplicationKanbanComponent,
+    NotificationCenterComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1621,6 +1631,62 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>APPLICATION_REVIEW</code>.
           </p>
           <iu-application-status landlordId="landlord-001" />
+        </section>
+      }
+
+      @if (flags.E_SIGNATURE_MODULE) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="e-signature">
+          <h2>✍️ Digital E-Signature Flow</h2>
+          <p class="desc">
+            <strong>SignaturePadComponent</strong> — Canvas-based signature pad with touch/mouse/stylus support.
+            Undo last stroke, clear, and confirm actions. Exports signature as PNG data URL.
+            <strong>LeaseSigningFlowComponent</strong> — Orchestrates the dual-signature lease signing flow:
+            landlord signs → notifies tenant → tenant signs → lease activates.
+            State machine: idle → landlord_pending → landlord_signed → tenant_pending → completed.
+            Feature flag: <code>E_SIGNATURE_MODULE</code>.
+          </p>
+          <iu-signature-pad
+            label="Demonstração de Assinatura"
+            signerName="Demo User"
+          />
+          <div style="margin-top: 24px;">
+            <iu-lease-signing-flow
+              leaseId="lease-002"
+              currentRole="landlord"
+              currentUserName="João Costa (Demo)"
+            />
+          </div>
+        </section>
+      }
+
+      @if (flags.APPLICATION_PIPELINE) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="application-pipeline">
+          <h2>🗂️ Application Pipeline Board</h2>
+          <p class="desc">
+            <strong>ApplicationKanbanComponent</strong> — 4-column Kanban board for the full application pipeline:
+            Candidaturas → Em Análise → Aprovadas / Recusadas.
+            Click a card to reveal quick actions. Integrates with ApplicationPipelineService
+            which wraps TenantApplicationService for signal-based state management.
+            Feature flag: <code>APPLICATION_PIPELINE</code>.
+          </p>
+          <iu-application-kanban landlordId="landlord-001" />
+        </section>
+      }
+
+      @if (flags.NOTIFICATION_CENTER) {
+        <iu-divider></iu-divider>
+        <section class="feature-section" id="notification-center">
+          <h2>🔔 Notification Center</h2>
+          <p class="desc">
+            <strong>NotificationCenterComponent</strong> — Full notification center drawer with category filtering.
+            Tabs: All / Messages / Bookings / Maintenance / Leases / Payments / System.
+            Mark individual or all notifications as read. Dismiss (remove) notifications.
+            Trigger button with unread badge. Slide-in M3 drawer with overlay.
+            Feature flag: <code>NOTIFICATION_CENTER</code>.
+          </p>
+          <iu-notification-center [embedded]="true" />
         </section>
       }
 

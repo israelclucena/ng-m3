@@ -237,3 +237,15 @@ export type { TenantApplication, ApplicationStatus, EmploymentType, TenantRefere
 export { TenantApplicationFormComponent } from './lib/components/tenant-application/tenant-application-form.component';
 export { ApplicationStatusComponent } from './lib/components/tenant-application/application-status.component';
 export { MaintenanceNotificationHandler } from './lib/services/maintenance-notification.handler';
+
+// Sprint 036 — Night Shift 2026-03-31
+export { SignatureStateService } from './lib/services/signature-state.service';
+export type { SigningState, SignerRole, SignatureEntry, SigningFlowState } from './lib/services/signature-state.service';
+export { SignaturePadComponent } from './lib/components/e-signature/signature-pad.component';
+export { LeaseSigningFlowComponent } from './lib/components/e-signature/lease-signing-flow.component';
+export { ApplicationPipelineService } from './lib/services/application-pipeline.service';
+export type { KanbanColumn, PipelineColumns } from './lib/services/application-pipeline.service';
+export { ApplicationKanbanComponent } from './lib/components/application-pipeline/application-kanban.component';
+export { NotificationCenterService } from './lib/services/notification-center.service';
+export type { ExtendedCategory, CategoryFilter } from './lib/services/notification-center.service';
+export { NotificationCenterComponent } from './lib/components/notification-center/notification-center.component';

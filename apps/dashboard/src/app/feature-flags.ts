@@ -144,4 +144,9 @@ export const FeatureFlags = {
   TENANT_APPLICATION: true,        // TenantApplicationService + TenantApplicationFormComponent — multi-step rental application (5 steps, NIF validation, references)
   APPLICATION_REVIEW: true,        // ApplicationStatusComponent — landlord review panel: approve/reject/under-review with income ratio
   MAINTENANCE_NOTIFICATIONS: true, // MaintenanceNotificationHandler — status transitions push in-app notifications via NotificationBellService
+
+  // Sprint 036 — Night Shift 2026-03-31
+  E_SIGNATURE_MODULE: true,        // SignaturePadComponent + SignatureStateService + LeaseSigningFlowComponent — dual-signature lease signing flow
+  APPLICATION_PIPELINE: true,      // ApplicationPipelineService + ApplicationKanbanComponent — Kanban board for application pipeline (4 columns)
+  NOTIFICATION_CENTER: true,       // NotificationCenterService + NotificationCenterComponent — full notification center drawer with category filtering
 } as const;
