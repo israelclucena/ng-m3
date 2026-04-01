@@ -149,6 +149,10 @@ import {
   LeaseSigningFlowComponent,
   ApplicationKanbanComponent,
   NotificationCenterComponent,
+  // Sprint 037
+  RentPaymentPortalComponent,
+  PropertyInspectionComponent,
+  DocumentVaultComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -289,6 +293,10 @@ const SEARCH_DATA: SearchResult[] = [
     LeaseSigningFlowComponent,
     ApplicationKanbanComponent,
     NotificationCenterComponent,
+    // Sprint 037
+    RentPaymentPortalComponent,
+    PropertyInspectionComponent,
+    DocumentVaultComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1687,6 +1695,60 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>NOTIFICATION_CENTER</code>.
           </p>
           <iu-notification-center [embedded]="true" />
+        </section>
+      }
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- SPRINT 037 — Night Shift 2026-04-01                     -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+
+      @if (flags.RENT_PAYMENT_PORTAL) {
+        <section class="feature-section" id="rent-payment-portal">
+          <h2>Rent Payment Portal</h2>
+          <p class="desc">
+            <strong>RentPaymentPortalComponent</strong> — Tenant-facing payment dashboard with KPI
+            strip (paid this year, outstanding, streak, next due date), overdue alert banner,
+            full payment schedule table with Pay Now / Receipt CTAs, and landlord read-only view.
+            Feature flag: <code>RENT_PAYMENT_PORTAL</code>.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:24px">
+            <div>
+              <h4 style="margin:0 0 12px;font-size:14px;color:var(--md-sys-color-on-surface-variant)">Tenant View</h4>
+              <iu-rent-payment-portal mode="tenant" />
+            </div>
+            <div>
+              <h4 style="margin:0 0 12px;font-size:14px;color:var(--md-sys-color-on-surface-variant)">Landlord View</h4>
+              <iu-rent-payment-portal mode="landlord" landlordId="landlord-001" />
+            </div>
+          </div>
+        </section>
+      }
+
+      @if (flags.PROPERTY_INSPECTION) {
+        <section class="feature-section" id="property-inspection">
+          <h2>Property Inspection</h2>
+          <p class="desc">
+            <strong>PropertyInspectionComponent</strong> — Move-in / move-out / routine / emergency
+            inspection workflow. Per-room condition ratings (excellent → damaged), notes editing,
+            inspector summary, and dual-signature sign-off. Status transitions: draft → in-progress →
+            completed → signed.
+            Feature flag: <code>PROPERTY_INSPECTION</code>.
+          </p>
+          <iu-property-inspection role="landlord" />
+        </section>
+      }
+
+      @if (flags.DOCUMENT_VAULT) {
+        <section class="feature-section" id="document-vault">
+          <h2>Document Vault</h2>
+          <p class="desc">
+            <strong>DocumentVaultComponent</strong> — Centralised document repository for tenants
+            and landlords. Sidebar navigation by category (leases, receipts, photos, IDs, contracts,
+            inspections), document grid with file-type icons, storage usage meter, and upload / delete
+            actions.
+            Feature flag: <code>DOCUMENT_VAULT</code>.
+          </p>
+          <iu-document-vault />
         </section>
       }
 

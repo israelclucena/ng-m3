@@ -149,4 +149,9 @@ export const FeatureFlags = {
   E_SIGNATURE_MODULE: true,        // SignaturePadComponent + SignatureStateService + LeaseSigningFlowComponent — dual-signature lease signing flow
   APPLICATION_PIPELINE: true,      // ApplicationPipelineService + ApplicationKanbanComponent — Kanban board for application pipeline (4 columns)
   NOTIFICATION_CENTER: true,       // NotificationCenterService + NotificationCenterComponent — full notification center drawer with category filtering
+
+  // Sprint 037 — Night Shift 2026-04-01
+  RENT_PAYMENT_PORTAL: true,       // RentPaymentPortalService + RentPaymentPortalComponent — tenant rent payment schedule, KPIs, pay-now CTA, overdue alerts
+  PROPERTY_INSPECTION: true,       // PropertyInspectionService + PropertyInspectionComponent — move-in/out/routine inspection with room conditions + dual-signature
+  DOCUMENT_VAULT: true,            // DocumentVaultService + DocumentVaultComponent — categorised document repository with sidebar nav, storage meter, upload/delete
 } as const;

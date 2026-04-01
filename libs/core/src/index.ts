@@ -238,6 +238,17 @@ export { TenantApplicationFormComponent } from './lib/components/tenant-applicat
 export { ApplicationStatusComponent } from './lib/components/tenant-application/application-status.component';
 export { MaintenanceNotificationHandler } from './lib/services/maintenance-notification.handler';
 
+// Sprint 037 — Night Shift 2026-04-01
+export { RentPaymentPortalService } from './lib/services/rent-payment-portal.service';
+export type { RentPayment, RentPaymentStatus, CreatePaymentPayload } from './lib/services/rent-payment-portal.service';
+export { RentPaymentPortalComponent } from './lib/components/rent-payment-portal/rent-payment-portal.component';
+export { PropertyInspectionService } from './lib/services/property-inspection.service';
+export type { InspectionReport, InspectionType, InspectionStatus, RoomCondition, InspectionRoom, CreateInspectionPayload } from './lib/services/property-inspection.service';
+export { PropertyInspectionComponent } from './lib/components/property-inspection/property-inspection.component';
+export { DocumentVaultService } from './lib/services/document-vault.service';
+export type { VaultDocument, VaultDocumentCategory, AddDocumentPayload } from './lib/services/document-vault.service';
+export { DocumentVaultComponent } from './lib/components/document-vault/document-vault.component';
+
 // Sprint 036 — Night Shift 2026-03-31
 export { SignatureStateService } from './lib/services/signature-state.service';
 export type { SigningState, SignerRole, SignatureEntry, SigningFlowState } from './lib/services/signature-state.service';
