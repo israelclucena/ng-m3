@@ -153,6 +153,10 @@ import {
   RentPaymentPortalComponent,
   PropertyInspectionComponent,
   DocumentVaultComponent,
+  // Sprint 038
+  ViewingSchedulerComponent,
+  LeaseRenewalComponent,
+  RentArrearsComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -297,6 +301,10 @@ const SEARCH_DATA: SearchResult[] = [
     RentPaymentPortalComponent,
     PropertyInspectionComponent,
     DocumentVaultComponent,
+    // Sprint 038
+    ViewingSchedulerComponent,
+    LeaseRenewalComponent,
+    RentArrearsComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1749,6 +1757,47 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>DOCUMENT_VAULT</code>.
           </p>
           <iu-document-vault />
+        </section>
+      }
+
+      <!-- ═══════════════ Sprint 038 ═══════════════ -->
+
+      @if (flags.VIEWING_SCHEDULER) {
+        <section class="feature-section" id="viewing-scheduler">
+          <h2>Viewing Scheduler</h2>
+          <p class="feature-desc">
+            <strong>ViewingSchedulerComponent</strong> — Property viewing appointment manager for landlords
+            and tenants. KPI strip (pending/confirmed/completed), status-colour-coded viewing list with
+            confirm, complete, no-show, and cancel actions. Supports in-person and virtual (meet link) viewings.
+            Feature flag: <code>VIEWING_SCHEDULER</code>.
+          </p>
+          <iu-viewing-scheduler mode="landlord" />
+        </section>
+      }
+
+      @if (flags.LEASE_RENEWAL) {
+        <section class="feature-section" id="lease-renewal">
+          <h2>Lease Renewal</h2>
+          <p class="feature-desc">
+            <strong>LeaseRenewalComponent</strong> — Lease renewal workflow manager. Shows expiring leases
+            with urgency indicators (30/60/90 day thresholds), rent comparison (current vs proposed with
+            % change), inline offer form for landlords, accept/decline for tenants, and overdue alert banner.
+            Feature flag: <code>LEASE_RENEWAL</code>.
+          </p>
+          <iu-lease-renewal mode="landlord" />
+        </section>
+      }
+
+      @if (flags.RENT_ARREARS) {
+        <section class="feature-section" id="rent-arrears">
+          <h2>Rent Arrears Manager</h2>
+          <p class="feature-desc">
+            <strong>RentArrearsComponent</strong> — Landlord-facing rent arrears dashboard. Portfolio-level
+            KPIs (total outstanding, tenants in arrears, avg days overdue, critical cases), severity-coded
+            record cards with send-reminder, payment plan setup, legal escalation, and resolve actions.
+            Feature flag: <code>RENT_ARREARS</code>.
+          </p>
+          <iu-rent-arrears />
         </section>
       }
 

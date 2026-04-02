@@ -154,4 +154,9 @@ export const FeatureFlags = {
   RENT_PAYMENT_PORTAL: true,       // RentPaymentPortalService + RentPaymentPortalComponent — tenant rent payment schedule, KPIs, pay-now CTA, overdue alerts
   PROPERTY_INSPECTION: true,       // PropertyInspectionService + PropertyInspectionComponent — move-in/out/routine inspection with room conditions + dual-signature
   DOCUMENT_VAULT: true,            // DocumentVaultService + DocumentVaultComponent — categorised document repository with sidebar nav, storage meter, upload/delete
+
+  // Sprint 038 — Night Shift 2026-04-02
+  VIEWING_SCHEDULER: false,        // ViewingSchedulerService + ViewingSchedulerComponent — property viewing appointment manager (landlord + tenant)
+  LEASE_RENEWAL: false,            // LeaseRenewalService + LeaseRenewalComponent — lease renewal workflow with urgency, offers, tenant responses
+  RENT_ARREARS: false,             // RentArrearsService + RentArrearsComponent — landlord arrears dashboard: reminders, payment plans, legal escalation
 } as const;

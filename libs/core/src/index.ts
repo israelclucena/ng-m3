@@ -260,3 +260,14 @@ export { ApplicationKanbanComponent } from './lib/components/application-pipelin
 export { NotificationCenterService } from './lib/services/notification-center.service';
 export type { ExtendedCategory, CategoryFilter } from './lib/services/notification-center.service';
 export { NotificationCenterComponent } from './lib/components/notification-center/notification-center.component';
+
+// Sprint 038 — Night Shift 2026-04-02
+export { ViewingSchedulerService } from './lib/services/viewing-scheduler.service';
+export type { ViewingSlot, ViewingStatus, ViewingType, RequestViewingPayload } from './lib/services/viewing-scheduler.service';
+export { ViewingSchedulerComponent } from './lib/components/viewing-scheduler/viewing-scheduler.component';
+export { LeaseRenewalService } from './lib/services/lease-renewal.service';
+export type { LeaseRenewal, RenewalStatus, SendRenewalOfferPayload } from './lib/services/lease-renewal.service';
+export { LeaseRenewalComponent } from './lib/components/lease-renewal/lease-renewal.component';
+export { RentArrearsService } from './lib/services/rent-arrears.service';
+export type { ArrearsRecord, ArrearsStatus } from './lib/services/rent-arrears.service';
+export { RentArrearsComponent } from './lib/components/rent-arrears/rent-arrears.component';
