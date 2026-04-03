@@ -155,8 +155,13 @@ export const FeatureFlags = {
   PROPERTY_INSPECTION: true,       // PropertyInspectionService + PropertyInspectionComponent — move-in/out/routine inspection with room conditions + dual-signature
   DOCUMENT_VAULT: true,            // DocumentVaultService + DocumentVaultComponent — categorised document repository with sidebar nav, storage meter, upload/delete
 
-  // Sprint 038 — Night Shift 2026-04-02
-  VIEWING_SCHEDULER: false,        // ViewingSchedulerService + ViewingSchedulerComponent — property viewing appointment manager (landlord + tenant)
-  LEASE_RENEWAL: false,            // LeaseRenewalService + LeaseRenewalComponent — lease renewal workflow with urgency, offers, tenant responses
-  RENT_ARREARS: false,             // RentArrearsService + RentArrearsComponent — landlord arrears dashboard: reminders, payment plans, legal escalation
+  // Sprint 038 — Night Shift 2026-04-02 (activated 2026-04-03)
+  VIEWING_SCHEDULER: true,         // ViewingSchedulerService + ViewingSchedulerComponent — property viewing appointment manager (landlord + tenant)
+  LEASE_RENEWAL: true,             // LeaseRenewalService + LeaseRenewalComponent — lease renewal workflow with urgency, offers, tenant responses
+  RENT_ARREARS: true,              // RentArrearsService + RentArrearsComponent — landlord arrears dashboard: reminders, payment plans, legal escalation
+
+  // Sprint 039 — Night Shift 2026-04-03
+  UTILITY_BILLS: false,            // UtilityBillsService + UtilityBillsComponent — utility bill tracker (electricity, water, gas, internet) with mark-paid, dispute, split-cost
+  PORTFOLIO_OVERVIEW: false,       // PortfolioOverviewService + PortfolioOverviewComponent — landlord portfolio KPIs: MRR, occupancy rate, MRR trend chart, property cards
+  NOTIFICATION_PREFERENCES: false, // NotificationPreferencesService + NotificationPreferencesComponent — per-category, per-channel notification settings panel
 } as const;

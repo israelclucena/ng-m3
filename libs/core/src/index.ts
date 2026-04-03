@@ -271,3 +271,14 @@ export { LeaseRenewalComponent } from './lib/components/lease-renewal/lease-rene
 export { RentArrearsService } from './lib/services/rent-arrears.service';
 export type { ArrearsRecord, ArrearsStatus } from './lib/services/rent-arrears.service';
 export { RentArrearsComponent } from './lib/components/rent-arrears/rent-arrears.component';
+
+// Sprint 039 — Night Shift 2026-04-03
+export { UtilityBillsService } from './lib/services/utility-bills.service';
+export type { UtilityBill, UtilityType, BillStatus, BillPayer, AddBillPayload } from './lib/services/utility-bills.service';
+export { UtilityBillsComponent } from './lib/components/utility-bills/utility-bills.component';
+export { PortfolioOverviewService } from './lib/services/portfolio-overview.service';
+export type { PortfolioProperty, PortfolioKPIs, MonthlySnapshot } from './lib/services/portfolio-overview.service';
+export { PortfolioOverviewComponent } from './lib/components/portfolio-overview/portfolio-overview.component';
+export { NotificationPreferencesService } from './lib/services/notification-preferences.service';
+export type { NotificationPreference, NotificationChannel, NotificationCategory } from './lib/services/notification-preferences.service';
+export { NotificationPreferencesComponent } from './lib/components/notification-preferences/notification-preferences.component';

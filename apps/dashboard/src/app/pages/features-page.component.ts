@@ -157,6 +157,10 @@ import {
   ViewingSchedulerComponent,
   LeaseRenewalComponent,
   RentArrearsComponent,
+  // Sprint 039
+  UtilityBillsComponent,
+  PortfolioOverviewComponent,
+  NotificationPreferencesComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -305,6 +309,10 @@ const SEARCH_DATA: SearchResult[] = [
     ViewingSchedulerComponent,
     LeaseRenewalComponent,
     RentArrearsComponent,
+    // Sprint 039
+    UtilityBillsComponent,
+    PortfolioOverviewComponent,
+    NotificationPreferencesComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1798,6 +1806,48 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>RENT_ARREARS</code>.
           </p>
           <iu-rent-arrears />
+        </section>
+      }
+
+      <!-- ═══════════════ Sprint 039 ═══════════════ -->
+
+      @if (flags.UTILITY_BILLS) {
+        <section class="feature-section" id="utility-bills">
+          <h2>Utility Bills Tracker</h2>
+          <p class="feature-desc">
+            <strong>UtilityBillsComponent</strong> — Track utility costs (electricity, water, gas,
+            internet, waste) across your property portfolio. KPI strip, status/type filters,
+            per-bill mark-paid and dispute actions, split-cost display, and overdue highlighting.
+            Feature flag: <code>UTILITY_BILLS</code>.
+          </p>
+          <iu-utility-bills />
+        </section>
+      }
+
+      @if (flags.PORTFOLIO_OVERVIEW) {
+        <section class="feature-section" id="portfolio-overview">
+          <h2>Portfolio Overview</h2>
+          <p class="feature-desc">
+            <strong>PortfolioOverviewComponent</strong> — High-level landlord portfolio dashboard.
+            Total MRR, average occupancy rate, vacant/maintenance counts, MRR trend bar chart,
+            occupancy progress bars per property, and pending-action alerts. Signal-driven, no RxJS.
+            Feature flag: <code>PORTFOLIO_OVERVIEW</code>.
+          </p>
+          <iu-portfolio-overview />
+        </section>
+      }
+
+      @if (flags.NOTIFICATION_PREFERENCES) {
+        <section class="feature-section" id="notification-preferences">
+          <h2>Notification Preferences</h2>
+          <p class="feature-desc">
+            <strong>NotificationPreferencesComponent</strong> — User notification settings panel.
+            Per-category, per-channel toggles (email/SMS/push/in-app) with urgency labels, global
+            channel kill-switches, enable-all/disable-all per channel, and unsaved-changes tracking
+            with a save button. Fully signal-driven.
+            Feature flag: <code>NOTIFICATION_PREFERENCES</code>.
+          </p>
+          <iu-notification-preferences />
         </section>
       }
 
