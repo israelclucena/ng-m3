@@ -160,8 +160,8 @@ export const FeatureFlags = {
   LEASE_RENEWAL: true,             // LeaseRenewalService + LeaseRenewalComponent — lease renewal workflow with urgency, offers, tenant responses
   RENT_ARREARS: true,              // RentArrearsService + RentArrearsComponent — landlord arrears dashboard: reminders, payment plans, legal escalation
 
-  // Sprint 039 — Night Shift 2026-04-03
-  UTILITY_BILLS: false,            // UtilityBillsService + UtilityBillsComponent — utility bill tracker (electricity, water, gas, internet) with mark-paid, dispute, split-cost
-  PORTFOLIO_OVERVIEW: false,       // PortfolioOverviewService + PortfolioOverviewComponent — landlord portfolio KPIs: MRR, occupancy rate, MRR trend chart, property cards
-  NOTIFICATION_PREFERENCES: false, // NotificationPreferencesService + NotificationPreferencesComponent — per-category, per-channel notification settings panel
+  // Sprint 039 — Night Shift 2026-04-03 (activated 2026-04-30 sprint-040)
+  UTILITY_BILLS: true,             // UtilityBillsService + UtilityBillsComponent — utility bill tracker (electricity, water, gas, internet) with mark-paid, dispute, split-cost
+  PORTFOLIO_OVERVIEW: true,        // PortfolioOverviewService + PortfolioOverviewComponent — landlord portfolio KPIs: MRR, occupancy rate, MRR trend chart, property cards
+  NOTIFICATION_PREFERENCES: true,  // NotificationPreferencesService + NotificationPreferencesComponent — per-category, per-channel notification settings panel
 } as const;
