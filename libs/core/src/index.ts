@@ -282,3 +282,9 @@ export { PortfolioOverviewComponent } from './lib/components/portfolio-overview/
 export { NotificationPreferencesService } from './lib/services/notification-preferences.service';
 export type { NotificationPreference, NotificationChannel, NotificationCategory } from './lib/services/notification-preferences.service';
 export { NotificationPreferencesComponent } from './lib/components/notification-preferences/notification-preferences.component';
+
+// Sprint 040 — Night Shift 2026-04-30
+export { YieldCalculatorComponent } from './lib/components/yield-calculator/yield-calculator.component';
+export { MoveInChecklistService } from './lib/services/move-in-checklist.service';
+export type { MoveInTask, MoveInCategory } from './lib/services/move-in-checklist.service';
+export { MoveInChecklistComponent } from './lib/components/move-in-checklist/move-in-checklist.component';

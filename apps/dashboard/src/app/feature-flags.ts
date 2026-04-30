@@ -164,4 +164,8 @@ export const FeatureFlags = {
   UTILITY_BILLS: true,             // UtilityBillsService + UtilityBillsComponent — utility bill tracker (electricity, water, gas, internet) with mark-paid, dispute, split-cost
   PORTFOLIO_OVERVIEW: true,        // PortfolioOverviewService + PortfolioOverviewComponent — landlord portfolio KPIs: MRR, occupancy rate, MRR trend chart, property cards
   NOTIFICATION_PREFERENCES: true,  // NotificationPreferencesService + NotificationPreferencesComponent — per-category, per-channel notification settings panel
+
+  // Sprint 040 — Night Shift 2026-04-30
+  YIELD_CALCULATOR: true,          // YieldCalculatorComponent — PT rental yield calculator (gross/net/payback) with Lisboa & Porto market presets
+  MOVE_IN_CHECKLIST: true,         // MoveInChecklistService + MoveInChecklistComponent — tenant move-in checklist (utilities, admin, financial, logistics, inspection) with category progress
 } as const;

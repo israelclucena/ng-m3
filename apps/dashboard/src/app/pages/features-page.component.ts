@@ -161,6 +161,9 @@ import {
   UtilityBillsComponent,
   PortfolioOverviewComponent,
   NotificationPreferencesComponent,
+  // Sprint 040
+  YieldCalculatorComponent,
+  MoveInChecklistComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -313,6 +316,9 @@ const SEARCH_DATA: SearchResult[] = [
     UtilityBillsComponent,
     PortfolioOverviewComponent,
     NotificationPreferencesComponent,
+    // Sprint 040
+    YieldCalculatorComponent,
+    MoveInChecklistComponent,
   ],
   template: `
     <div class="features-catalog">
@@ -1848,6 +1854,37 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>NOTIFICATION_PREFERENCES</code>.
           </p>
           <iu-notification-preferences />
+        </section>
+      }
+
+      <!-- ═══════════════ Sprint 040 ═══════════════ -->
+
+      @if (flags.YIELD_CALCULATOR) {
+        <section class="feature-section" id="yield-calculator">
+          <h2>Yield Calculator</h2>
+          <p class="feature-desc">
+            <strong>YieldCalculatorComponent</strong> — Calculadora de rentabilidade para senhorios
+            PT. Computa yield bruto, yield líquido (após custos + IRS) e payback. Inclui presets
+            para Lisboa (€8.191/m²) e Porto (~€4.000/m²). Two-way <code>model()</code> inputs,
+            computeds reativos, sem RxJS.
+            Feature flag: <code>YIELD_CALCULATOR</code>.
+          </p>
+          <iu-yield-calculator />
+        </section>
+      }
+
+      @if (flags.MOVE_IN_CHECKLIST) {
+        <section class="feature-section" id="move-in-checklist">
+          <h2>Move-In Checklist</h2>
+          <p class="feature-desc">
+            <strong>MoveInChecklistComponent</strong> — Checklist de mudança para inquilinos PT.
+            16 tarefas em 5 categorias (Serviços, Administrativo, Financeiro, Logística, Inspeção)
+            com timing relativo (D-14 a D+30), progresso por categoria e meter global. Construído
+            apenas com <code>--md-sys-*</code> tokens — sem componentes <code>@material/web</code>
+            (library em maintenance mode).
+            Feature flag: <code>MOVE_IN_CHECKLIST</code>.
+          </p>
+          <iu-move-in-checklist />
         </section>
       }
 
