@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {},
   "private": true,
+  "packageManager": "pnpm@10.33.2",
   "dependencies": {
     "@angular-architects/module-federation": "^21.2.0",
     "@angular-architects/module-federation-runtime": "^21.2.0",
