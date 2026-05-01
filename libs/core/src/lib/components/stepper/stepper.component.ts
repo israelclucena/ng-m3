@@ -312,37 +312,34 @@ export interface StepChangeEvent {
       transition: background 0.2s;
 
       .material-symbols-outlined { font-size: 18px; }
-
-      &--back {
-        background: transparent;
-        color: var(--md-sys-color-on-surface-variant, #49454f);
-        border: 1px solid var(--md-sys-color-outline, #79747e);
-
-        &:hover:not(:disabled) {
-          background: var(--md-sys-color-surface-container, #f3edf7);
-        }
-
-        &:disabled {
-          opacity: 0.38;
-          cursor: not-allowed;
-        }
-      }
-
-      &--next {
-        background: var(--md-sys-color-primary, #6750a4);
-        color: var(--md-sys-color-on-primary, #fff);
-        margin-left: auto;
-
-        &:hover { background: var(--md-sys-color-primary, #7965af); }
-      }
-
-      &--finish {
-        background: var(--md-sys-color-tertiary, #7d5260);
-        color: var(--md-sys-color-on-tertiary, #fff);
-        margin-left: auto;
-
-        &:hover { background: var(--md-sys-color-tertiary, #6b4252); }
-      }
+    }
+    .iu-stepper__btn--back {
+      background: transparent;
+      color: var(--md-sys-color-on-surface-variant, #49454f);
+      border: 1px solid var(--md-sys-color-outline, #79747e);
+    }
+    .iu-stepper__btn--back:hover:not(:disabled) {
+      background: var(--md-sys-color-surface-container, #f3edf7);
+    }
+    .iu-stepper__btn--back:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+    .iu-stepper__btn--next {
+      background: var(--md-sys-color-primary, #6750a4);
+      color: var(--md-sys-color-on-primary, #fff);
+      margin-left: auto;
+    }
+    .iu-stepper__btn--next:hover {
+      background: var(--md-sys-color-primary, #7965af);
+    }
+    .iu-stepper__btn--finish {
+      background: var(--md-sys-color-tertiary, #7d5260);
+      color: var(--md-sys-color-on-tertiary, #fff);
+      margin-left: auto;
+    }
+    .iu-stepper__btn--finish:hover {
+      background: var(--md-sys-color-tertiary, #6b4252);
     }
 
     .iu-stepper__content {

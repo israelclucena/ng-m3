@@ -168,4 +168,9 @@ export const FeatureFlags = {
   // Sprint 040 — Night Shift 2026-04-30
   YIELD_CALCULATOR: true,          // YieldCalculatorComponent — PT rental yield calculator (gross/net/payback) with Lisboa & Porto market presets
   MOVE_IN_CHECKLIST: true,         // MoveInChecklistService + MoveInChecklistComponent — tenant move-in checklist (utilities, admin, financial, logistics, inspection) with category progress
+
+  // Sprint 041 — Night Shift 2026-05-01
+  DEPOSIT_RETURN_ESTIMATOR: true,  // DepositReturnService + DepositReturnEstimatorComponent — PT caução return calculator (NRAU art. 13.º): itemised deductions by category + admin withholding %
+  RENT_RECEIPT_GENERATOR: true,    // RentReceiptService + RentReceiptGeneratorComponent — PT rent receipt issuer with IRS Cat. F retention (default 25%) and printable AT-style layout
+  COMMUNICATION_TEMPLATES: true,   // LandlordCommunicationTemplatesService — PT NRAU-aligned message presets (denúncia, aumento renda, recibo caução, obras, visita) with placeholders + legal references
 } as const;

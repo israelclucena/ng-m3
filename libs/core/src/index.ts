@@ -288,3 +288,13 @@ export { YieldCalculatorComponent } from './lib/components/yield-calculator/yiel
 export { MoveInChecklistService } from './lib/services/move-in-checklist.service';
 export type { MoveInTask, MoveInCategory } from './lib/services/move-in-checklist.service';
 export { MoveInChecklistComponent } from './lib/components/move-in-checklist/move-in-checklist.component';
+
+// Sprint 041 — Night Shift 2026-05-01
+export { DepositReturnService } from './lib/services/deposit-return.service';
+export type { DamageItem, DamageCategory } from './lib/services/deposit-return.service';
+export { DepositReturnEstimatorComponent } from './lib/components/deposit-return-estimator/deposit-return-estimator.component';
+export { RentReceiptService, isValidNIF } from './lib/services/rent-receipt.service';
+export type { RentReceipt, RentReceiptInput } from './lib/services/rent-receipt.service';
+export { RentReceiptGeneratorComponent } from './lib/components/rent-receipt-generator/rent-receipt-generator.component';
+export { LandlordCommunicationTemplatesService } from './lib/services/landlord-communication-templates.service';
+export type { CommunicationTemplate, TemplateCategory, CommunicationVars } from './lib/services/landlord-communication-templates.service';
