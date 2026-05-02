@@ -609,9 +609,8 @@ export interface DataTableV2RowExpandEvent<T> {
     .iu-dtv2__expand-icon {
       font-size: 20px;
       transition: transform 0.2s;
-
-      &--open { transform: rotate(90deg); }
     }
+    .iu-dtv2__expand-icon--open { transform: rotate(90deg); }
 
     /* ── Pagination ── */
     .iu-dtv2__pagination {

@@ -433,19 +433,18 @@ import {
       align-items: center;
       gap: 8px;
       transition: background 0.2s, opacity 0.2s;
-
-      &--primary {
-        background: var(--md-sys-color-primary);
-        color: var(--md-sys-color-on-primary);
-        &:hover { filter: brightness(0.92); }
-        &:disabled { opacity: 0.38; cursor: not-allowed; }
-      }
-      &--ghost {
-        background: transparent;
-        color: var(--md-sys-color-primary);
-        &:hover { background: var(--md-sys-color-primary-container); }
-      }
     }
+    .iu-form__btn--primary {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+    }
+    .iu-form__btn--primary:hover { filter: brightness(0.92); }
+    .iu-form__btn--primary:disabled { opacity: 0.38; cursor: not-allowed; }
+    .iu-form__btn--ghost {
+      background: transparent;
+      color: var(--md-sys-color-primary);
+    }
+    .iu-form__btn--ghost:hover { background: var(--md-sys-color-primary-container); }
 
     /* Loading spinner */
     .iu-form__spinner {

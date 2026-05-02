@@ -173,4 +173,9 @@ export const FeatureFlags = {
   DEPOSIT_RETURN_ESTIMATOR: true,  // DepositReturnService + DepositReturnEstimatorComponent — PT caução return calculator (NRAU art. 13.º): itemised deductions by category + admin withholding %
   RENT_RECEIPT_GENERATOR: true,    // RentReceiptService + RentReceiptGeneratorComponent — PT rent receipt issuer with IRS Cat. F retention (default 25%) and printable AT-style layout
   COMMUNICATION_TEMPLATES: true,   // LandlordCommunicationTemplatesService — PT NRAU-aligned message presets (denúncia, aumento renda, recibo caução, obras, visita) with placeholders + legal references
+
+  // Sprint 042 — Night Shift 2026-05-02
+  COMMUNICATION_CENTER: true,      // CommunicationCenterStateService + CommunicationCenterComponent — UI consumer for templates: sidebar by category, placeholder editor, live preview, send/copy actions, history
+  TAX_STATEMENT_GENERATOR: true,   // TaxStatementService + TaxStatementGeneratorComponent — IRS Cat. F annual statement helper (gross income / deductible expenses by category / net / effective rate) for Modelo 3 Anexo F
+  INSURANCE_TRACKER: true,         // InsuranceTrackerService — landlord policy register (multirriscos / RC / conteúdo) with active/expiring-soon/expired computed buckets and renew action; service-only (UI in future sprint)
 } as const;

@@ -298,3 +298,13 @@ export type { RentReceipt, RentReceiptInput } from './lib/services/rent-receipt.
 export { RentReceiptGeneratorComponent } from './lib/components/rent-receipt-generator/rent-receipt-generator.component';
 export { LandlordCommunicationTemplatesService } from './lib/services/landlord-communication-templates.service';
 export type { CommunicationTemplate, TemplateCategory, CommunicationVars } from './lib/services/landlord-communication-templates.service';
+
+// Sprint 042 — Night Shift 2026-05-02
+export { CommunicationCenterStateService } from './lib/services/communication-center-state.service';
+export type { CommunicationHistoryEntry } from './lib/services/communication-center-state.service';
+export { CommunicationCenterComponent } from './lib/components/communication-center/communication-center.component';
+export { TaxStatementService } from './lib/services/tax-statement.service';
+export type { DeductibleExpense, DeductibleExpenseCategory, RentEntry } from './lib/services/tax-statement.service';
+export { TaxStatementGeneratorComponent } from './lib/components/tax-statement-generator/tax-statement-generator.component';
+export { InsuranceTrackerService } from './lib/services/insurance-tracker.service';
+export type { InsurancePolicy, InsuranceType } from './lib/services/insurance-tracker.service';
