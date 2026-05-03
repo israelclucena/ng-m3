@@ -308,3 +308,16 @@ export type { DeductibleExpense, DeductibleExpenseCategory, RentEntry } from './
 export { TaxStatementGeneratorComponent } from './lib/components/tax-statement-generator/tax-statement-generator.component';
 export { InsuranceTrackerService } from './lib/services/insurance-tracker.service';
 export type { InsurancePolicy, InsuranceType } from './lib/services/insurance-tracker.service';
+
+// Sprint 043 — Night Shift 2026-05-03
+export { InsuranceTrackerComponent } from './lib/components/insurance-tracker/insurance-tracker.component';
+export { RentEscalationService, PT_RENT_ESCALATION_COEFICIENTS } from './lib/services/rent-escalation.service';
+export type { EscalationRow } from './lib/services/rent-escalation.service';
+export { RentEscalationCalculatorComponent } from './lib/components/rent-escalation-calculator/rent-escalation-calculator.component';
+export {
+  IMICalculatorService,
+  PT_IMI_TAXAS_MUNICIPAIS,
+  PT_IMI_TAXA_DEFAULT,
+} from './lib/services/imi-calculator.service';
+export type { IMIPrestacao } from './lib/services/imi-calculator.service';
+export { IMICalculatorComponent } from './lib/components/imi-calculator/imi-calculator.component';

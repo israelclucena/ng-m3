@@ -178,4 +178,9 @@ export const FeatureFlags = {
   COMMUNICATION_CENTER: true,      // CommunicationCenterStateService + CommunicationCenterComponent — UI consumer for templates: sidebar by category, placeholder editor, live preview, send/copy actions, history
   TAX_STATEMENT_GENERATOR: true,   // TaxStatementService + TaxStatementGeneratorComponent — IRS Cat. F annual statement helper (gross income / deductible expenses by category / net / effective rate) for Modelo 3 Anexo F
   INSURANCE_TRACKER: true,         // InsuranceTrackerService — landlord policy register (multirriscos / RC / conteúdo) with active/expiring-soon/expired computed buckets and renew action; service-only (UI in future sprint)
+
+  // Sprint 043 — Night Shift 2026-05-03
+  INSURANCE_TRACKER_UI: true,      // InsuranceTrackerComponent — UI consumer for InsuranceTrackerService: 3-tab (active/expiring/expired) policy cards + add-policy modal + renew/remove actions
+  RENT_ESCALATION_CALCULATOR: true, // RentEscalationService + RentEscalationCalculatorComponent — PT NRAU art. 24.º annual rent update calculator with Portaria coefficients (2018-2026) and per-year override table
+  IMI_CALCULATOR: true,            // IMICalculatorService + IMICalculatorComponent — PT IMI tax calculator: VPT × concelho rate (Lisboa/Porto/Cascais/etc.), agregado-familiar rebate, AT installment calendar (1/2/3×)
 } as const;
