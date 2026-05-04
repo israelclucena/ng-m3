@@ -183,4 +183,9 @@ export const FeatureFlags = {
   INSURANCE_TRACKER_UI: true,      // InsuranceTrackerComponent — UI consumer for InsuranceTrackerService: 3-tab (active/expiring/expired) policy cards + add-policy modal + renew/remove actions
   RENT_ESCALATION_CALCULATOR: true, // RentEscalationService + RentEscalationCalculatorComponent — PT NRAU art. 24.º annual rent update calculator with Portaria coefficients (2018-2026) and per-year override table
   IMI_CALCULATOR: true,            // IMICalculatorService + IMICalculatorComponent — PT IMI tax calculator: VPT × concelho rate (Lisboa/Porto/Cascais/etc.), agregado-familiar rebate, AT installment calendar (1/2/3×)
+
+  // Sprint 044 — Night Shift 2026-05-04
+  IRS_CAT_F_CALCULATOR: true,      // IRSCategoriaFService + IRSCategoriaFCalculatorComponent — PT IRS Cat. F (rendimentos prediais) calculator: 28% taxa autónoma vs englobamento (escalões 2026), recommendation + side-by-side comparison
+  CREDITO_HABITACAO_SIMULATOR: true, // CreditoHabitacaoService + CreditoHabitacaoSimulatorComponent — PT mortgage simulator: Price formula, TAEG approx (Newton-Raphson), Euribor 3M/6M/12M or fixed-rate, LTV, partial amortization schedule (first 12 + last 12 months)
+  ENERGY_CERTIFICATE_CHECKER: true, // EnergyCertificateService + EnergyCertificateCheckerComponent — PT Certificado Energético validator (ADENE classes A+/A/B/B-/C/D/E/F): expiry, savings vs class A, legal compliance per DL 118/2013 (250-3740€ fine for missing CE)
 } as const;

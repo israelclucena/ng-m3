@@ -321,3 +321,24 @@ export {
 } from './lib/services/imi-calculator.service';
 export type { IMIPrestacao } from './lib/services/imi-calculator.service';
 export { IMICalculatorComponent } from './lib/components/imi-calculator/imi-calculator.component';
+
+// Sprint 044 — Night Shift 2026-05-04
+export {
+  IRSCategoriaFService,
+  PT_IRS_ESCALOES_2026,
+  PT_IRS_TAXA_AUTONOMA_CAT_F,
+} from './lib/services/irs-categoria-f.service';
+export type { IRSCatFRegime, IRSEscalao } from './lib/services/irs-categoria-f.service';
+export { IRSCategoriaFCalculatorComponent } from './lib/components/irs-categoria-f-calculator/irs-categoria-f-calculator.component';
+export { CreditoHabitacaoService, PT_EURIBOR_DEFAULTS } from './lib/services/credito-habitacao.service';
+export type { MortgageIndexante, AmortizationRow } from './lib/services/credito-habitacao.service';
+export { CreditoHabitacaoSimulatorComponent } from './lib/components/credito-habitacao-simulator/credito-habitacao-simulator.component';
+export {
+  EnergyCertificateService,
+  PT_ENERGY_CLASS_UPPER_KWH,
+  PT_ENERGY_CLASS_ORDER,
+  PT_CE_FINE_MIN_EUR,
+  PT_CE_FINE_MAX_EUR,
+} from './lib/services/energy-certificate.service';
+export type { EnergyClass, EnergyPropertyType } from './lib/services/energy-certificate.service';
+export { EnergyCertificateCheckerComponent } from './lib/components/energy-certificate-checker/energy-certificate-checker.component';
