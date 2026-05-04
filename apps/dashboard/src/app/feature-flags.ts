@@ -188,4 +188,7 @@ export const FeatureFlags = {
   IRS_CAT_F_CALCULATOR: true,      // IRSCategoriaFService + IRSCategoriaFCalculatorComponent — PT IRS Cat. F (rendimentos prediais) calculator: 28% taxa autónoma vs englobamento (escalões 2026), recommendation + side-by-side comparison
   CREDITO_HABITACAO_SIMULATOR: true, // CreditoHabitacaoService + CreditoHabitacaoSimulatorComponent — PT mortgage simulator: Price formula, TAEG approx (Newton-Raphson), Euribor 3M/6M/12M or fixed-rate, LTV, partial amortization schedule (first 12 + last 12 months)
   ENERGY_CERTIFICATE_CHECKER: true, // EnergyCertificateService + EnergyCertificateCheckerComponent — PT Certificado Energético validator (ADENE classes A+/A/B/B-/C/D/E/F): expiry, savings vs class A, legal compliance per DL 118/2013 (250-3740€ fine for missing CE)
+
+  // Sprint 045 — Dashboard consumer trilogy 2026-05-04 (1/3)
+  PORTFOLIO_YIELD_OVERVIEW: true, // PortfolioYieldOverviewComponent — table consumer of PortfolioMockService: per-property gross & net yield (IMI + maintenance + IRS Cat.F retention), sortable columns, weighted aggregates, delta vs portfolio average
 } as const;

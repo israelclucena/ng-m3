@@ -342,3 +342,18 @@ export {
 } from './lib/services/energy-certificate.service';
 export type { EnergyClass, EnergyPropertyType } from './lib/services/energy-certificate.service';
 export { EnergyCertificateCheckerComponent } from './lib/components/energy-certificate-checker/energy-certificate-checker.component';
+
+// Sprint 045 — Dashboard consumer trilogy 2026-05-04 (1/3)
+export { PortfolioMockService } from './lib/services/portfolio-mock.service';
+export type {
+  PortfolioProperty as MockPortfolioProperty,
+  PropertyType as MockPropertyType,
+  EnergyClass as MockEnergyClass,
+  IRSRegime as MockIRSRegime,
+  LeaseStatus as MockLeaseStatus,
+  ComplianceState as MockComplianceState,
+  EnergyCertificate as MockEnergyCertificate,
+  Insurance as MockInsurance,
+  Lease as MockLease,
+} from './lib/services/portfolio-mock.service';
+export { PortfolioYieldOverviewComponent } from './lib/components/portfolio-yield-overview/portfolio-yield-overview.component';
