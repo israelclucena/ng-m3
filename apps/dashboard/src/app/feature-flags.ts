@@ -189,6 +189,9 @@ export const FeatureFlags = {
   CREDITO_HABITACAO_SIMULATOR: true, // CreditoHabitacaoService + CreditoHabitacaoSimulatorComponent — PT mortgage simulator: Price formula, TAEG approx (Newton-Raphson), Euribor 3M/6M/12M or fixed-rate, LTV, partial amortization schedule (first 12 + last 12 months)
   ENERGY_CERTIFICATE_CHECKER: true, // EnergyCertificateService + EnergyCertificateCheckerComponent — PT Certificado Energético validator (ADENE classes A+/A/B/B-/C/D/E/F): expiry, savings vs class A, legal compliance per DL 118/2013 (250-3740€ fine for missing CE)
 
-  // Sprint 045 — Dashboard consumer trilogy 2026-05-04 (1/3)
+  // Sprint 045 — Dashboard consumer trilogy 2026-05-04/05
   PORTFOLIO_YIELD_OVERVIEW: true, // PortfolioYieldOverviewComponent — table consumer of PortfolioMockService: per-property gross & net yield (IMI + maintenance + IRS Cat.F retention), sortable columns, weighted aggregates, delta vs portfolio average
+  PORTFOLIO_FISCAL_SUMMARY: true,  // PortfolioFiscalSummaryComponent — per-property IRS Cat. F aggregate over the whole portfolio: bruto/IMI/manutenção/dedutíveis/líquido + actual vs all-autónoma vs all-englobamento scenarios + recommendation
+  PORTFOLIO_COMPLIANCE_MATRIX: true, // PortfolioComplianceMatrixComponent — property × dimension matrix (energy / insurance / lease) with ok/warning/expired cells, aggregate compliance %, prioritized action list (critical first)
+  PORTFOLIO_ROUNDUP: true,         // PortfolioRoundupComponent — compact 3-card meta-consumer widget summarizing the Sprint 045 trilogy (yield + fiscal + compliance) with detail emitter for dashboard navigation
 } as const;

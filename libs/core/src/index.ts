@@ -343,7 +343,7 @@ export {
 export type { EnergyClass, EnergyPropertyType } from './lib/services/energy-certificate.service';
 export { EnergyCertificateCheckerComponent } from './lib/components/energy-certificate-checker/energy-certificate-checker.component';
 
-// Sprint 045 — Dashboard consumer trilogy 2026-05-04 (1/3)
+// Sprint 045 — Dashboard consumer trilogy 2026-05-04/05
 export { PortfolioMockService } from './lib/services/portfolio-mock.service';
 export type {
   PortfolioProperty as MockPortfolioProperty,
@@ -357,3 +357,10 @@ export type {
   Lease as MockLease,
 } from './lib/services/portfolio-mock.service';
 export { PortfolioYieldOverviewComponent } from './lib/components/portfolio-yield-overview/portfolio-yield-overview.component';
+export { PortfolioFiscalSummaryComponent } from './lib/components/portfolio-fiscal-summary/portfolio-fiscal-summary.component';
+export { PortfolioComplianceMatrixComponent } from './lib/components/portfolio-compliance-matrix/portfolio-compliance-matrix.component';
+export {
+  PortfolioRoundupComponent,
+  PORTFOLIO_ROUNDUP_TODAY,
+} from './lib/components/portfolio-roundup/portfolio-roundup.component';
+export type { RoundupDetailKey } from './lib/components/portfolio-roundup/portfolio-roundup.component';
