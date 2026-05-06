@@ -19,6 +19,7 @@ import { StreakWidgetComponent } from '../widgets/streak-widget.component';
 import { QuickLinksWidgetComponent } from '../widgets/quick-links-widget.component';
 import { MetricsChartWidgetComponent } from '../widgets/metrics-chart-widget.component';
 import { DraggableDashboardComponent } from '../widgets/draggable-dashboard.component';
+import { PortfolioRoundupWidgetComponent } from '../widgets/portfolio-roundup-widget.component';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -34,6 +35,7 @@ import { DraggableDashboardComponent } from '../widgets/draggable-dashboard.comp
     QuickLinksWidgetComponent,
     MetricsChartWidgetComponent,
     DraggableDashboardComponent,
+    PortfolioRoundupWidgetComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
@@ -80,6 +82,9 @@ import { DraggableDashboardComponent } from '../widgets/draggable-dashboard.comp
         <app-quick-links-widget class="widget--animate"></app-quick-links-widget>
         @if (flags.CHART_COMPONENTS) {
           <app-metrics-chart-widget class="widget--animate widget--wide"></app-metrics-chart-widget>
+        }
+        @if (flags.DASHBOARD_PORTFOLIO_ROUNDUP_WIDGET) {
+          <app-portfolio-roundup-widget class="widget--animate widget--wide"></app-portfolio-roundup-widget>
         }
       </div>
     }

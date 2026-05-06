@@ -194,4 +194,8 @@ export const FeatureFlags = {
   PORTFOLIO_FISCAL_SUMMARY: true,  // PortfolioFiscalSummaryComponent — per-property IRS Cat. F aggregate over the whole portfolio: bruto/IMI/manutenção/dedutíveis/líquido + actual vs all-autónoma vs all-englobamento scenarios + recommendation
   PORTFOLIO_COMPLIANCE_MATRIX: true, // PortfolioComplianceMatrixComponent — property × dimension matrix (energy / insurance / lease) with ok/warning/expired cells, aggregate compliance %, prioritized action list (critical first)
   PORTFOLIO_ROUNDUP: true,         // PortfolioRoundupComponent — compact 3-card meta-consumer widget summarizing the Sprint 045 trilogy (yield + fiscal + compliance) with detail emitter for dashboard navigation
+
+  // Sprint 046 — Wiring shift 2026-05-06
+  FEATURES_PAGE_TOC: true,         // Features page sticky sidebar table-of-contents — flag-aware quick-jump nav for the 3061-line catalog
+  DASHBOARD_PORTFOLIO_ROUNDUP_WIDGET: true, // PortfolioRoundupWidgetComponent — dashboard-page wrapper around PortfolioRoundupComponent with router navigation to /features#yield|fiscal|compliance
 } as const;

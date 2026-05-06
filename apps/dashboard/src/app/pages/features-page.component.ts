@@ -164,6 +164,11 @@ import {
   // Sprint 040
   YieldCalculatorComponent,
   MoveInChecklistComponent,
+  // Sprint 045 — Dashboard consumer trilogy
+  PortfolioYieldOverviewComponent,
+  PortfolioFiscalSummaryComponent,
+  PortfolioComplianceMatrixComponent,
+  PortfolioRoundupComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -319,8 +324,30 @@ const SEARCH_DATA: SearchResult[] = [
     // Sprint 040
     YieldCalculatorComponent,
     MoveInChecklistComponent,
+    // Sprint 045 — Dashboard consumer trilogy
+    PortfolioYieldOverviewComponent,
+    PortfolioFiscalSummaryComponent,
+    PortfolioComplianceMatrixComponent,
+    PortfolioRoundupComponent,
   ],
   template: `
+    <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
+
+      @if (flags.FEATURES_PAGE_TOC) {
+        <aside class="features-toc" aria-label="Page sections">
+          <h3 class="toc-title">On this page</h3>
+          <ul class="toc-list">
+            @for (item of tocItems(); track item.id) {
+              <li>
+                <button type="button" class="toc-link" (click)="scrollToSection(item.id)">
+                  {{ item.label }}
+                </button>
+              </li>
+            }
+          </ul>
+        </aside>
+      }
+
     <div class="features-catalog">
 
       <h1>Feature Showcase</h1>
@@ -1888,10 +1915,130 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ═══════════════ Sprint 045 — Dashboard consumer trilogy ═══════════════ -->
+
+      @if (flags.PORTFOLIO_ROUNDUP) {
+        <section class="feature-section" id="portfolio-roundup">
+          <h2>Portfolio Roundup</h2>
+          <p class="feature-desc">
+            <strong>PortfolioRoundupComponent</strong> — Compact 3-card meta-consumer summarizing
+            the Sprint 045 trilogy: weighted net yield, IRS Cat. F best scenario, compliance %.
+            Click any card to jump directly to the matching detailed section below.
+            Feature flag: <code>PORTFOLIO_ROUNDUP</code>.
+          </p>
+          <iu-portfolio-roundup (detail)="onPortfolioRoundupDetail($event)" />
+        </section>
+      }
+
+      @if (flags.PORTFOLIO_YIELD_OVERVIEW) {
+        <section class="feature-section" id="portfolio-yield-overview">
+          <h2>Portfolio Yield Overview</h2>
+          <p class="feature-desc">
+            <strong>PortfolioYieldOverviewComponent</strong> — Per-property gross & net yield
+            (after IMI + maintenance + IRS Cat. F retention). Sortable columns, weighted aggregates,
+            delta vs portfolio average. Consumer of <code>PortfolioMockService</code> (8 Lisbon properties).
+            Feature flag: <code>PORTFOLIO_YIELD_OVERVIEW</code>.
+          </p>
+          <iu-portfolio-yield-overview />
+        </section>
+      }
+
+      @if (flags.PORTFOLIO_FISCAL_SUMMARY) {
+        <section class="feature-section" id="portfolio-fiscal-summary">
+          <h2>Portfolio Fiscal Summary</h2>
+          <p class="feature-desc">
+            <strong>PortfolioFiscalSummaryComponent</strong> — IRS Cat. F aggregate over the
+            whole portfolio: bruto / IMI / manutenção / dedutíveis / líquido per property, plus
+            actual vs all-autónoma vs all-englobamento scenarios with recommendation.
+            Feature flag: <code>PORTFOLIO_FISCAL_SUMMARY</code>.
+          </p>
+          <iu-portfolio-fiscal-summary />
+        </section>
+      }
+
+      @if (flags.PORTFOLIO_COMPLIANCE_MATRIX) {
+        <section class="feature-section" id="portfolio-compliance-matrix">
+          <h2>Portfolio Compliance Matrix</h2>
+          <p class="feature-desc">
+            <strong>PortfolioComplianceMatrixComponent</strong> — Property × dimension matrix
+            (energy / insurance / lease) with ok / warning / expired cells, aggregate compliance %,
+            and a prioritized action list (critical first).
+            Feature flag: <code>PORTFOLIO_COMPLIANCE_MATRIX</code>.
+          </p>
+          <iu-portfolio-compliance-matrix />
+        </section>
+      }
+
+    </div>
     </div>
   `,
   styles: [`
     :host { display: block; }
+    .features-layout {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .features-layout.has-toc {
+      display: block;
+    }
+    @media (min-width: 1024px) {
+      .features-layout.has-toc {
+        display: grid;
+        grid-template-columns: 240px minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+      }
+    }
+    .features-toc {
+      display: none;
+    }
+    @media (min-width: 1024px) {
+      .features-toc {
+        display: block;
+        position: sticky;
+        top: 16px;
+        max-height: calc(100vh - 32px);
+        overflow-y: auto;
+        padding: 16px 12px;
+        background: var(--md-sys-color-surface-container, #f3edf7);
+        border-radius: 12px;
+        font-family: var(--md-sys-typescale-label-large-font-family, system-ui, sans-serif);
+      }
+    }
+    .toc-title {
+      margin: 0 0 8px 0;
+      padding: 0 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--md-sys-color-on-surface-variant);
+    }
+    .toc-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .toc-link {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 6px 10px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--md-sys-color-on-surface);
+      transition: background 0.15s, color 0.15s;
+    }
+    .toc-link:hover {
+      background: var(--md-sys-color-secondary-container, rgba(103, 80, 164, 0.08));
+      color: var(--md-sys-color-on-secondary-container, var(--md-sys-color-primary));
+    }
     .features-catalog {
       max-width: 1200px;
       margin: 0 auto;
@@ -2214,6 +2361,61 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
 
   // ── Sprint 007 & 008 ──────────────────────────────────────────────────
   readonly flags = FeatureFlags;
+
+  // ── Sprint 046 — Portfolio Roundup → trilogy section navigation ──
+  onPortfolioRoundupDetail(key: 'yield' | 'fiscal' | 'compliance'): void {
+    const targetId = {
+      yield: 'portfolio-yield-overview',
+      fiscal: 'portfolio-fiscal-summary',
+      compliance: 'portfolio-compliance-matrix',
+    }[key];
+    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Sprint 046 — Features page TOC quick-jump nav ──
+  readonly tocSections: ReadonlyArray<{ id: string; label: string; flag?: keyof typeof FeatureFlags }> = [
+    { id: 'feat-data-table', label: 'Data Table' },
+    { id: 'feat-search', label: 'Search' },
+    { id: 'feat-charts', label: 'Charts' },
+    { id: 'feat-form-builder', label: 'Form Builder' },
+    { id: 'feat-stepper', label: 'Stepper' },
+    { id: 'feat-property-listing', label: 'Property Listing' },
+    { id: 'feat-property-map', label: 'Property Map' },
+    { id: 'feat-property-booking', label: 'Property Booking' },
+    { id: 'feat-auth', label: 'Auth' },
+    { id: 'feat-user-profile', label: 'User Profile' },
+    { id: 'feat-manage-listings', label: 'Manage Listings' },
+    { id: 'feat-messaging', label: 'Messaging' },
+    { id: 'feat-global-search', label: 'Global Search' },
+    { id: 'feat-reviews', label: 'Reviews' },
+    { id: 'payment', label: 'Payment Flow' },
+    { id: 'landlord-analytics', label: 'Landlord Analytics' },
+    { id: 'i18n', label: 'i18n' },
+    { id: 'admin-panel', label: 'Admin Panel' },
+    { id: 'web-vitals', label: 'Web Vitals' },
+    { id: 'availability-calendar', label: 'Availability Calendar' },
+    { id: 'tenant-application-form', label: 'Tenant Application', flag: 'TENANT_APPLICATION' },
+    { id: 'lease-signing-flow', label: 'Lease Signing', flag: 'E_SIGNATURE_MODULE' },
+    { id: 'rent-payment-portal', label: 'Rent Payment', flag: 'RENT_PAYMENT_PORTAL' },
+    { id: 'document-vault', label: 'Document Vault', flag: 'DOCUMENT_VAULT' },
+    { id: 'viewing-scheduler', label: 'Viewing Scheduler', flag: 'VIEWING_SCHEDULER' },
+    { id: 'utility-bills', label: 'Utility Bills', flag: 'UTILITY_BILLS' },
+    { id: 'portfolio-overview', label: 'Portfolio Overview', flag: 'PORTFOLIO_OVERVIEW' },
+    { id: 'yield-calculator', label: 'Yield Calculator', flag: 'YIELD_CALCULATOR' },
+    { id: 'move-in-checklist', label: 'Move-In Checklist', flag: 'MOVE_IN_CHECKLIST' },
+    { id: 'portfolio-roundup', label: '★ Portfolio Roundup', flag: 'PORTFOLIO_ROUNDUP' },
+    { id: 'portfolio-yield-overview', label: '★ Yield Overview', flag: 'PORTFOLIO_YIELD_OVERVIEW' },
+    { id: 'portfolio-fiscal-summary', label: '★ Fiscal Summary', flag: 'PORTFOLIO_FISCAL_SUMMARY' },
+    { id: 'portfolio-compliance-matrix', label: '★ Compliance Matrix', flag: 'PORTFOLIO_COMPLIANCE_MATRIX' },
+  ];
+
+  readonly tocItems = computed(() =>
+    this.tocSections.filter(item => !item.flag || (FeatureFlags as Record<string, boolean>)[item.flag]),
+  );
+
+  scrollToSection(id: string): void {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   // ── Sprint 008 — DataTableV2 ──
   readonly dtv2Columns: DataTableV2Column<User>[] = [

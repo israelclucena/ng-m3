@@ -15,6 +15,7 @@ import { CountdownWidgetComponent } from './countdown-widget.component';
 import { StreakWidgetComponent } from './streak-widget.component';
 import { QuickLinksWidgetComponent } from './quick-links-widget.component';
 import { MetricsChartWidgetComponent } from './metrics-chart-widget.component';
+import { PortfolioRoundupWidgetComponent } from './portfolio-roundup-widget.component';
 import { FeatureFlags } from '../feature-flags';
 
 export interface DashboardWidgetDef {
@@ -40,6 +41,7 @@ export interface DashboardWidgetDef {
     StreakWidgetComponent,
     QuickLinksWidgetComponent,
     MetricsChartWidgetComponent,
+    PortfolioRoundupWidgetComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -74,6 +76,11 @@ export interface DashboardWidgetDef {
               @case ('charts') {
                 @if (flags.CHART_COMPONENTS) {
                   <app-metrics-chart-widget></app-metrics-chart-widget>
+                }
+              }
+              @case ('portfolio-roundup') {
+                @if (flags.DASHBOARD_PORTFOLIO_ROUNDUP_WIDGET) {
+                  <app-portfolio-roundup-widget></app-portfolio-roundup-widget>
                 }
               }
             }
@@ -207,6 +214,7 @@ export class DraggableDashboardComponent {
     { id: 'streak',      label: 'Streak',         icon: 'local_fire_department',  visible: true },
     { id: 'quicklinks',  label: 'Links',          icon: 'link',                   visible: true },
     { id: 'charts',      label: 'Métricas',       icon: 'insights',               visible: true },
+    { id: 'portfolio-roundup', label: 'Portfolio',  icon: 'dashboard',             visible: true },
   ];
 
   widgets = signal<DashboardWidgetDef[]>(this.loadOrder());
