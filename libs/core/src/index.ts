@@ -363,4 +363,20 @@ export {
   PortfolioRoundupComponent,
   PORTFOLIO_ROUNDUP_TODAY,
 } from './lib/components/portfolio-roundup/portfolio-roundup.component';
+
+// Sprint 047 — Night Shift 2026-05-07
+export {
+  MaisValiasImobiliariasService,
+  PT_MV_TAXA_AUTONOMA,
+  PT_MV_QUOTA_RESIDENTE,
+  PT_MV_QUOTA_NAO_RESIDENTE,
+  PT_MV_COEFICIENTES_2025,
+  PT_MV_VALORIZACAO_ANOS_JANELA,
+} from './lib/services/mais-valias-imobiliarias.service';
+export type {
+  MVRegime,
+  MVResidencia,
+  MVComparacaoLinha,
+} from './lib/services/mais-valias-imobiliarias.service';
+export { MaisValiasImobiliariasCalculatorComponent } from './lib/components/mais-valias-imobiliarias-calculator/mais-valias-imobiliarias-calculator.component';
 export type { RoundupDetailKey } from './lib/components/portfolio-roundup/portfolio-roundup.component';

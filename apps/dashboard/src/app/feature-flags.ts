@@ -198,4 +198,7 @@ export const FeatureFlags = {
   // Sprint 046 — Wiring shift 2026-05-06
   FEATURES_PAGE_TOC: true,         // Features page sticky sidebar table-of-contents — flag-aware quick-jump nav for the 3061-line catalog
   DASHBOARD_PORTFOLIO_ROUNDUP_WIDGET: true, // PortfolioRoundupWidgetComponent — dashboard-page wrapper around PortfolioRoundupComponent with router navigation to /features#yield|fiscal|compliance
+
+  // Sprint 047 — Night Shift 2026-05-07
+  MAIS_VALIAS_IMOBILIARIAS_CALCULATOR: true, // MaisValiasImobiliariasService + MaisValiasImobiliariasCalculatorComponent — PT IRS Cat. G calculator: coef. desvalorização monetária (Portaria 314/2024), 50% tributável residente / 100% não-residente, taxa autónoma 28% vs englobamento progressivo
 } as const;
