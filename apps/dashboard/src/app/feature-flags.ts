@@ -204,4 +204,5 @@ export const FeatureFlags = {
 
   // Sprint 048 — Night Shift 2026-05-08
   AIMI_CALCULATOR: true, // AIMIService + AIMICalculatorComponent — Adicional ao IMI: dedução €600k singular / €1.2M casal conjunto / 0 sociedades, escalões progressivos 0.7%/1.0%/1.5% (singulares e casais) ou taxa fixa 0.4% (sociedades), apenas urbano habitacional + terreno construção
+  IMT_CALCULATOR: true,  // IMTService + IMTCalculatorComponent — Imposto Municipal sobre Transmissões Onerosas (compra): tabelas escalonadas 2026 HPP (isento até ~€101.917) vs outros fins (1% inicial), taxa fixa 5% rústicos, isenção jovens 1ª habitação até €316.772, IS 0.8% sempre devido
 } as const;

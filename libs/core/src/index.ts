@@ -396,3 +396,18 @@ export type {
   AIMIBreakdownLinha,
 } from './lib/services/aimi.service';
 export { AIMICalculatorComponent } from './lib/components/aimi-calculator/aimi-calculator.component';
+export {
+  IMTService,
+  PT_IMT_HPP_2026,
+  PT_IMT_OUTROS_2026,
+  PT_IMT_TAXA_RURAL,
+  PT_IMT_JOVEM_LIMITE,
+  PT_IS_IMOVEL,
+} from './lib/services/imt.service';
+export type {
+  IMTFinalidade,
+  IMTResidencia,
+  IMTEscalao,
+  IMTBreakdownLinha,
+} from './lib/services/imt.service';
+export { IMTCalculatorComponent } from './lib/components/imt-calculator/imt-calculator.component';
