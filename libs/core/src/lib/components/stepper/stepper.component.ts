@@ -152,13 +152,13 @@ export interface StepChangeEvent {
     .iu-stepper {
       display: flex;
 
-      &--horizontal {
+      &.iu-stepper--horizontal {
         flex-direction: row;
         align-items: flex-start;
         gap: 0;
       }
 
-      &--vertical {
+      &.iu-stepper--vertical {
         flex-direction: column;
         gap: 0;
       }
@@ -181,7 +181,7 @@ export interface StepChangeEvent {
         position: relative;
       }
 
-      &--clickable {
+      &.iu-stepper__step--clickable {
         cursor: pointer;
 
         &:hover .iu-stepper__bubble {

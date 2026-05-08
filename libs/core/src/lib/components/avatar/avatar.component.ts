@@ -80,15 +80,15 @@ export type AvatarShape = 'circle' | 'rounded' | 'square';
       background: var(--md-sys-color-primary, #6750a4);
       user-select: none;
 
-      &--xs  { width: 24px; height: 24px; font-size: 10px; }
-      &--sm  { width: 32px; height: 32px; font-size: 12px; }
-      &--md  { width: 40px; height: 40px; font-size: 14px; }
-      &--lg  { width: 56px; height: 56px; font-size: 18px; }
-      &--xl  { width: 72px; height: 72px; font-size: 24px; }
+      &.iu-avatar--xs  { width: 24px; height: 24px; font-size: 10px; }
+      &.iu-avatar--sm  { width: 32px; height: 32px; font-size: 12px; }
+      &.iu-avatar--md  { width: 40px; height: 40px; font-size: 14px; }
+      &.iu-avatar--lg  { width: 56px; height: 56px; font-size: 18px; }
+      &.iu-avatar--xl  { width: 72px; height: 72px; font-size: 24px; }
 
-      &--circle  { border-radius: 50%; }
-      &--rounded { border-radius: 12px; }
-      &--square  { border-radius: 4px; }
+      &.iu-avatar--circle  { border-radius: 50%; }
+      &.iu-avatar--rounded { border-radius: 12px; }
+      &.iu-avatar--square  { border-radius: 4px; }
     }
 
     .iu-avatar__img {
@@ -119,8 +119,8 @@ export type AvatarShape = 'circle' | 'rounded' | 'square';
       border-radius: 50%;
       border: 2px solid var(--md-sys-color-surface, #fff);
 
-      &--online  { background: #4caf50; }
-      &--offline { background: var(--md-sys-color-outline-variant, #ccc); }
+      &.iu-avatar__status--online  { background: #4caf50; }
+      &.iu-avatar__status--offline { background: var(--md-sys-color-outline-variant, #ccc); }
     }
   `],
   encapsulation: ViewEncapsulation.None,
@@ -220,7 +220,7 @@ export interface AvatarGroupItem {
       flex-direction: row-reverse;
       width: fit-content;
 
-      &__item {
+      .iu-avatar-group__item {
         margin-left: -8px;
         position: relative;
 
@@ -230,7 +230,7 @@ export interface AvatarGroupItem {
         }
       }
 
-      &__overflow {
+      .iu-avatar-group__overflow {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -241,11 +241,11 @@ export interface AvatarGroupItem {
         font-size: 12px;
         box-shadow: 0 0 0 2px var(--md-sys-color-surface, #fff);
 
-        &--xs  { width: 24px; height: 24px; font-size: 10px; }
-        &--sm  { width: 32px; height: 32px; font-size: 11px; }
-        &--md  { width: 40px; height: 40px; font-size: 12px; }
-        &--lg  { width: 56px; height: 56px; font-size: 16px; }
-        &--xl  { width: 72px; height: 72px; font-size: 20px; }
+        &.iu-avatar-group__overflow--xs  { width: 24px; height: 24px; font-size: 10px; }
+        &.iu-avatar-group__overflow--sm  { width: 32px; height: 32px; font-size: 11px; }
+        &.iu-avatar-group__overflow--md  { width: 40px; height: 40px; font-size: 12px; }
+        &.iu-avatar-group__overflow--lg  { width: 56px; height: 56px; font-size: 16px; }
+        &.iu-avatar-group__overflow--xl  { width: 72px; height: 72px; font-size: 20px; }
       }
     }
   `],

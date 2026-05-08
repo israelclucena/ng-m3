@@ -106,7 +106,7 @@ import { Router } from '@angular/router';
       border: none;
       transition: box-shadow 0.2s ease;
 
-      &--primary {
+      &.error-page__btn--primary {
         background-color: var(--md-sys-color-error, #b3261e);
         color: var(--md-sys-color-on-error, #ffffff);
 
@@ -115,7 +115,7 @@ import { Router } from '@angular/router';
         }
       }
 
-      &--secondary {
+      &.error-page__btn--secondary {
         background-color: transparent;
         color: var(--md-sys-color-primary, #6750a4);
         border: 1px solid var(--md-sys-color-outline, #79747e);

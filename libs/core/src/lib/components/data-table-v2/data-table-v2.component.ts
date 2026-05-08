@@ -321,11 +321,11 @@ export interface DataTableV2RowExpandEvent<T> {
       padding: 8px 16px;
       border-bottom: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
 
-      &--filter {
+      &.iu-dtv2__toolbar--filter {
         background: var(--md-sys-color-surface, #fff);
       }
 
-      &--bulk {
+      &.iu-dtv2__toolbar--bulk {
         background: var(--md-sys-color-secondary-container, #e8def8);
         color: var(--md-sys-color-on-secondary-container, #1d192b);
         flex-wrap: wrap;
@@ -393,13 +393,13 @@ export interface DataTableV2RowExpandEvent<T> {
 
       &:hover { background: rgba(0,0,0,0.06); }
 
-      &--danger {
+      &.iu-dtv2__bulk-btn--danger {
         color: var(--md-sys-color-error, #b3261e);
         border-color: var(--md-sys-color-error, #b3261e);
         &:hover { background: var(--md-sys-color-error-container, #f9dedc); }
       }
 
-      &--clear {
+      &.iu-dtv2__bulk-btn--clear {
         margin-left: auto;
         border-color: transparent;
       }
@@ -432,17 +432,17 @@ export interface DataTableV2RowExpandEvent<T> {
       white-space: nowrap;
       user-select: none;
 
-      &--check, &--expand {
+      &.iu-dtv2__th--check, &.iu-dtv2__th--expand {
         width: 48px;
         padding: 0 8px;
       }
 
-      &--sortable {
+      &.iu-dtv2__th--sortable {
         cursor: pointer;
         &:hover .iu-dtv2__sort-icon { opacity: 1; }
       }
 
-      &--sorted {
+      &.iu-dtv2__th--sorted {
         color: var(--md-sys-color-primary, #6750a4);
         .iu-dtv2__sort-icon { opacity: 1; color: var(--md-sys-color-primary, #6750a4); }
       }
@@ -467,12 +467,12 @@ export interface DataTableV2RowExpandEvent<T> {
 
       &:hover { background: var(--md-sys-color-surface-container, #ece6f0); }
 
-      &--selected {
+      &.iu-dtv2__tbody--selected {
         background: var(--md-sys-color-secondary-container, #e8def8);
         &:hover { background: color-mix(in srgb, var(--md-sys-color-secondary-container, #e8def8) 85%, #000); }
       }
 
-      &--detail {
+      &.iu-dtv2__tbody--detail {
         cursor: default;
         background: var(--md-sys-color-surface-container-low, #f7f2fa);
         &:hover { background: var(--md-sys-color-surface-container-low, #f7f2fa); }
@@ -485,11 +485,11 @@ export interface DataTableV2RowExpandEvent<T> {
       color: var(--md-sys-color-on-surface, #1c1b1f);
       vertical-align: middle;
 
-      &--check, &--expand { padding: 0 8px; }
+      &.iu-dtv2__td--check, &.iu-dtv2__td--expand { padding: 0 8px; }
 
-      &--detail { padding: 0; }
+      &.iu-dtv2__td--detail { padding: 0; }
 
-      &--detail .iu-dtv2__detail-content {
+      &.iu-dtv2__td--detail .iu-dtv2__detail-content {
         padding: 12px 16px 16px 48px;
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

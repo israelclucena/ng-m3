@@ -186,20 +186,20 @@ export interface WidgetRefreshEvent {
       }
 
       /* ── Size variants ── */
-      &--small  { min-height: 140px; }
-      &--medium { min-height: 220px; }
-      &--large  { min-height: 320px; }
-      &--full   { min-height: 480px; }
+      &.iu-widget--small  { min-height: 140px; }
+      &.iu-widget--medium { min-height: 220px; }
+      &.iu-widget--large  { min-height: 320px; }
+      &.iu-widget--full   { min-height: 480px; }
 
       /* ── Elevation variant ── */
-      &--elevated {
+      &.iu-widget--elevated {
         background: var(--md-sys-color-surface, #fff);
         box-shadow: var(--md-sys-elevation-level2, 0 2px 8px rgba(0,0,0,0.15));
       }
 
       /* ── Compact variant ── */
-      &--compact .iu-widget__header { padding: 10px 14px; }
-      &--compact .iu-widget__body   { padding: 10px 14px; }
+      &.iu-widget--compact .iu-widget__header { padding: 10px 14px; }
+      &.iu-widget--compact .iu-widget__body   { padding: 10px 14px; }
     }
 
     /* ── Header ── */
@@ -268,7 +268,7 @@ export interface WidgetRefreshEvent {
         color: var(--md-sys-color-on-surface, #1c1b1f);
       }
 
-      &--close:hover {
+      &.iu-widget__action-btn--close:hover {
         background: var(--md-sys-color-error-container, #f9dedc);
         color: var(--md-sys-color-error, #b3261e);
       }
@@ -291,7 +291,7 @@ export interface WidgetRefreshEvent {
       font-size: 18px;
       transition: transform 0.2s;
 
-      &--collapsed { transform: rotate(180deg); }
+      &.iu-widget__collapse-icon--collapsed { transform: rotate(180deg); }
     }
 
     /* ── Size group ── */
@@ -318,7 +318,7 @@ export interface WidgetRefreshEvent {
 
       &:hover { background: var(--md-sys-color-surface, #fff); }
 
-      &--active {
+      &.iu-widget__size-btn--active {
         background: var(--md-sys-color-surface, #fff);
         color: var(--md-sys-color-primary, #6750a4);
         box-shadow: 0 1px 3px rgba(0,0,0,0.12);
@@ -335,7 +335,7 @@ export interface WidgetRefreshEvent {
       position: relative;
       min-height: 0;
 
-      &--loading > *:not(.iu-widget__loading-overlay) { opacity: 0.3; pointer-events: none; }
+      &.iu-widget__body--loading > *:not(.iu-widget__loading-overlay) { opacity: 0.3; pointer-events: none; }
     }
 
     .iu-widget__loading-overlay {

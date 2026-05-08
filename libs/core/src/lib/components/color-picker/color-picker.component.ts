@@ -214,19 +214,19 @@ const M3_PALETTE = [
       flex-shrink: 0;
       transition: transform 0.1s, box-shadow 0.1s;
 
-      &--lg {
+      &.iu-color-picker__swatch--lg {
         width: 32px;
         height: 32px;
         border-radius: 6px;
       }
 
-      &--selected {
+      &.iu-color-picker__swatch--selected {
         box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--md-sys-color-primary, #6750a4);
         transform: scale(1.15);
         z-index: 1;
       }
 
-      &:hover:not(&--lg) {
+      &:hover:not(&.iu-color-picker__swatch--lg) {
         transform: scale(1.2);
         z-index: 1;
       }
@@ -306,7 +306,7 @@ const M3_PALETTE = [
         box-shadow: 0 0 0 1px var(--md-sys-color-primary, #6750a4);
       }
 
-      &--sm {
+      &.iu-color-picker__input--sm {
         font-size: 12px;
         text-align: center;
       }

@@ -134,15 +134,15 @@ export interface TagInputChange {
       position: relative;
       transition: border-color 0.2s;
 
-      &--focused {
+      &.iu-tag-input--focused {
         border-bottom: 2px solid var(--md-sys-color-primary, #6750a4);
       }
 
-      &--error {
+      &.iu-tag-input--error {
         border-bottom: 2px solid var(--md-sys-color-error, #b3261e);
       }
 
-      &--disabled {
+      &.iu-tag-input--disabled {
         opacity: 0.38;
         cursor: not-allowed;
       }
@@ -219,7 +219,7 @@ export interface TagInputChange {
       font-size: 14px;
       color: var(--md-sys-color-on-surface, #1c1b1f);
 
-      &--active,
+      &.iu-tag-input__suggestion--active,
       &:hover {
         background: var(--md-sys-color-primary-container, #eaddff);
       }

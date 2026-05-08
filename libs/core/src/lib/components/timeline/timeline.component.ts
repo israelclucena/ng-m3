@@ -118,11 +118,11 @@ export type TimelineAlign = 'start' | 'alternate' | 'end';
     .iu-timeline {
       display: flex;
 
-      &--vertical {
+      &.iu-timeline--vertical {
         flex-direction: column;
       }
 
-      &--horizontal {
+      &.iu-timeline--horizontal {
         flex-direction: row;
         overflow-x: auto;
       }
@@ -183,7 +183,7 @@ export type TimelineAlign = 'start' | 'alternate' | 'end';
 
       .material-symbols-outlined { font-size: 16px; }
 
-      &--active {
+      &.iu-timeline__dot--active {
         background: var(--md-sys-color-primary, #6750a4) !important;
         box-shadow: 0 0 0 4px var(--md-sys-color-primary-container, #eaddff);
         transform: scale(1.1);
@@ -205,7 +205,7 @@ export type TimelineAlign = 'start' | 'alternate' | 'end';
         min-width: 16px;
       }
 
-      &--active {
+      &.iu-timeline__connector--active {
         background: var(--md-sys-color-primary, #6750a4);
       }
     }
@@ -239,7 +239,7 @@ export type TimelineAlign = 'start' | 'alternate' | 'end';
       border: 1px solid transparent;
       transition: border-color 0.2s, background 0.2s;
 
-      &--active {
+      &.iu-timeline__card--active {
         border-color: var(--md-sys-color-primary, #6750a4);
         background: var(--md-sys-color-primary-container, #eaddff);
       }

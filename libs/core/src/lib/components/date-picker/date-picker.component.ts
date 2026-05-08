@@ -183,15 +183,15 @@ const MONTHS = [
       min-height: 56px;
       transition: border-color 0.2s;
 
-      &--focused {
+      &.iu-date-picker__field--focused {
         border-bottom: 2px solid var(--md-sys-color-primary, #6750a4);
       }
 
-      &--error {
+      &.iu-date-picker__field--error {
         border-bottom: 2px solid var(--md-sys-color-error, #b3261e);
       }
 
-      &--disabled {
+      &.iu-date-picker__field--disabled {
         opacity: 0.38;
         cursor: not-allowed;
       }
@@ -336,40 +336,40 @@ const MONTHS = [
         background: var(--md-sys-color-surface-container-high, #ece6f0);
       }
 
-      &--empty { visibility: hidden; cursor: default; }
+      &.iu-date-picker__cell--empty { visibility: hidden; cursor: default; }
 
-      &--today {
+      &.iu-date-picker__cell--today {
         border: 1px solid var(--md-sys-color-primary, #6750a4);
         color: var(--md-sys-color-primary, #6750a4);
         font-weight: 600;
       }
 
-      &--selected {
+      &.iu-date-picker__cell--selected {
         background: var(--md-sys-color-primary, #6750a4) !important;
         color: var(--md-sys-color-on-primary, #fff) !important;
         font-weight: 600;
         border-radius: 50%;
       }
 
-      &--range-start {
+      &.iu-date-picker__cell--range-start {
         background: var(--md-sys-color-primary, #6750a4) !important;
         color: var(--md-sys-color-on-primary, #fff) !important;
         border-radius: 50% 0 0 50%;
       }
 
-      &--range-end {
+      &.iu-date-picker__cell--range-end {
         background: var(--md-sys-color-primary, #6750a4) !important;
         color: var(--md-sys-color-on-primary, #fff) !important;
         border-radius: 0 50% 50% 0;
       }
 
-      &--in-range {
+      &.iu-date-picker__cell--in-range {
         background: var(--md-sys-color-primary-container, #eaddff);
         color: var(--md-sys-color-on-primary-container, #21005d);
         border-radius: 0;
       }
 
-      &--disabled {
+      &.iu-date-picker__cell--disabled {
         opacity: 0.38;
         cursor: not-allowed;
       }
@@ -405,7 +405,7 @@ const MONTHS = [
 
       &:hover { background: var(--md-sys-color-surface-container-high, #ece6f0); }
 
-      &--active {
+      &.iu-date-picker__month-cell--active {
         background: var(--md-sys-color-primary, #6750a4);
         color: var(--md-sys-color-on-primary, #fff);
       }
