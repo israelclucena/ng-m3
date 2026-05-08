@@ -201,4 +201,7 @@ export const FeatureFlags = {
 
   // Sprint 047 — Night Shift 2026-05-07
   MAIS_VALIAS_IMOBILIARIAS_CALCULATOR: true, // MaisValiasImobiliariasService + MaisValiasImobiliariasCalculatorComponent — PT IRS Cat. G calculator: coef. desvalorização monetária (Portaria 314/2024), 50% tributável residente / 100% não-residente, taxa autónoma 28% vs englobamento progressivo
+
+  // Sprint 048 — Night Shift 2026-05-08
+  AIMI_CALCULATOR: true, // AIMIService + AIMICalculatorComponent — Adicional ao IMI: dedução €600k singular / €1.2M casal conjunto / 0 sociedades, escalões progressivos 0.7%/1.0%/1.5% (singulares e casais) ou taxa fixa 0.4% (sociedades), apenas urbano habitacional + terreno construção
 } as const;

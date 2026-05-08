@@ -380,3 +380,19 @@ export type {
 } from './lib/services/mais-valias-imobiliarias.service';
 export { MaisValiasImobiliariasCalculatorComponent } from './lib/components/mais-valias-imobiliarias-calculator/mais-valias-imobiliarias-calculator.component';
 export type { RoundupDetailKey } from './lib/components/portfolio-roundup/portfolio-roundup.component';
+
+// Sprint 048 — Night Shift 2026-05-08
+export {
+  AIMIService,
+  PT_AIMI_DEDUCAO_SINGULAR,
+  PT_AIMI_DEDUCAO_CONJUNTO,
+  PT_AIMI_TAXA_SOCIEDADE,
+  PT_AIMI_TAXAS_2026,
+} from './lib/services/aimi.service';
+export type {
+  AIMITitular,
+  AIMIPropriedade,
+  AIMIEscalao,
+  AIMIBreakdownLinha,
+} from './lib/services/aimi.service';
+export { AIMICalculatorComponent } from './lib/components/aimi-calculator/aimi-calculator.component';
