@@ -12,7 +12,9 @@ module.exports = {
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  transformIgnorePatterns: [
+    'node_modules/(?!.*\\.mjs$|.pnpm/(@material\\+|@lit\\+|@lit-labs\\+|lit@|lit-element@|lit-html@)|@material/|@lit/|@lit-labs/|lit/|lit-element/|lit-html/)',
+  ],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',
