@@ -411,3 +411,12 @@ export type {
   IMTBreakdownLinha,
 } from './lib/services/imt.service';
 export { IMTCalculatorComponent } from './lib/components/imt-calculator/imt-calculator.component';
+
+// Sprint 049 — Night Shift 2026-05-09
+export {
+  PortfolioTaxLifecycleWidgetComponent,
+} from './lib/components/portfolio-tax-lifecycle/portfolio-tax-lifecycle.component';
+export type {
+  ProjectedSaleInput,
+  ProjectedPurchaseInput,
+} from './lib/components/portfolio-tax-lifecycle/portfolio-tax-lifecycle.component';
