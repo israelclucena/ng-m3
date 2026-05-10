@@ -208,4 +208,8 @@ export const FeatureFlags = {
 
   // Sprint 049 — Night Shift 2026-05-09
   PORTFOLIO_TAX_LIFECYCLE_WIDGET: true, // PortfolioTaxLifecycleWidgetComponent — meta-consumer aggregating recurring annual tax (IMI + AIMI portfolio-wide + IRS Cat. F retention per regime) across the 8-property portfolio, plus optional projected events (sale → mais-valias residente / purchase → IMT + IS); closes the wiring gap left by Sprint 048's standalone calculators
+
+  // Sprint 050 — Night Shift 2026-05-10
+  MOVE_OUT_CHECKLIST: true,    // MoveOutChecklistService + MoveOutChecklistComponent — symmetric counterpart to MoveInChecklist (Sprint 040): contract denúncia (NRAU art. 1098.º — 30-120 day notice), utility termination, walk-through, deposit reclaim
+  PROPERTY_INVENTORY: true,    // PropertyInventoryService + InventoryChecklistComponent — itemized inventory of recheio (15-item PT T2 seed), move-in/move-out condition delta with severity classification (unchanged/wear/damage/loss), suggested retention feeds DepositReturnEstimator; NRAU art. 5.º compliance
 } as const;

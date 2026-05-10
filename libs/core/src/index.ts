@@ -420,3 +420,22 @@ export type {
   ProjectedSaleInput,
   ProjectedPurchaseInput,
 } from './lib/components/portfolio-tax-lifecycle/portfolio-tax-lifecycle.component';
+
+// Sprint 050 — Night Shift 2026-05-10
+export { MoveOutChecklistService } from './lib/services/move-out-checklist.service';
+export type { MoveOutTask, MoveOutCategory } from './lib/services/move-out-checklist.service';
+export { MoveOutChecklistComponent } from './lib/components/move-out-checklist/move-out-checklist.component';
+export {
+  PropertyInventoryService,
+  classifyDelta,
+  suggestedDeduction,
+} from './lib/services/property-inventory.service';
+export type {
+  InventoryItem,
+  InventoryItemCategory,
+  InventoryItemCondition,
+  ConditionDeltaSeverity,
+  InventoryRoomGroup,
+  InventoryDeltaLine,
+} from './lib/services/property-inventory.service';
+export { InventoryChecklistComponent } from './lib/components/inventory-checklist/inventory-checklist.component';
