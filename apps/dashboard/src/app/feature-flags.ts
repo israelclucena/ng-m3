@@ -212,4 +212,7 @@ export const FeatureFlags = {
   // Sprint 050 — Night Shift 2026-05-10
   MOVE_OUT_CHECKLIST: true,    // MoveOutChecklistService + MoveOutChecklistComponent — symmetric counterpart to MoveInChecklist (Sprint 040): contract denúncia (NRAU art. 1098.º — 30-120 day notice), utility termination, walk-through, deposit reclaim
   PROPERTY_INVENTORY: true,    // PropertyInventoryService + InventoryChecklistComponent — itemized inventory of recheio (15-item PT T2 seed), move-in/move-out condition delta with severity classification (unchanged/wear/damage/loss), suggested retention feeds DepositReturnEstimator; NRAU art. 5.º compliance
+
+  // Sprint 051 — Night Shift 2026-05-11
+  PORTFOLIO_LIFECYCLE_WIDGET: true, // PortfolioLifecycleWidgetComponent — operational counterpart to PortfolioTaxLifecycleWidget (Sprint 049): aggregates move-in / steady / move-out stage + inventory delta + suggested deduction across the 8-property portfolio; closes the triangle lifecycle × inventory × caução at portfolio scale
 } as const;

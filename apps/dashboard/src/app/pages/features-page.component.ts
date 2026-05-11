@@ -169,6 +169,11 @@ import {
   PortfolioFiscalSummaryComponent,
   PortfolioComplianceMatrixComponent,
   PortfolioRoundupComponent,
+  // Sprint 050
+  MoveOutChecklistComponent,
+  InventoryChecklistComponent,
+  // Sprint 051
+  PortfolioLifecycleWidgetComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -329,6 +334,11 @@ const SEARCH_DATA: SearchResult[] = [
     PortfolioFiscalSummaryComponent,
     PortfolioComplianceMatrixComponent,
     PortfolioRoundupComponent,
+    // Sprint 050
+    MoveOutChecklistComponent,
+    InventoryChecklistComponent,
+    // Sprint 051
+    PortfolioLifecycleWidgetComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -1915,6 +1925,54 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ═══════════════ Sprint 050 ═══════════════ -->
+
+      @if (flags.MOVE_OUT_CHECKLIST) {
+        <section class="feature-section" id="move-out-checklist">
+          <h2>Move-Out Checklist</h2>
+          <p class="feature-desc">
+            <strong>MoveOutChecklistComponent</strong> — Counterpart simétrico ao
+            <code>MoveInChecklist</code>: contracto denúncia (NRAU art. 1098.º — janela 30-120 dias),
+            terminação de utilities, walk-through e reclamação de caução. Categorias (Notice,
+            Utilities, Walk-Through, Caução, Logística) com timing relativo ao move-out e progresso
+            por categoria.
+            Feature flag: <code>MOVE_OUT_CHECKLIST</code>.
+          </p>
+          <iu-move-out-checklist />
+        </section>
+      }
+
+      @if (flags.PROPERTY_INVENTORY) {
+        <section class="feature-section" id="property-inventory">
+          <h2>Property Inventory</h2>
+          <p class="feature-desc">
+            <strong>InventoryChecklistComponent</strong> — Inventário itemizado de recheio (seed
+            de 15 itens para T2 PT). Captura condição no move-in vs move-out e classifica delta
+            (unchanged / wear / damage / loss) com retenção sugerida — feed direto para o
+            <code>DepositReturnEstimator</code>. Cumprimento NRAU art. 5.º.
+            Feature flag: <code>PROPERTY_INVENTORY</code>.
+          </p>
+          <iu-inventory-checklist />
+        </section>
+      }
+
+      <!-- ═══════════════ Sprint 051 ═══════════════ -->
+
+      @if (flags.PORTFOLIO_LIFECYCLE_WIDGET) {
+        <section class="feature-section" id="portfolio-lifecycle">
+          <h2>Portfolio Operational Lifecycle</h2>
+          <p class="feature-desc">
+            <strong>PortfolioLifecycleWidgetComponent</strong> — Counterpart operacional ao
+            <code>PortfolioTaxLifecycleWidget</code> (Sprint 049). Agrega, ao longo das 8
+            propriedades mock, o stage de cada lease (move-in / steady / move-out), o número
+            de itens com delta de inventário e a dedução sugerida — fechando o triângulo
+            lifecycle × inventory × caução ao nível do portfolio.
+            Feature flag: <code>PORTFOLIO_LIFECYCLE_WIDGET</code>.
+          </p>
+          <iu-portfolio-lifecycle />
+        </section>
+      }
+
       <!-- ═══════════════ Sprint 045 — Dashboard consumer trilogy ═══════════════ -->
 
       @if (flags.PORTFOLIO_ROUNDUP) {
@@ -2403,6 +2461,9 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
     { id: 'portfolio-overview', label: 'Portfolio Overview', flag: 'PORTFOLIO_OVERVIEW' },
     { id: 'yield-calculator', label: 'Yield Calculator', flag: 'YIELD_CALCULATOR' },
     { id: 'move-in-checklist', label: 'Move-In Checklist', flag: 'MOVE_IN_CHECKLIST' },
+    { id: 'move-out-checklist', label: 'Move-Out Checklist', flag: 'MOVE_OUT_CHECKLIST' },
+    { id: 'property-inventory', label: 'Property Inventory', flag: 'PROPERTY_INVENTORY' },
+    { id: 'portfolio-lifecycle', label: '★ Portfolio Lifecycle', flag: 'PORTFOLIO_LIFECYCLE_WIDGET' },
     { id: 'portfolio-roundup', label: '★ Portfolio Roundup', flag: 'PORTFOLIO_ROUNDUP' },
     { id: 'portfolio-yield-overview', label: '★ Yield Overview', flag: 'PORTFOLIO_YIELD_OVERVIEW' },
     { id: 'portfolio-fiscal-summary', label: '★ Fiscal Summary', flag: 'PORTFOLIO_FISCAL_SUMMARY' },

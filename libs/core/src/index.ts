@@ -439,3 +439,13 @@ export type {
   InventoryDeltaLine,
 } from './lib/services/property-inventory.service';
 export { InventoryChecklistComponent } from './lib/components/inventory-checklist/inventory-checklist.component';
+
+// Sprint 051 — Night Shift 2026-05-11
+export {
+  PortfolioLifecycleWidgetComponent,
+} from './lib/components/portfolio-lifecycle/portfolio-lifecycle.component';
+export type {
+  LifecycleStage,
+  InventoryDeltaSeverity as PortfolioInventoryDeltaSeverity,
+  LifecycleRow,
+} from './lib/components/portfolio-lifecycle/portfolio-lifecycle.component';
