@@ -215,4 +215,9 @@ export const FeatureFlags = {
 
   // Sprint 051 — Night Shift 2026-05-11
   PORTFOLIO_LIFECYCLE_WIDGET: true, // PortfolioLifecycleWidgetComponent — operational counterpart to PortfolioTaxLifecycleWidget (Sprint 049): aggregates move-in / steady / move-out stage + inventory delta + suggested deduction across the 8-property portfolio; closes the triangle lifecycle × inventory × caução at portfolio scale
+
+  // Sprint 052 — Night Shift 2026-05-12
+  DASHBOARD_TAX_LIFECYCLE_WIDGET: true,         // PortfolioTaxLifecycleWidgetWrapperComponent — dashboard-page wrapper around PortfolioTaxLifecycleWidget (Sprint 049) with router navigation to /features#portfolio-tax-lifecycle
+  DASHBOARD_LIFECYCLE_WIDGET: true,             // PortfolioLifecycleWidgetWrapperComponent — dashboard-page wrapper around PortfolioLifecycleWidget (Sprint 051) with router navigation to /features#portfolio-lifecycle
+  PROPERTY_TRANSACTION_COST_CALCULATOR: true,   // PropertyTransactionCostService + PropertyTransactionCostCalculatorComponent — single-transaction meta-consumer combining IMT (buyer: HPP/outros + IS 0.8% + notário) and Mais-Valias Imobiliárias (seller: 50%/100% × 28%) to expose total transaction friction
 } as const;

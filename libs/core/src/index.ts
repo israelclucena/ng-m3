@@ -449,3 +449,13 @@ export type {
   InventoryDeltaSeverity as PortfolioInventoryDeltaSeverity,
   LifecycleRow,
 } from './lib/components/portfolio-lifecycle/portfolio-lifecycle.component';
+
+// Sprint 052 — Night Shift 2026-05-12
+export {
+  PropertyTransactionCostService,
+} from './lib/services/property-transaction-cost.service';
+export type {
+  TransactionBracketLine,
+  TransactionBreakdown,
+} from './lib/services/property-transaction-cost.service';
+export { PropertyTransactionCostCalculatorComponent } from './lib/components/property-transaction-cost-calculator/property-transaction-cost-calculator.component';

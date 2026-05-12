@@ -20,6 +20,8 @@ import { QuickLinksWidgetComponent } from '../widgets/quick-links-widget.compone
 import { MetricsChartWidgetComponent } from '../widgets/metrics-chart-widget.component';
 import { DraggableDashboardComponent } from '../widgets/draggable-dashboard.component';
 import { PortfolioRoundupWidgetComponent } from '../widgets/portfolio-roundup-widget.component';
+import { PortfolioTaxLifecycleWidgetWrapperComponent } from '../widgets/portfolio-tax-lifecycle-widget.component';
+import { PortfolioLifecycleWidgetWrapperComponent } from '../widgets/portfolio-lifecycle-widget.component';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -36,6 +38,8 @@ import { PortfolioRoundupWidgetComponent } from '../widgets/portfolio-roundup-wi
     MetricsChartWidgetComponent,
     DraggableDashboardComponent,
     PortfolioRoundupWidgetComponent,
+    PortfolioTaxLifecycleWidgetWrapperComponent,
+    PortfolioLifecycleWidgetWrapperComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
@@ -85,6 +89,12 @@ import { PortfolioRoundupWidgetComponent } from '../widgets/portfolio-roundup-wi
         }
         @if (flags.DASHBOARD_PORTFOLIO_ROUNDUP_WIDGET) {
           <app-portfolio-roundup-widget class="widget--animate widget--wide"></app-portfolio-roundup-widget>
+        }
+        @if (flags.DASHBOARD_TAX_LIFECYCLE_WIDGET) {
+          <app-portfolio-tax-lifecycle-widget class="widget--animate widget--wide"></app-portfolio-tax-lifecycle-widget>
+        }
+        @if (flags.DASHBOARD_LIFECYCLE_WIDGET) {
+          <app-portfolio-lifecycle-widget class="widget--animate widget--wide"></app-portfolio-lifecycle-widget>
         }
       </div>
     }

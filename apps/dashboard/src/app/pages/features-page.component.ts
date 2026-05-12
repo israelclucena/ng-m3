@@ -172,8 +172,12 @@ import {
   // Sprint 050
   MoveOutChecklistComponent,
   InventoryChecklistComponent,
+  // Sprint 049
+  PortfolioTaxLifecycleWidgetComponent,
   // Sprint 051
   PortfolioLifecycleWidgetComponent,
+  // Sprint 052
+  PropertyTransactionCostCalculatorComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -337,8 +341,12 @@ const SEARCH_DATA: SearchResult[] = [
     // Sprint 050
     MoveOutChecklistComponent,
     InventoryChecklistComponent,
+    // Sprint 049
+    PortfolioTaxLifecycleWidgetComponent,
     // Sprint 051
     PortfolioLifecycleWidgetComponent,
+    // Sprint 052
+    PropertyTransactionCostCalculatorComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -1956,6 +1964,23 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ═══════════════ Sprint 049 ═══════════════ -->
+
+      @if (flags.PORTFOLIO_TAX_LIFECYCLE_WIDGET) {
+        <section class="feature-section" id="portfolio-tax-lifecycle">
+          <h2>Portfolio Tax Lifecycle</h2>
+          <p class="feature-desc">
+            <strong>PortfolioTaxLifecycleWidgetComponent</strong> — Meta-consumer que agrega a
+            carga fiscal anual recorrente (IMI + AIMI portfolio-wide + IRS Cat. F por regime)
+            sobre as 8 propriedades mock, com eventos projectados opcionais
+            (venda → mais-valias residente / compra → IMT + IS). Fecha o gap deixado pelos
+            calculadores standalone do Sprint 048.
+            Feature flag: <code>PORTFOLIO_TAX_LIFECYCLE_WIDGET</code>.
+          </p>
+          <iu-portfolio-tax-lifecycle />
+        </section>
+      }
+
       <!-- ═══════════════ Sprint 051 ═══════════════ -->
 
       @if (flags.PORTFOLIO_LIFECYCLE_WIDGET) {
@@ -1970,6 +1995,24 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>PORTFOLIO_LIFECYCLE_WIDGET</code>.
           </p>
           <iu-portfolio-lifecycle />
+        </section>
+      }
+
+      <!-- ═══════════════ Sprint 052 ═══════════════ -->
+
+      @if (flags.PROPERTY_TRANSACTION_COST_CALCULATOR) {
+        <section class="feature-section" id="property-transaction-cost-calculator">
+          <h2>Property Transaction Cost Calculator</h2>
+          <p class="feature-desc">
+            <strong>PropertyTransactionCostService + PropertyTransactionCostCalculatorComponent</strong> —
+            Meta-consumer single-transaction que combina IMT (compra: HPP/outros + IS 0.8% +
+            notário) e Mais-Valias Imobiliárias (venda: 50%/100% × 28%) num único quadro
+            side-by-side. Expõe a fricção total da transacção (custo comprador − líquido vendedor)
+            isolada do preço — fecha o quadrado compra × venda × titularidade × disposição
+            operacional ao nível single-property.
+            Feature flag: <code>PROPERTY_TRANSACTION_COST_CALCULATOR</code>.
+          </p>
+          <iu-property-transaction-cost-calculator />
         </section>
       }
 
