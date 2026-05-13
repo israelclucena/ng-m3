@@ -178,6 +178,11 @@ import {
   PortfolioLifecycleWidgetComponent,
   // Sprint 052
   PropertyTransactionCostCalculatorComponent,
+  // Sprint 053
+  MaisValiasImobiliariasCalculatorComponent,
+  AIMICalculatorComponent,
+  IMTCalculatorComponent,
+  AnnualPropertyTaxBurdenComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -347,6 +352,11 @@ const SEARCH_DATA: SearchResult[] = [
     PortfolioLifecycleWidgetComponent,
     // Sprint 052
     PropertyTransactionCostCalculatorComponent,
+    // Sprint 053
+    MaisValiasImobiliariasCalculatorComponent,
+    AIMICalculatorComponent,
+    IMTCalculatorComponent,
+    AnnualPropertyTaxBurdenComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2016,6 +2026,69 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ═══════════════ Sprint 053 — Catalog wiring de calculators standalone ═══════════════ -->
+
+      @if (flags.MAIS_VALIAS_IMOBILIARIAS_CALCULATOR) {
+        <section class="feature-section" id="mais-valias">
+          <h2>Mais-Valias Imobiliárias Calculator</h2>
+          <p class="feature-desc">
+            <strong>MaisValiasImobiliariasService + MaisValiasImobiliariasCalculatorComponent</strong> —
+            Calculador IRS Cat. G para venda de imóvel: coeficiente desvalorização monetária
+            (Portaria 314/2024), 50% tributável residente / 100% não-residente, escolha entre
+            taxa autónoma 28% e englobamento progressivo (escalões 2026). Sprint 047 sem entrada
+            navegável directa até agora.
+            Feature flag: <code>MAIS_VALIAS_IMOBILIARIAS_CALCULATOR</code>.
+          </p>
+          <iu-mais-valias-imobiliarias-calculator />
+        </section>
+      }
+
+      @if (flags.AIMI_CALCULATOR) {
+        <section class="feature-section" id="aimi">
+          <h2>AIMI Calculator</h2>
+          <p class="feature-desc">
+            <strong>AIMIService + AIMICalculatorComponent</strong> —
+            Adicional ao IMI: dedução €600k singular / €1.2M casal conjunto / 0 sociedades,
+            escalões progressivos 0.7%/1.0%/1.5% (singulares e casais) ou taxa fixa 0.4%
+            (sociedades), apenas urbano habitacional + terreno construção. Sprint 048 sem
+            secção própria até agora.
+            Feature flag: <code>AIMI_CALCULATOR</code>.
+          </p>
+          <iu-aimi-calculator />
+        </section>
+      }
+
+      @if (flags.IMT_CALCULATOR) {
+        <section class="feature-section" id="imt">
+          <h2>IMT Calculator</h2>
+          <p class="feature-desc">
+            <strong>IMTService + IMTCalculatorComponent</strong> —
+            Imposto Municipal sobre Transmissões Onerosas (compra): tabelas escalonadas 2026
+            HPP (isento até ~€101.917) vs outros fins (1% inicial), taxa fixa 5% rústicos,
+            isenção jovens 1ª habitação até €316.772, IS 0.8% sempre devido. Sprint 048 sem
+            secção própria até agora.
+            Feature flag: <code>IMT_CALCULATOR</code>.
+          </p>
+          <iu-imt-calculator />
+        </section>
+      }
+
+      @if (flags.ANNUAL_TAX_BURDEN_AGGREGATOR) {
+        <section class="feature-section" id="annual-tax-burden">
+          <h2>Annual Property Tax Burden</h2>
+          <p class="feature-desc">
+            <strong>AnnualPropertyTaxBurdenService + AnnualPropertyTaxBurdenComponent</strong> —
+            Meta-consumer que cruza, ao nível portfolio e para um único ano fiscal, os quatro
+            impostos prediais portugueses (IMI · AIMI · IRS Cat. F · Mais-Valias) e devolve
+            também o calendário datado de pagamentos (regras AT 2026 para fraccionamento de
+            IMI; AIMI 30 Set; IRS Cat. F Modelo 3 deadline 30 Jun ano seguinte). Complementa
+            <code>PortfolioTaxLifecycleWidget</code> (Sprint 049) com o eixo temporal explícito.
+            Feature flag: <code>ANNUAL_TAX_BURDEN_AGGREGATOR</code>.
+          </p>
+          <iu-annual-property-tax-burden />
+        </section>
+      }
+
       <!-- ═══════════════ Sprint 045 — Dashboard consumer trilogy ═══════════════ -->
 
       @if (flags.PORTFOLIO_ROUNDUP) {
@@ -2506,6 +2579,10 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
     { id: 'move-in-checklist', label: 'Move-In Checklist', flag: 'MOVE_IN_CHECKLIST' },
     { id: 'move-out-checklist', label: 'Move-Out Checklist', flag: 'MOVE_OUT_CHECKLIST' },
     { id: 'property-inventory', label: 'Property Inventory', flag: 'PROPERTY_INVENTORY' },
+    { id: 'mais-valias', label: 'Mais-Valias Calculator', flag: 'MAIS_VALIAS_IMOBILIARIAS_CALCULATOR' },
+    { id: 'aimi', label: 'AIMI Calculator', flag: 'AIMI_CALCULATOR' },
+    { id: 'imt', label: 'IMT Calculator', flag: 'IMT_CALCULATOR' },
+    { id: 'annual-tax-burden', label: '★ Annual Tax Burden', flag: 'ANNUAL_TAX_BURDEN_AGGREGATOR' },
     { id: 'portfolio-lifecycle', label: '★ Portfolio Lifecycle', flag: 'PORTFOLIO_LIFECYCLE_WIDGET' },
     { id: 'portfolio-roundup', label: '★ Portfolio Roundup', flag: 'PORTFOLIO_ROUNDUP' },
     { id: 'portfolio-yield-overview', label: '★ Yield Overview', flag: 'PORTFOLIO_YIELD_OVERVIEW' },

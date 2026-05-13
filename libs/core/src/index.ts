@@ -459,3 +459,16 @@ export type {
   TransactionBreakdown,
 } from './lib/services/property-transaction-cost.service';
 export { PropertyTransactionCostCalculatorComponent } from './lib/components/property-transaction-cost-calculator/property-transaction-cost-calculator.component';
+
+// Sprint 053 — Night Shift 2026-05-13
+export {
+  AnnualPropertyTaxBurdenService,
+} from './lib/services/annual-property-tax-burden.service';
+export type {
+  PropertyDisposition,
+  PropertyBurdenLine,
+  DispositionBurdenLine,
+  TaxCalendarEvent,
+  AnnualBurdenResult,
+} from './lib/services/annual-property-tax-burden.service';
+export { AnnualPropertyTaxBurdenComponent } from './lib/components/annual-property-tax-burden/annual-property-tax-burden.component';

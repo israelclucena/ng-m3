@@ -220,4 +220,10 @@ export const FeatureFlags = {
   DASHBOARD_TAX_LIFECYCLE_WIDGET: true,         // PortfolioTaxLifecycleWidgetWrapperComponent — dashboard-page wrapper around PortfolioTaxLifecycleWidget (Sprint 049) with router navigation to /features#portfolio-tax-lifecycle
   DASHBOARD_LIFECYCLE_WIDGET: true,             // PortfolioLifecycleWidgetWrapperComponent — dashboard-page wrapper around PortfolioLifecycleWidget (Sprint 051) with router navigation to /features#portfolio-lifecycle
   PROPERTY_TRANSACTION_COST_CALCULATOR: true,   // PropertyTransactionCostService + PropertyTransactionCostCalculatorComponent — single-transaction meta-consumer combining IMT (buyer: HPP/outros + IS 0.8% + notário) and Mais-Valias Imobiliárias (seller: 50%/100% × 28%) to expose total transaction friction
+
+  // Sprint 053 — Night Shift 2026-05-13 (catalog wiring de calculators standalone Sprints 047/048 + meta-consumer anual + rent-domain specs)
+  DASHBOARD_MAIS_VALIAS_WIDGET: true, // MaisValiasWidgetComponent — dashboard wrapper around MaisValiasImobiliariasCalculatorComponent (Sprint 047) with router navigation to /features#mais-valias
+  DASHBOARD_AIMI_WIDGET: true,        // AimiWidgetComponent — dashboard wrapper around AIMICalculatorComponent (Sprint 048) with router navigation to /features#aimi
+  DASHBOARD_IMT_WIDGET: true,         // ImtWidgetComponent — dashboard wrapper around IMTCalculatorComponent (Sprint 048) with router navigation to /features#imt
+  ANNUAL_TAX_BURDEN_AGGREGATOR: true, // AnnualPropertyTaxBurdenService + AnnualPropertyTaxBurdenComponent — meta-consumer cruzando IMI + AIMI + IRS Cat.F + Mais-Valias para um ano fiscal ao nível portfolio, com calendário de pagamentos (31/Mai, 31/Ago, 30/Nov IMI; 30/Set AIMI; Mar-Jun IRS)
 } as const;

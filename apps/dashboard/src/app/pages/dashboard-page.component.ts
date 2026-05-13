@@ -22,6 +22,9 @@ import { DraggableDashboardComponent } from '../widgets/draggable-dashboard.comp
 import { PortfolioRoundupWidgetComponent } from '../widgets/portfolio-roundup-widget.component';
 import { PortfolioTaxLifecycleWidgetWrapperComponent } from '../widgets/portfolio-tax-lifecycle-widget.component';
 import { PortfolioLifecycleWidgetWrapperComponent } from '../widgets/portfolio-lifecycle-widget.component';
+import { MaisValiasWidgetComponent } from '../widgets/mais-valias-widget.component';
+import { AimiWidgetComponent } from '../widgets/aimi-widget.component';
+import { ImtWidgetComponent } from '../widgets/imt-widget.component';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -40,6 +43,9 @@ import { PortfolioLifecycleWidgetWrapperComponent } from '../widgets/portfolio-l
     PortfolioRoundupWidgetComponent,
     PortfolioTaxLifecycleWidgetWrapperComponent,
     PortfolioLifecycleWidgetWrapperComponent,
+    MaisValiasWidgetComponent,
+    AimiWidgetComponent,
+    ImtWidgetComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
@@ -95,6 +101,15 @@ import { PortfolioLifecycleWidgetWrapperComponent } from '../widgets/portfolio-l
         }
         @if (flags.DASHBOARD_LIFECYCLE_WIDGET) {
           <app-portfolio-lifecycle-widget class="widget--animate widget--wide"></app-portfolio-lifecycle-widget>
+        }
+        @if (flags.DASHBOARD_MAIS_VALIAS_WIDGET) {
+          <app-mais-valias-widget class="widget--animate widget--wide"></app-mais-valias-widget>
+        }
+        @if (flags.DASHBOARD_AIMI_WIDGET) {
+          <app-aimi-widget class="widget--animate widget--wide"></app-aimi-widget>
+        }
+        @if (flags.DASHBOARD_IMT_WIDGET) {
+          <app-imt-widget class="widget--animate widget--wide"></app-imt-widget>
         }
       </div>
     }
