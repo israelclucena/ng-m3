@@ -183,6 +183,8 @@ import {
   AIMICalculatorComponent,
   IMTCalculatorComponent,
   AnnualPropertyTaxBurdenComponent,
+  // Sprint 054
+  InsuranceTrackerComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -357,6 +359,8 @@ const SEARCH_DATA: SearchResult[] = [
     AIMICalculatorComponent,
     IMTCalculatorComponent,
     AnnualPropertyTaxBurdenComponent,
+    // Sprint 054
+    InsuranceTrackerComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2089,6 +2093,23 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      @if (flags.INSURANCE_TRACKER_UI && flags.INSURANCE_TRACKER_CATALOG_WIRING) {
+        <section class="feature-section" id="insurance-tracker">
+          <h2>Insurance Tracker</h2>
+          <p class="feature-desc">
+            <strong>InsuranceTrackerService + InsuranceTrackerComponent</strong> —
+            Landlord policy register (multirriscos / responsabilidade civil / conteúdo) com
+            three-tab layout (activas / a expirar em 30 dias / expiradas), cards agrupados
+            por tipo, acções de renovar/remover e modal de adição. Service expõe buckets
+            via signals computed (<code>activePolicies</code>, <code>expiringSoon</code>,
+            <code>expired</code>) directamente do registro persistido. Entry point criado
+            na Sprint 054 (carry-over de 3 noites desde Sprint 043).
+            Feature flags: <code>INSURANCE_TRACKER_UI</code> + <code>INSURANCE_TRACKER_CATALOG_WIRING</code>.
+          </p>
+          <iu-insurance-tracker />
+        </section>
+      }
+
       <!-- ═══════════════ Sprint 045 — Dashboard consumer trilogy ═══════════════ -->
 
       @if (flags.PORTFOLIO_ROUNDUP) {
@@ -2583,6 +2604,7 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
     { id: 'aimi', label: 'AIMI Calculator', flag: 'AIMI_CALCULATOR' },
     { id: 'imt', label: 'IMT Calculator', flag: 'IMT_CALCULATOR' },
     { id: 'annual-tax-burden', label: '★ Annual Tax Burden', flag: 'ANNUAL_TAX_BURDEN_AGGREGATOR' },
+    { id: 'insurance-tracker', label: 'Insurance Tracker', flag: 'INSURANCE_TRACKER_CATALOG_WIRING' },
     { id: 'portfolio-lifecycle', label: '★ Portfolio Lifecycle', flag: 'PORTFOLIO_LIFECYCLE_WIDGET' },
     { id: 'portfolio-roundup', label: '★ Portfolio Roundup', flag: 'PORTFOLIO_ROUNDUP' },
     { id: 'portfolio-yield-overview', label: '★ Yield Overview', flag: 'PORTFOLIO_YIELD_OVERVIEW' },

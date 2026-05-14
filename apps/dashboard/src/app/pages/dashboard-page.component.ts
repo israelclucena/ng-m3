@@ -25,6 +25,8 @@ import { PortfolioLifecycleWidgetWrapperComponent } from '../widgets/portfolio-l
 import { MaisValiasWidgetComponent } from '../widgets/mais-valias-widget.component';
 import { AimiWidgetComponent } from '../widgets/aimi-widget.component';
 import { ImtWidgetComponent } from '../widgets/imt-widget.component';
+import { AnnualTaxBurdenWidgetComponent } from '../widgets/annual-tax-burden-widget.component';
+import { InsuranceTrackerWidgetComponent } from '../widgets/insurance-tracker-widget.component';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -46,6 +48,8 @@ import { ImtWidgetComponent } from '../widgets/imt-widget.component';
     MaisValiasWidgetComponent,
     AimiWidgetComponent,
     ImtWidgetComponent,
+    AnnualTaxBurdenWidgetComponent,
+    InsuranceTrackerWidgetComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
@@ -110,6 +114,12 @@ import { ImtWidgetComponent } from '../widgets/imt-widget.component';
         }
         @if (flags.DASHBOARD_IMT_WIDGET) {
           <app-imt-widget class="widget--animate widget--wide"></app-imt-widget>
+        }
+        @if (flags.DASHBOARD_ANNUAL_BURDEN_WIDGET) {
+          <app-annual-tax-burden-widget class="widget--animate widget--wide"></app-annual-tax-burden-widget>
+        }
+        @if (flags.DASHBOARD_INSURANCE_TRACKER_WIDGET) {
+          <app-insurance-tracker-widget class="widget--animate widget--wide"></app-insurance-tracker-widget>
         }
       </div>
     }

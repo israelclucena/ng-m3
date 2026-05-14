@@ -226,4 +226,9 @@ export const FeatureFlags = {
   DASHBOARD_AIMI_WIDGET: true,        // AimiWidgetComponent — dashboard wrapper around AIMICalculatorComponent (Sprint 048) with router navigation to /features#aimi
   DASHBOARD_IMT_WIDGET: true,         // ImtWidgetComponent — dashboard wrapper around IMTCalculatorComponent (Sprint 048) with router navigation to /features#imt
   ANNUAL_TAX_BURDEN_AGGREGATOR: true, // AnnualPropertyTaxBurdenService + AnnualPropertyTaxBurdenComponent — meta-consumer cruzando IMI + AIMI + IRS Cat.F + Mais-Valias para um ano fiscal ao nível portfolio, com calendário de pagamentos (31/Mai, 31/Ago, 30/Nov IMI; 30/Set AIMI; Mar-Jun IRS)
+
+  // Sprint 054 — Night Shift 2026-05-14 (fechar gaps de wiring + cobertura test lifecycle/aggregator)
+  DASHBOARD_ANNUAL_BURDEN_WIDGET: true,        // AnnualTaxBurdenWidgetComponent — dashboard wrapper around AnnualPropertyTaxBurdenComponent (Sprint 053) with router navigation to /features#annual-tax-burden
+  DASHBOARD_INSURANCE_TRACKER_WIDGET: true,    // InsuranceTrackerWidgetComponent — dashboard wrapper around InsuranceTrackerComponent (Sprint 043) with router navigation to /features#insurance-tracker; surfaces 3 buckets (active/expiring/expired) at-a-glance
+  INSURANCE_TRACKER_CATALOG_WIRING: true,      // features-page section #insurance-tracker rendering <iu-insurance-tracker> (Sprint 043 standalone) — fecha o ponto de entrada faltante para a UI flag INSURANCE_TRACKER_UI desde Sprint 043
 } as const;
