@@ -27,6 +27,10 @@ export const FeatureFlags = {
   // Sprint 009 — Night Shift 2026-03-05
   RESOURCE_DATA_TABLE: true,
   FILTER_BAR: true,
+  // MODULE_FEDERATION_READY is a dev-only architectural demo. The remote
+  // (`remote-properties`) is intentionally not deployed in production; the
+  // /properties route falls back to FederationFallbackComponent when the
+  // remote is unreachable. See remote-properties/README.md.
   MODULE_FEDERATION_READY: true,
 
   // Sprint 010 — Night Shift 2026-03-06

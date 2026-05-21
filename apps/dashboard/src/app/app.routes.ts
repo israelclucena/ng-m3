@@ -74,11 +74,20 @@ export const appRoutes: Routes = [
     title: 'Settings — Israel UI',
   },
 
-  // ── Module Federation — remote-properties micro-frontend ──────────────────
+  // ── Module Federation — remote-properties micro-frontend (dev-only demo) ──
+  // The remote is not deployed alongside the shell; if it is not running on
+  // :4201, fall back to a self-documenting placeholder. See
+  // remote-properties/README.md for setup.
   {
     path: 'properties',
     loadChildren: () =>
-      loadRemoteModule('remoteProperties', './Routes').then(m => m.appRoutes),
+      loadRemoteModule('remoteProperties', './Routes')
+        .then(m => m.appRoutes)
+        .catch(() =>
+          import('./pages/federation-fallback.component').then(m => [
+            { path: '**', component: m.FederationFallbackComponent },
+          ]),
+        ),
   },
 
   // ── Error pages (Sprint 023 — ERROR_PAGES flag) ───────────────────────────
