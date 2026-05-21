@@ -56,8 +56,10 @@ export const HighYieldPortfolio: Story = {
   decorators: [
     withOverride((p) => ({
       ...p,
-      annualRent: Math.round(p.annualRent * 1.4),
-      maintenanceCostAnnual: Math.round(p.maintenanceCostAnnual * 0.6),
+      lease: {
+        ...p.lease,
+        monthlyRent: Math.round(p.lease.monthlyRent * 1.4),
+      },
     })),
   ],
   render: () => ({
@@ -67,8 +69,8 @@ export const HighYieldPortfolio: Story = {
     docs: {
       description: {
         story:
-          'Override: rents pumped 40% and maintenance dropped 40% — every row crosses ' +
-          'the strong-yield band. Sanity check that aggregate KPIs scale correctly.',
+          'Override: monthly rents pumped 40% — every row crosses the strong-yield band. ' +
+          'Sanity check that aggregate KPIs scale correctly.',
       },
     },
   },
@@ -78,8 +80,10 @@ export const StressedPortfolio: Story = {
   decorators: [
     withOverride((p, i) => ({
       ...p,
-      annualRent: i % 2 === 0 ? Math.round(p.annualRent * 0.55) : p.annualRent,
-      maintenanceCostAnnual: Math.round(p.maintenanceCostAnnual * 1.8),
+      lease: {
+        ...p.lease,
+        monthlyRent: i % 2 === 0 ? Math.round(p.lease.monthlyRent * 0.55) : p.lease.monthlyRent,
+      },
       irsRegime: 'englobamento',
     })),
   ],
@@ -90,7 +94,7 @@ export const StressedPortfolio: Story = {
     docs: {
       description: {
         story:
-          'Override: half the units halved their rent, maintenance up 80%, all in englobamento. ' +
+          'Override: half the units halved their monthly rent, all in englobamento. ' +
           'Exercises negative-net-yield rows + delta-vs-average colouring.',
       },
     },
