@@ -18,19 +18,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Lint core lib
-        run: npx nx lint core --max-warnings=0 || true
+        run: pnpm exec nx lint core --max-warnings=0 || true
 
       - name: Lint dashboard
-        run: npx nx lint dashboard --max-warnings=0 || true
+        run: pnpm exec nx lint dashboard --max-warnings=0 || true
 
   # ── Job 2: Build & Unit Test ───────────────────────────────────────────────
   build:
@@ -42,32 +46,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Security audit (non-blocking)
-        run: npm audit --audit-level=high || true
+        run: pnpm audit --audit-level high || true
 
       - name: Build core lib
         id: build-core
-        run: npx nx build core
+        run: pnpm exec nx build core
 
       - name: Build dashboard
-        run: npx nx build dashboard
+        run: pnpm exec nx build dashboard
 
       - name: Run unit tests
-        run: npx nx test core --watchAll=false --passWithNoTests --coverageReporters=lcov
+        run: pnpm exec nx test core --watchAll=false --passWithNoTests --coverageReporters=lcov
 
       - name: Type-check core
-        run: npx nx run core:type-check || true
+        run: pnpm exec nx run core:type-check || true
 
       - name: Type-check dashboard
-        run: npx tsc --project apps/dashboard/tsconfig.app.json --noEmit || true
+        run: pnpm exec tsc --project apps/dashboard/tsconfig.app.json --noEmit || true
 
       # Cache dist for E2E job
       - name: Upload dist artifacts
@@ -88,23 +96,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Build dashboard for E2E
-        run: npx nx build dashboard --configuration=development
+        run: pnpm exec nx build dashboard --configuration=development
 
       - name: Run E2E smoke tests (Chromium)
         run: |
-          npx playwright test \
+          pnpm exec playwright test \
             --config=e2e/playwright.config.ts \
             --project=chromium \
             --reporter=list \

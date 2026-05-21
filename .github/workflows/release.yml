@@ -18,23 +18,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+          cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build core lib
-        run: npx nx build core --configuration=production
+        run: pnpm exec nx build core --configuration=production
 
       - name: Run tests
-        run: npx nx test core --watchAll=false --passWithNoTests
+        run: pnpm exec nx test core --watchAll=false --passWithNoTests
 
       - name: Publish to npmjs.com
-        run: npx nx release publish
+        run: pnpm exec nx release publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
