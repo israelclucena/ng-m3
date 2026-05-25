@@ -91,15 +91,13 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: build
-    # DISABLED pending investigation: re-enabling on 2026-05-21 (commit
-    # 77dc41d) failed at "Install Playwright system dependencies" step.
-    # `@playwright/test` is now declared as a dev dep (works locally with
-    # `pnpm exec playwright install chromium`), but the `sudo pnpm exec
-    # playwright install-deps chromium` step fails on the default ubuntu
-    # runner. Next investigation: try hard-coded `sudo apt-get install -y`
-    # with explicit dep list, or switch to `microsoft/playwright-github-action`
-    # container. Re-enable when fix is verified end-to-end.
-    if: false
+    # Retry 2 (2026-05-21): the previous attempt (commit 77dc41d) used
+    # `sudo pnpm exec playwright install-deps chromium` and failed at the
+    # system-deps step on the default ubuntu-latest runner. This retry
+    # replaces it with an explicit `apt-get install` of the Chromium runtime
+    # libraries (ubuntu 24.04 noble, t64 variants), matching what
+    # `playwright install-deps` does internally.
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -116,7 +114,30 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright system dependencies (Chromium)
-        run: sudo pnpm exec playwright install-deps chromium
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends \
+            libasound2t64 \
+            libatk-bridge2.0-0t64 \
+            libatk1.0-0t64 \
+            libatspi2.0-0t64 \
+            libcairo2 \
+            libcups2t64 \
+            libdbus-1-3 \
+            libdrm2 \
+            libgbm1 \
+            libglib2.0-0t64 \
+            libnspr4 \
+            libnss3 \
+            libpango-1.0-0 \
+            libx11-6 \
+            libxcb1 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxext6 \
+            libxfixes3 \
+            libxkbcommon0 \
+            libxrandr2
 
       - name: Install Playwright browser (Chromium)
         run: pnpm exec playwright install chromium
