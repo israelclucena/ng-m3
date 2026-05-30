@@ -20,6 +20,28 @@ if (ei) {
   }
 }
 
+// JSDOM lacks IntersectionObserver / ResizeObserver, which @material/web
+// dialog/menu/textfield instantiate during construction. Shim them as no-ops.
+const g = globalThis as Record<string, unknown>;
+if (typeof g['IntersectionObserver'] === 'undefined') {
+  g['IntersectionObserver'] = class {
+    observe(): void { /* no-op */ }
+    unobserve(): void { /* no-op */ }
+    disconnect(): void { /* no-op */ }
+    takeRecords(): unknown[] { return []; }
+    root = null;
+    rootMargin = '';
+    thresholds: number[] = [];
+  };
+}
+if (typeof g['ResizeObserver'] === 'undefined') {
+  g['ResizeObserver'] = class {
+    observe(): void { /* no-op */ }
+    unobserve(): void { /* no-op */ }
+    disconnect(): void { /* no-op */ }
+  };
+}
+
 setupZonelessTestEnv({
   errorOnUnknownElements: true,
   errorOnUnknownProperties: true,
