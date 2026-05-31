@@ -201,8 +201,8 @@ const SEVERITY_BADGE_CLASS: Record<ConditionDeltaSeverity, string> = {
       flex-shrink: 0;
     }
     .inv-deduction-pill.zero {
-      background: #E8F5E9;
-      color: #2E7D32;
+      background: var(--md-sys-color-tertiary-container, #E8F5E9);
+      color: var(--md-sys-color-on-tertiary-container, #2E7D32);
     }
     .inv-deduction-label {
       font-size: 11px;
@@ -365,7 +365,7 @@ const SEVERITY_BADGE_CLASS: Record<ConditionDeltaSeverity, string> = {
       text-align: right;
     }
     .inv-delta-amount.zero {
-      color: #2E7D32;
+      color: var(--md-sys-color-on-tertiary-container, #2E7D32);
     }
 
     .inv-sev-badge {
@@ -377,20 +377,20 @@ const SEVERITY_BADGE_CLASS: Record<ConditionDeltaSeverity, string> = {
       letter-spacing: 0.4px;
     }
     .sev-unchanged {
-      background: #E8F5E9;
-      color: #2E7D32;
+      background: var(--md-sys-color-tertiary-container, #E8F5E9);
+      color: var(--md-sys-color-on-tertiary-container, #2E7D32);
     }
     .sev-wear {
-      background: #FFF8E1;
-      color: #B26A00;
+      background: var(--md-sys-color-warning-container, #FFF8E1);
+      color: var(--md-sys-color-on-warning-container, #B26A00);
     }
     .sev-damage {
-      background: #FFE6E0;
-      color: #B3261E;
+      background: var(--md-sys-color-error-container, #FFE6E0);
+      color: var(--md-sys-color-error, #B3261E);
     }
     .sev-loss {
-      background: #FFCDD2;
-      color: #8A1414;
+      background: var(--md-sys-color-error-container-severe, #FFCDD2);
+      color: var(--md-sys-color-on-error-container-severe, #8A1414);
     }
   `],
 })

@@ -243,10 +243,10 @@ const TAXA_AUTONOMA_RATE = 0.28;
       font-size: .75rem; font-weight: 500;
     }
 
-    .pyo-net-positive { color: #1f7a1f; font-weight: 500; }
-    .pyo-net-negative { color: #b3261e; font-weight: 500; }
-    .pyo-delta-positive { color: #1f7a1f; }
-    .pyo-delta-negative { color: #b3261e; }
+    .pyo-net-positive { color: var(--md-sys-color-tertiary, #1f7a1f); font-weight: 500; }
+    .pyo-net-negative { color: var(--md-sys-color-error, #b3261e); font-weight: 500; }
+    .pyo-delta-positive { color: var(--md-sys-color-tertiary, #1f7a1f); }
+    .pyo-delta-negative { color: var(--md-sys-color-error, #b3261e); }
 
     .pyo-footnote {
       margin: 0; padding: 0 .25rem;
