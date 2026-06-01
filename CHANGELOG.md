@@ -1,3 +1,9 @@
+## Unreleased
+
+### 🧹 Chore
+
+- **deps:** bump Angular framework 21.2.13 → 21.2.14; align CLI/tooling and CDK/Material to 21.2.13 (highest available 21.2.x patch — these tracks have no 21.2.14)
+
 ## 1.0.1 (2026-03-27)
 
 ### 🚀 Features
