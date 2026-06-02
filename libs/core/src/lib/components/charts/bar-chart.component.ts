@@ -24,7 +24,9 @@ export interface BarChartDataPoint {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="iu-bar-chart" [style.width.px]="width()" [style.height.px]="height()">
-      <div class="chart-title" *ngIf="title()">{{ title() }}</div>
+      @if (title()) {
+        <div class="chart-title">{{ title() }}</div>
+      }
       <svg
         [attr.width]="svgWidth()"
         [attr.height]="svgHeight()"

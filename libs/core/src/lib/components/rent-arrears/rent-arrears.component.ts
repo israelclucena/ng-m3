@@ -75,22 +75,26 @@ const STATUS_LABELS: Record<ArrearsStatus, string> = {
 
       <!-- Filter Bar -->
       <div class="ra-filters">
-        <button *ngFor="let f of filters"
-                class="ra-filter-btn"
-                [class.ra-filter-active]="svc.filter() === f.value"
-                (click)="svc.setFilter(f.value)">
-          {{ f.label }}
-        </button>
+        @for (f of filters; track f.value) {
+          <button class="ra-filter-btn"
+                  [class.ra-filter-active]="svc.filter() === f.value"
+                  (click)="svc.setFilter(f.value)">
+            {{ f.label }}
+          </button>
+        }
       </div>
 
       <!-- Records -->
       <div class="ra-list">
-        <div *ngIf="svc.filtered().length === 0" class="ra-empty">
-          <span class="material-symbols-outlined ra-empty-icon">check_circle</span>
-          <p>No arrears records</p>
-        </div>
+        @if (svc.filtered().length === 0) {
+          <div class="ra-empty">
+            <span class="material-symbols-outlined ra-empty-icon">check_circle</span>
+            <p>No arrears records</p>
+          </div>
+        }
 
-        <div *ngFor="let r of svc.filtered()" class="ra-card" [class]="'ra-card-' + svc.severity(r)">
+        @for (r of svc.filtered(); track r.id) {
+        <div class="ra-card" [class]="'ra-card-' + svc.severity(r)">
           <div class="ra-card-stripe" [class]="'ra-stripe-' + svc.severity(r)"></div>
 
           <div class="ra-card-body">
@@ -123,61 +127,74 @@ const STATUS_LABELS: Record<ArrearsStatus, string> = {
             </div>
 
             <!-- Progress bar (paid vs total) -->
-            <div *ngIf="r.amountPaid > 0" class="ra-progress-wrap">
-              <div class="ra-progress-bar">
-                <div class="ra-progress-fill" [style.width.%]="(r.amountPaid / r.amountDue) * 100"></div>
+            @if (r.amountPaid > 0) {
+              <div class="ra-progress-wrap">
+                <div class="ra-progress-bar">
+                  <div class="ra-progress-fill" [style.width.%]="(r.amountPaid / r.amountDue) * 100"></div>
+                </div>
+                <span class="ra-progress-label">€{{ r.amountPaid | number:'1.0-0' }} paid of €{{ r.amountDue | number:'1.0-0' }}</span>
               </div>
-              <span class="ra-progress-label">€{{ r.amountPaid | number:'1.0-0' }} paid of €{{ r.amountDue | number:'1.0-0' }}</span>
-            </div>
+            }
 
             <!-- Payment plan badge -->
-            <div *ngIf="r.paymentPlanActive" class="ra-plan-badge">
-              <span class="material-symbols-outlined">payments</span>
-              Payment plan active — €{{ r.paymentPlanMonthly }}/month
-            </div>
+            @if (r.paymentPlanActive) {
+              <div class="ra-plan-badge">
+                <span class="material-symbols-outlined">payments</span>
+                Payment plan active — €{{ r.paymentPlanMonthly }}/month
+              </div>
+            }
 
             <!-- Notes -->
-            <p *ngIf="r.notes" class="ra-notes">{{ r.notes }}</p>
+            @if (r.notes) {
+              <p class="ra-notes">{{ r.notes }}</p>
+            }
 
             <!-- Status + Actions row -->
             <div class="ra-actions-row">
               <span class="ra-status-chip ra-status-{{ r.status }}">
                 {{ statusLabel(r.status) }}
               </span>
-              <div class="ra-action-btns" *ngIf="r.status !== 'resolved'">
-                <button *ngIf="r.status !== 'reminder_sent' && r.status !== 'legal'"
-                        class="ra-btn ra-btn-remind"
-                        (click)="svc.sendReminder(r.id)">
-                  <span class="material-symbols-outlined">notifications</span>
-                  Remind
-                </button>
-                <button *ngIf="r.status === 'reminder_sent'"
-                        class="ra-btn ra-btn-remind ra-btn-disabled" disabled>
-                  <span class="material-symbols-outlined">check</span>
-                  Reminder Sent ({{ r.reminderCount }}×)
-                </button>
-                <button *ngIf="!r.paymentPlanActive && r.status !== 'legal'"
-                        class="ra-btn ra-btn-plan"
-                        (click)="openPlanForm(r)">
-                  <span class="material-symbols-outlined">payments</span>
-                  Payment Plan
-                </button>
-                <button *ngIf="r.status !== 'legal' && r.daysOverdue > 45"
-                        class="ra-btn ra-btn-legal"
-                        (click)="svc.escalateToLegal(r.id)">
-                  <span class="material-symbols-outlined">gavel</span>
-                  Escalate
-                </button>
+              @if (r.status !== 'resolved') {
+              <div class="ra-action-btns">
+                @if (r.status !== 'reminder_sent' && r.status !== 'legal') {
+                  <button class="ra-btn ra-btn-remind"
+                          (click)="svc.sendReminder(r.id)">
+                    <span class="material-symbols-outlined">notifications</span>
+                    Remind
+                  </button>
+                }
+                @if (r.status === 'reminder_sent') {
+                  <button class="ra-btn ra-btn-remind ra-btn-disabled" disabled>
+                    <span class="material-symbols-outlined">check</span>
+                    Reminder Sent ({{ r.reminderCount }}×)
+                  </button>
+                }
+                @if (!r.paymentPlanActive && r.status !== 'legal') {
+                  <button class="ra-btn ra-btn-plan"
+                          (click)="openPlanForm(r)">
+                    <span class="material-symbols-outlined">payments</span>
+                    Payment Plan
+                  </button>
+                }
+                @if (r.status !== 'legal' && r.daysOverdue > 45) {
+                  <button class="ra-btn ra-btn-legal"
+                          (click)="svc.escalateToLegal(r.id)">
+                    <span class="material-symbols-outlined">gavel</span>
+                    Escalate
+                  </button>
+                }
                 <button class="ra-btn ra-btn-resolve"
                         (click)="svc.markResolved(r.id)">
                   <span class="material-symbols-outlined">check_circle</span>
                   Resolve
                 </button>
               </div>
+              }
             </div>
 
             <!-- Inline payment plan form -->
-            <div *ngIf="planFormId() === r.id" class="ra-plan-form">
+            @if (planFormId() === r.id) {
+            <div class="ra-plan-form">
               <p class="ra-plan-form-title">Set Up Payment Plan</p>
               <label class="ra-plan-label">
                 Monthly Instalment (€)
@@ -185,9 +202,11 @@ const STATUS_LABELS: Record<ArrearsStatus, string> = {
                        (input)="planAmount.set(+$any($event.target).value)"
                        class="ra-plan-input" />
               </label>
-              <p class="ra-plan-months" *ngIf="planAmount() > 0">
-                Estimated {{ Math.ceil(r.amountOutstanding / planAmount()) }} months to clear
-              </p>
+              @if (planAmount() > 0) {
+                <p class="ra-plan-months">
+                  Estimated {{ Math.ceil(r.amountOutstanding / planAmount()) }} months to clear
+                </p>
+              }
               <div class="ra-plan-actions">
                 <button class="ra-btn ra-btn-plan" (click)="submitPlan(r)">
                   <span class="material-symbols-outlined">check</span>
@@ -196,8 +215,10 @@ const STATUS_LABELS: Record<ArrearsStatus, string> = {
                 <button class="ra-btn ra-btn-ghost" (click)="planFormId.set(null)">Cancel</button>
               </div>
             </div>
+            }
           </div>
         </div>
+        }
       </div>
     </div>
   `,

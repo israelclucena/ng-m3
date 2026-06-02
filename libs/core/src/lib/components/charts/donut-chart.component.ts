@@ -24,7 +24,9 @@ export interface DonutChartSegment {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="iu-donut-chart" [style.width.px]="size()" [style.height.px]="size()">
-      <div class="chart-title" *ngIf="title()">{{ title() }}</div>
+      @if (title()) {
+        <div class="chart-title">{{ title() }}</div>
+      }
       <div class="chart-wrapper">
         <svg
           [attr.width]="svgSize()"

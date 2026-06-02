@@ -28,7 +28,7 @@
  * <input [value]="form.fields.name.value()"
  *        (input)="form.fields.name.setValue($event.target.value)"
  *        (blur)="form.fields.name.touch()" />
- * <span *ngIf="form.fields.name.showError()">{{ form.fields.name.firstError() }}</span>
+ * @if (form.fields.name.showError()) { <span>{{ form.fields.name.firstError() }}</span> }
  * <button [disabled]="!form.valid()" (click)="onSubmit()">Submit</button>
  *
  * // In the submit handler

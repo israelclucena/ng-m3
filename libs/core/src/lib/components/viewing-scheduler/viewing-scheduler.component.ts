@@ -70,22 +70,26 @@ const STATUS_COLORS: Record<ViewingStatus, string> = {
 
       <!-- Filter Bar -->
       <div class="vs-filters">
-        <button *ngFor="let f of filters"
-                class="vs-filter-btn"
-                [class.vs-filter-active]="svc.filter() === f.value"
-                (click)="svc.setFilter(f.value)">
-          {{ f.label }}
-        </button>
+        @for (f of filters; track f.value) {
+          <button class="vs-filter-btn"
+                  [class.vs-filter-active]="svc.filter() === f.value"
+                  (click)="svc.setFilter(f.value)">
+            {{ f.label }}
+          </button>
+        }
       </div>
 
       <!-- Viewing List -->
       <div class="vs-list">
-        <div *ngIf="svc.filtered().length === 0" class="vs-empty">
-          <span class="material-symbols-outlined vs-empty-icon">event_busy</span>
-          <p>No viewings found</p>
-        </div>
+        @if (svc.filtered().length === 0) {
+          <div class="vs-empty">
+            <span class="material-symbols-outlined vs-empty-icon">event_busy</span>
+            <p>No viewings found</p>
+          </div>
+        }
 
-        <div *ngFor="let v of svc.filtered()" class="vs-card">
+        @for (v of svc.filtered(); track v.id) {
+        <div class="vs-card">
           <!-- Status Badge -->
           <div class="vs-card-status-bar" [style.background]="statusColor(v.status)"></div>
 
@@ -113,12 +117,16 @@ const STATUS_COLORS: Record<ViewingStatus, string> = {
                   {{ v.type === 'virtual' ? 'Virtual' : 'In Person' }}
                 </span>
               </div>
-              <p *ngIf="v.notes" class="vs-notes">{{ v.notes }}</p>
-              <a *ngIf="v.meetLink && v.status === 'confirmed'" [href]="v.meetLink"
-                 target="_blank" class="vs-meet-link">
-                <span class="material-symbols-outlined">video_call</span>
-                Join Meeting
-              </a>
+              @if (v.notes) {
+                <p class="vs-notes">{{ v.notes }}</p>
+              }
+              @if (v.meetLink && v.status === 'confirmed') {
+                <a [href]="v.meetLink"
+                   target="_blank" class="vs-meet-link">
+                  <span class="material-symbols-outlined">video_call</span>
+                  Join Meeting
+                </a>
+              }
             </div>
 
             <!-- Actions + Status -->
@@ -126,42 +134,52 @@ const STATUS_COLORS: Record<ViewingStatus, string> = {
               <span class="vs-status-chip" [style.background]="statusColor(v.status) + '22'" [style.color]="statusColor(v.status)">
                 {{ statusLabel(v.status) }}
               </span>
-              <div class="vs-action-btns" *ngIf="mode === 'landlord'">
-                <button *ngIf="v.status === 'pending'"
-                        class="vs-btn vs-btn-confirm"
-                        (click)="svc.confirm(v.id)">
-                  <span class="material-symbols-outlined">check_circle</span>
-                  Confirm
-                </button>
-                <button *ngIf="v.status === 'confirmed'"
-                        class="vs-btn vs-btn-complete"
-                        (click)="svc.complete(v.id)">
-                  <span class="material-symbols-outlined">task_alt</span>
-                  Complete
-                </button>
-                <button *ngIf="v.status === 'confirmed'"
-                        class="vs-btn vs-btn-noshow"
-                        (click)="svc.markNoShow(v.id)">
-                  No Show
-                </button>
-                <button *ngIf="v.status === 'pending' || v.status === 'confirmed'"
-                        class="vs-btn vs-btn-cancel"
-                        (click)="svc.cancel(v.id)">
-                  <span class="material-symbols-outlined">cancel</span>
-                  Cancel
-                </button>
+              @if (mode === 'landlord') {
+              <div class="vs-action-btns">
+                @if (v.status === 'pending') {
+                  <button class="vs-btn vs-btn-confirm"
+                          (click)="svc.confirm(v.id)">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    Confirm
+                  </button>
+                }
+                @if (v.status === 'confirmed') {
+                  <button class="vs-btn vs-btn-complete"
+                          (click)="svc.complete(v.id)">
+                    <span class="material-symbols-outlined">task_alt</span>
+                    Complete
+                  </button>
+                }
+                @if (v.status === 'confirmed') {
+                  <button class="vs-btn vs-btn-noshow"
+                          (click)="svc.markNoShow(v.id)">
+                    No Show
+                  </button>
+                }
+                @if (v.status === 'pending' || v.status === 'confirmed') {
+                  <button class="vs-btn vs-btn-cancel"
+                          (click)="svc.cancel(v.id)">
+                    <span class="material-symbols-outlined">cancel</span>
+                    Cancel
+                  </button>
+                }
               </div>
-              <div class="vs-action-btns" *ngIf="mode === 'tenant'">
-                <button *ngIf="v.status === 'pending' || v.status === 'confirmed'"
-                        class="vs-btn vs-btn-cancel"
-                        (click)="svc.cancel(v.id)">
-                  <span class="material-symbols-outlined">cancel</span>
-                  Cancel
-                </button>
+              }
+              @if (mode === 'tenant') {
+              <div class="vs-action-btns">
+                @if (v.status === 'pending' || v.status === 'confirmed') {
+                  <button class="vs-btn vs-btn-cancel"
+                          (click)="svc.cancel(v.id)">
+                    <span class="material-symbols-outlined">cancel</span>
+                    Cancel
+                  </button>
+                }
               </div>
+              }
             </div>
           </div>
         </div>
+        }
       </div>
     </div>
   `,

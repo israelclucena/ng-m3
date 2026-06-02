@@ -17,11 +17,13 @@ import { CardComponent, ListComponent, ListItemComponent } from '@israel-ui/core
           <span class="kpi-value">R$ 45.230</span>
         </div>
         <div class="fund-list">
-          <div class="fund-row" *ngFor="let f of funds">
-            <span class="fund-name">{{ f.name }}</span>
-            <span class="fund-price">R$ {{ f.price }}</span>
-            <span class="fund-dy">DY {{ f.dy }}%</span>
-          </div>
+          @for (f of funds; track f.name) {
+            <div class="fund-row">
+              <span class="fund-name">{{ f.name }}</span>
+              <span class="fund-price">R$ {{ f.price }}</span>
+              <span class="fund-dy">DY {{ f.dy }}%</span>
+            </div>
+          }
         </div>
         <div class="widget__footer">
           <span class="widget__meta">Yield: R$ 382/mês</span>

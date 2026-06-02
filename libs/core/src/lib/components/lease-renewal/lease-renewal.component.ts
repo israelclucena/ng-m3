@@ -73,29 +73,35 @@ const STATUS_LABELS: Record<RenewalStatus, string> = {
       </div>
 
       <!-- Urgent Alert Banner -->
-      <div *ngIf="svc.kpis().urgent > 0 && mode === 'landlord'" class="lr-urgent-banner">
-        <span class="material-symbols-outlined">priority_high</span>
-        {{ svc.kpis().urgent }} lease{{ svc.kpis().urgent > 1 ? 's' : '' }} expiring within 30 days — action required
-      </div>
+      @if (svc.kpis().urgent > 0 && mode === 'landlord') {
+        <div class="lr-urgent-banner">
+          <span class="material-symbols-outlined">priority_high</span>
+          {{ svc.kpis().urgent }} lease{{ svc.kpis().urgent > 1 ? 's' : '' }} expiring within 30 days — action required
+        </div>
+      }
 
       <!-- Filter Bar -->
       <div class="lr-filters">
-        <button *ngFor="let f of filters"
-                class="lr-filter-btn"
-                [class.lr-filter-active]="svc.filter() === f.value"
-                (click)="svc.setFilter(f.value)">
-          {{ f.label }}
-        </button>
+        @for (f of filters; track f.value) {
+          <button class="lr-filter-btn"
+                  [class.lr-filter-active]="svc.filter() === f.value"
+                  (click)="svc.setFilter(f.value)">
+            {{ f.label }}
+          </button>
+        }
       </div>
 
       <!-- Renewal Cards -->
       <div class="lr-list">
-        <div *ngIf="svc.filtered().length === 0" class="lr-empty">
-          <span class="material-symbols-outlined lr-empty-icon">event_available</span>
-          <p>No renewal records</p>
-        </div>
+        @if (svc.filtered().length === 0) {
+          <div class="lr-empty">
+            <span class="material-symbols-outlined lr-empty-icon">event_available</span>
+            <p>No renewal records</p>
+          </div>
+        }
 
-        <div *ngFor="let r of svc.filtered()" class="lr-card" [class.lr-card-urgent]="svc.urgency(r) === 'high'">
+        @for (r of svc.filtered(); track r.id) {
+        <div class="lr-card" [class.lr-card-urgent]="svc.urgency(r) === 'high'">
 
           <!-- Left urgency stripe -->
           <div class="lr-card-stripe" [class.lr-stripe-high]="svc.urgency(r) === 'high'"
@@ -138,52 +144,63 @@ const STATUS_LABELS: Record<RenewalStatus, string> = {
                 <span class="lr-rent-label">Proposed Rent</span>
                 <span class="lr-rent-value lr-rent-proposed">€{{ r.proposedMonthlyRent }}/mo</span>
               </div>
-              <span *ngIf="r.rentChangePercent !== 0"
-                    class="lr-change-badge"
-                    [class.lr-change-up]="r.rentChangePercent > 0"
-                    [class.lr-change-flat]="r.rentChangePercent === 0">
-                {{ r.rentChangePercent > 0 ? '+' : '' }}{{ r.rentChangePercent }}%
-              </span>
-              <span *ngIf="r.rentChangePercent === 0" class="lr-change-badge lr-change-flat">No change</span>
+              @if (r.rentChangePercent !== 0) {
+                <span class="lr-change-badge"
+                      [class.lr-change-up]="r.rentChangePercent > 0"
+                      [class.lr-change-flat]="r.rentChangePercent === 0">
+                  {{ r.rentChangePercent > 0 ? '+' : '' }}{{ r.rentChangePercent }}%
+                </span>
+              }
+              @if (r.rentChangePercent === 0) {
+                <span class="lr-change-badge lr-change-flat">No change</span>
+              }
             </div>
 
-            <p *ngIf="r.notes" class="lr-notes">{{ r.notes }}</p>
-            <p *ngIf="r.declineReason" class="lr-decline-reason">
-              <span class="material-symbols-outlined">info</span>
-              Reason: {{ r.declineReason }}
-            </p>
+            @if (r.notes) {
+              <p class="lr-notes">{{ r.notes }}</p>
+            }
+            @if (r.declineReason) {
+              <p class="lr-decline-reason">
+                <span class="material-symbols-outlined">info</span>
+                Reason: {{ r.declineReason }}
+              </p>
+            }
 
             <!-- Actions -->
             <div class="lr-actions">
               <!-- Landlord actions -->
-              <ng-container *ngIf="mode === 'landlord'">
-                <button *ngIf="r.status === 'expiring_soon'"
-                        class="lr-btn lr-btn-primary"
-                        (click)="sendOffer(r)">
-                  <span class="material-symbols-outlined">send</span>
-                  Send Renewal Offer
-                </button>
-              </ng-container>
+              @if (mode === 'landlord') {
+                @if (r.status === 'expiring_soon') {
+                  <button class="lr-btn lr-btn-primary"
+                          (click)="sendOffer(r)">
+                    <span class="material-symbols-outlined">send</span>
+                    Send Renewal Offer
+                  </button>
+                }
+              }
 
               <!-- Tenant actions -->
-              <ng-container *ngIf="mode === 'tenant'">
-                <button *ngIf="r.status === 'offer_sent'"
-                        class="lr-btn lr-btn-accept"
-                        (click)="svc.accept(r.id)">
-                  <span class="material-symbols-outlined">check_circle</span>
-                  Accept
-                </button>
-                <button *ngIf="r.status === 'offer_sent'"
-                        class="lr-btn lr-btn-decline"
-                        (click)="svc.decline(r.id)">
-                  <span class="material-symbols-outlined">cancel</span>
-                  Decline
-                </button>
-              </ng-container>
+              @if (mode === 'tenant') {
+                @if (r.status === 'offer_sent') {
+                  <button class="lr-btn lr-btn-accept"
+                          (click)="svc.accept(r.id)">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    Accept
+                  </button>
+                }
+                @if (r.status === 'offer_sent') {
+                  <button class="lr-btn lr-btn-decline"
+                          (click)="svc.decline(r.id)">
+                    <span class="material-symbols-outlined">cancel</span>
+                    Decline
+                  </button>
+                }
+              }
             </div>
 
             <!-- Offer-sent inline confirmation form (landlord sends offer) -->
-            <div *ngIf="offerFormId() === r.id" class="lr-offer-form">
+            @if (offerFormId() === r.id) {
+            <div class="lr-offer-form">
               <p class="lr-offer-form-title">Send Renewal Offer</p>
               <div class="lr-offer-row">
                 <label>
@@ -206,8 +223,10 @@ const STATUS_LABELS: Record<RenewalStatus, string> = {
                 <button class="lr-btn lr-btn-ghost" (click)="offerFormId.set(null)">Cancel</button>
               </div>
             </div>
+            }
           </div>
         </div>
+        }
       </div>
     </div>
   `,
