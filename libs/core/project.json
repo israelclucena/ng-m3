@@ -58,7 +58,7 @@
     "test-storybook": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "test-storybook --config-dir libs/core/.storybook --url http://localhost:4400"
+        "command": "NODE_OPTIONS=--max-old-space-size=4096 test-storybook --config-dir libs/core/.storybook --url http://localhost:4400"
       }
     },
     "lint": {
