@@ -164,3 +164,87 @@ jobs:
           path: playwright-report/
           retention-days: 7
           if-no-files-found: ignore
+
+  # ── Job 4: Storybook Tests (test-runner against built storybook) ───────────
+  # Non-blocking until a11y buckets A (color-contrast) and B (ARIA labels) are
+  # closed — see night-shift carry-overs in 2026-06-03.md. Once both buckets
+  # are resolved, remove `continue-on-error` from the test-runner step to
+  # promote it to a hard gate.
+  storybook-tests:
+    name: Storybook Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright system dependencies (Chromium)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends \
+            libasound2t64 \
+            libatk-bridge2.0-0t64 \
+            libatk1.0-0t64 \
+            libatspi2.0-0t64 \
+            libcairo2 \
+            libcups2t64 \
+            libdbus-1-3 \
+            libdrm2 \
+            libgbm1 \
+            libglib2.0-0t64 \
+            libnspr4 \
+            libnss3 \
+            libpango-1.0-0 \
+            libx11-6 \
+            libxcb1 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxext6 \
+            libxfixes3 \
+            libxkbcommon0 \
+            libxrandr2
+
+      - name: Install Playwright browser (Chromium)
+        run: pnpm exec playwright install chromium
+
+      - name: Build Storybook
+        run: pnpm exec nx build-storybook core
+
+      - name: Serve Storybook (static)
+        run: |
+          python3 -m http.server 4400 --directory dist/storybook/core > /tmp/sb-server.log 2>&1 &
+          echo $! > /tmp/sb-server.pid
+
+      - name: Wait for Storybook
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:4400/ > /dev/null; then
+              echo "Storybook is up after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Storybook failed to start"
+          cat /tmp/sb-server.log || true
+          exit 1
+
+      - name: Run Storybook test-runner
+        continue-on-error: true
+        run: pnpm exec nx test-storybook core
+
+      - name: Stop Storybook server
+        if: always()
+        run: |
+          if [ -f /tmp/sb-server.pid ]; then
+            kill "$(cat /tmp/sb-server.pid)" 2>/dev/null || true
+          fi
