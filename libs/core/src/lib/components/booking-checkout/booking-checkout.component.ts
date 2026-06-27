@@ -1253,10 +1253,13 @@ export class BookingCheckoutComponent {
     }
     this.showTermsError.set(false);
 
-    // Validate form fields only for card/mbway
+    // Validate form fields only for card/mbway — scope validation to the
+    // selected method's fields so the unused method's required validators
+    // (e.g. mbwayPhone while paying by card) don't block submission.
     if (this.selectedMethod() === 'card') {
-      const valid = this.paymentForm.submit();
-      if (!valid) return;
+      const cardKeys = ['cardHolder', 'cardNumber', 'cardExpiry', 'cardCvv'] as const;
+      cardKeys.forEach(k => this.paymentForm.fields[k].touch());
+      if (cardKeys.some(k => this.paymentForm.fields[k].firstError())) return;
     } else if (this.selectedMethod() === 'mbway') {
       const phone = this.paymentForm.fields['mbwayPhone'];
       phone.touch();
