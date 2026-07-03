@@ -12,7 +12,16 @@ module.exports = {
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  // @material/web + lit ship ESM `.js` that jest must transform. With pnpm the
+  // same package appears twice in a path (`.pnpm/@material+web@x/node_modules/
+  // @material/web/...`), so exempt both the store form and the linked form.
+  transformIgnorePatterns: [
+    'node_modules/(?!' +
+      '\\.pnpm/(?:@material\\+web|@lit\\+|@lit-labs\\+|lit@|lit-html@|lit-element@)' +
+      '|@material/web|@lit/|@lit-labs/|lit/|lit-html/|lit-element/' +
+      '|.*\\.mjs$' +
+      ')',
+  ],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',
