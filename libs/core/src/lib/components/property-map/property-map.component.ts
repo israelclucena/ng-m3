@@ -3,17 +3,33 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  PLATFORM_ID,
   ViewEncapsulation,
   computed,
   effect,
+  inject,
   input,
   output,
   signal,
   viewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import * as L from 'leaflet';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import type * as L from 'leaflet';
 import type { PropertyData } from '../property-card/property-card.component';
+
+// Leaflet evaluates `window` at module load, which crashes SSR/prerender route
+// extraction. Keep the import type-only and load the runtime module lazily in the
+// browser. `import type * as L` above still provides the compile-time types.
+let leaflet: typeof import('leaflet') | null = null;
+
+async function ensureLeaflet(): Promise<typeof import('leaflet')> {
+  if (!leaflet) {
+    const mod = await import('leaflet');
+    leaflet =
+      (mod as unknown as { default?: typeof import('leaflet') }).default ?? mod;
+  }
+  return leaflet;
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -50,7 +66,7 @@ const MARKER_SELECTED_COLOR = '#B5264D';
 // ─── Icon factory ─────────────────────────────────────────────────────────────
 
 function createMarkerIcon(color: string, price: number): L.DivIcon {
-  return L.divIcon({
+  return leaflet!.divIcon({
     className: '',
     html: `
       <div class="iu-map-pin" style="--pin-color: ${color}">
@@ -282,6 +298,7 @@ export class PropertyMapComponent implements OnDestroy {
   private map: L.Map | null = null;
   private leafletMarkers = new Map<string | number, L.Marker>();
   readonly selectedId = signal<string | number | null>(null);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor() {
     // Initialize map after view is ready
@@ -310,15 +327,19 @@ export class PropertyMapComponent implements OnDestroy {
 
   // ── Private helpers ──────────────────────────────────────────────────────────
 
-  private _initMap(el: HTMLDivElement): void {
+  private async _initMap(el: HTMLDivElement): Promise<void> {
+    if (!this.isBrowser) return;
+    const lf = await ensureLeaflet();
+    if (this.map) return;
+
     const c = this.center();
-    this.map = L.map(el, {
+    this.map = lf.map(el, {
       center: [c.lat, c.lng],
       zoom: c.zoom ?? 12,
       zoomControl: true,
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    lf.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(this.map);
@@ -345,7 +366,7 @@ export class PropertyMapComponent implements OnDestroy {
     // Add / update markers
     const latLngs: L.LatLng[] = [];
     for (const m of markers) {
-      const ll = L.latLng(m.lat, m.lng);
+      const ll = leaflet!.latLng(m.lat, m.lng);
       latLngs.push(ll);
 
       if (!this.leafletMarkers.has(m.property.id)) {
@@ -354,7 +375,7 @@ export class PropertyMapComponent implements OnDestroy {
           isSelected ? MARKER_SELECTED_COLOR : MARKER_COLOR,
           m.property.priceMonthly,
         );
-        const leafletMarker = L.marker(ll, { icon })
+        const leafletMarker = leaflet!.marker(ll, { icon })
           .bindPopup(this._buildPopupHtml(m.property), { maxWidth: 240 })
           .on('click', () => this._onMarkerClick(m));
 
@@ -365,7 +386,7 @@ export class PropertyMapComponent implements OnDestroy {
 
     // Auto-fit bounds
     if (this.fitBounds() && latLngs.length > 1) {
-      this.map.fitBounds(L.latLngBounds(latLngs), { padding: [40, 40] });
+      this.map.fitBounds(leaflet!.latLngBounds(latLngs), { padding: [40, 40] });
     } else if (latLngs.length === 1) {
       this.map.setView(latLngs[0], 14);
     }
