@@ -79,6 +79,30 @@ describe('PropertyMapComponent', () => {
     return (component as unknown as Record<string, (...a: unknown[]) => T>)[name](...args);
   }
 
+  /**
+   * Drain the microtask queue. The component lazy-loads Leaflet via a dynamic
+   * `import('leaflet')` (added to fix the SSR prerender window crash), so map
+   * creation happens on a later microtask — not synchronously inside
+   * `detectChanges()`.
+   */
+  async function flushMicrotasks(): Promise<void> {
+    for (let i = 0; i < 10; i++) {
+      await Promise.resolve();
+    }
+  }
+
+  /**
+   * Set the `markers` input, run change detection, and await the async Leaflet
+   * lazy-load so the map (and any initial markers) exist before assertions.
+   */
+  async function ready(markers: PropertyMapMarker[]): Promise<void> {
+    fixture.componentRef.setInput('markers', markers);
+    fixture.detectChanges();
+    await flushMicrotasks();
+    fixture.detectChanges();
+    await flushMicrotasks();
+  }
+
   beforeEach(async () => {
     jest.clearAllMocks();
     store().markers.length = 0;
@@ -104,51 +128,45 @@ describe('PropertyMapComponent', () => {
 
   // ── map lifecycle ────────────────────────────────────────────────────────────────
 
-  it('creates a Leaflet map and tile layer once the view is ready', () => {
-    fixture.componentRef.setInput('markers', []);
-    fixture.detectChanges();
+  it('creates a Leaflet map and tile layer once the view is ready', async () => {
+    await ready([]);
     expect(L.map).toHaveBeenCalledTimes(1);
     expect(L.tileLayer).toHaveBeenCalled();
   });
 
-  it('renders one Leaflet marker per input marker', () => {
-    fixture.componentRef.setInput('markers', [marker({ id: 'p1' }), marker({ id: 'p2' }, 38.73, -9.12)]);
-    fixture.detectChanges();
+  it('renders one Leaflet marker per input marker', async () => {
+    await ready([marker({ id: 'p1' }), marker({ id: 'p2' }, 38.73, -9.12)]);
     expect(L.marker).toHaveBeenCalledTimes(2);
   });
 
-  it('adds no markers for an empty input', () => {
-    fixture.componentRef.setInput('markers', []);
-    fixture.detectChanges();
+  it('adds no markers for an empty input', async () => {
+    await ready([]);
     expect(L.marker).not.toHaveBeenCalled();
   });
 
-  it('fits bounds when there is more than one marker', () => {
-    fixture.componentRef.setInput('markers', [marker({ id: 'p1' }), marker({ id: 'p2' }, 38.73, -9.12)]);
-    fixture.detectChanges();
+  it('fits bounds when there is more than one marker', async () => {
+    await ready([marker({ id: 'p1' }), marker({ id: 'p2' }, 38.73, -9.12)]);
     expect(store().mapMock['fitBounds']).toHaveBeenCalled();
   });
 
-  it('centres on the single marker instead of fitting bounds', () => {
-    fixture.componentRef.setInput('markers', [marker({ id: 'p1' })]);
-    fixture.detectChanges();
+  it('centres on the single marker instead of fitting bounds', async () => {
+    await ready([marker({ id: 'p1' })]);
     expect(store().mapMock['setView']).toHaveBeenCalled();
     expect(store().mapMock['fitBounds']).not.toHaveBeenCalled();
   });
 
-  it('removes stale Leaflet markers no longer in the input', () => {
-    fixture.componentRef.setInput('markers', [marker({ id: 'p1' }), marker({ id: 'p2' }, 38.73, -9.12)]);
-    fixture.detectChanges();
+  it('removes stale Leaflet markers no longer in the input', async () => {
+    await ready([marker({ id: 'p1' }), marker({ id: 'p2' }, 38.73, -9.12)]);
     const first = store().markers[0];
 
     fixture.componentRef.setInput('markers', [marker({ id: 'p2' }, 38.73, -9.12)]);
     fixture.detectChanges();
+    await flushMicrotasks();
     expect(first['remove']).toHaveBeenCalled();
   });
 
-  it('tears the map down on destroy', () => {
-    fixture.componentRef.setInput('markers', []);
-    fixture.detectChanges();
+  it('tears the map down on destroy', async () => {
+    await ready([]);
     fixture.destroy();
     expect(store().mapMock['remove']).toHaveBeenCalled();
   });
