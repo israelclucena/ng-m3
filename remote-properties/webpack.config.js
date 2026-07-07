@@ -9,7 +9,7 @@
  * a webpack executor before this config takes effect.
  * See: MODULE_FEDERATION_READY flag in apps/dashboard/src/app/feature-flags.ts
  */
-const { withModuleFederation } = require('@nx/angular/module-federation');
+const { withModuleFederation } = require('@nx/module-federation/angular');
 
 module.exports = withModuleFederation({
   name: 'remoteProperties',

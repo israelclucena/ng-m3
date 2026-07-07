@@ -24,3 +24,8 @@ debug-storybook.log
 Thumbs.db
 
 .angular
+
+.claude/worktrees
+.nx/polygraph
+.nx/self-healing
+.nx/migrate-runs
