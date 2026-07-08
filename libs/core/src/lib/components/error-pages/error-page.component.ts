@@ -8,7 +8,7 @@
  * Shows a user-friendly error UI with retry and home actions.
  * Standalone, signal-based, no RxJS.
  */
-import { Component, input, inject } from '@angular/core';
+import { Component, input, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -40,6 +40,7 @@ import { Router } from '@angular/router';
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     :host {
       display: flex;

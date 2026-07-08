@@ -21,7 +21,7 @@
  * <iu-tenant-dashboard [tenantId]="currentUser().id" />
  * ```
  */
-import { Component, input, effect, inject, computed, signal, OnInit } from '@angular/core';
+import { Component, input, effect, inject, computed, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   TenantDashboardService,
@@ -298,6 +298,7 @@ import {
 
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .iu-tenant-dashboard {
       font-family: var(--md-sys-typescale-body-medium-font, Roboto, sans-serif);

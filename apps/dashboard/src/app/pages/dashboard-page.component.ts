@@ -7,7 +7,7 @@
  * Route: /dashboard
  * Feature flag: always visible (no flag guard)
  */
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatCardComponent } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -124,6 +124,7 @@ import { InsuranceTrackerWidgetComponent } from '../widgets/insurance-tracker-wi
       </div>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     :host { display: block; }
   `],

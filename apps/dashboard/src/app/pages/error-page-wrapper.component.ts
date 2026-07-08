@@ -8,7 +8,7 @@
  * forwarding them to `iu-error-page`. Navigation to this route:
  *   router.navigate(['/error'], { queryParams: { code: 500, message: 'Oops' } });
  */
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ErrorPageComponent } from '@israel-ui/core';
@@ -18,6 +18,7 @@ import { map } from 'rxjs';
   selector: 'app-error-page-wrapper',
   standalone: true,
   imports: [ErrorPageComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <iu-error-page
       [errorCode]="errorCode()"

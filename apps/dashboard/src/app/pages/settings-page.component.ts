@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CardComponent, SwitchComponent, DividerComponent } from '@israel-ui/core';
 
 @Component({
@@ -46,6 +46,7 @@ import { CardComponent, SwitchComponent, DividerComponent } from '@israel-ui/cor
       </iu-card>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .settings-page {
       display: flex;

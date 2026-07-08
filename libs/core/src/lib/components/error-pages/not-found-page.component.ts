@@ -7,7 +7,7 @@
  * M3-styled not-found page with navigation back to home.
  * Standalone, signal-based, no RxJS.
  */
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -41,6 +41,7 @@ import { Router } from '@angular/router';
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     :host {
       display: flex;

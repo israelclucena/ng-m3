@@ -16,7 +16,7 @@
  *   (rejected)="onRejected($event)" />
  * ```
  */
-import { Component, input, output, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, input, output, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   TenantApplicationService,
@@ -219,6 +219,7 @@ import {
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .as-container {
       background: var(--md-sys-color-surface);

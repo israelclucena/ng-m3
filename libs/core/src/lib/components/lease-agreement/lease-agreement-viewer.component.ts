@@ -17,7 +17,7 @@
  *   (signed)="onSigned($event)" />
  * ```
  */
-import { Component, input, output, inject, computed, signal } from '@angular/core';
+import { Component, input, output, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   LeaseAgreementService,
@@ -193,6 +193,7 @@ import {
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .lav-container {
       background: var(--md-sys-color-surface);

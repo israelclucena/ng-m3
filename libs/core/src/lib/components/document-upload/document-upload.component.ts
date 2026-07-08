@@ -32,6 +32,7 @@ import {
   OnDestroy,
   ElementRef,
   viewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -166,6 +167,7 @@ import {
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .du-wrapper { display: flex; flex-direction: column; gap: 12px; }
     .du-label-row {

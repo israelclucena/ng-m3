@@ -19,7 +19,7 @@
  *   (submitted)="onRequestSubmitted($event)" />
  * ```
  */
-import { Component, input, output, inject, signal } from '@angular/core';
+import { Component, input, output, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   MaintenanceRequestService,
@@ -180,6 +180,7 @@ import { createSignalForm, required, minLength, maxLength } from '../../utils/si
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .mrf-container {
       background: var(--md-sys-color-surface-container-low, #f3eff4);

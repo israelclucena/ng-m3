@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { CardComponent } from '@israel-ui/core';
 
 @Component({
@@ -37,6 +37,7 @@ import { CardComponent } from '@israel-ui/core';
       </div>
     </iu-card>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     :host { display: block; }
     .widget { padding: 4px 0; }

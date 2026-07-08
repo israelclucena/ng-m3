@@ -20,7 +20,7 @@
  *   (submitted)="onApplicationSubmitted($event)" />
  * ```
  */
-import { Component, input, output, inject, signal, computed } from '@angular/core';
+import { Component, input, output, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   TenantApplicationService,
@@ -357,6 +357,7 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .taf-container {
       background: var(--md-sys-color-surface);

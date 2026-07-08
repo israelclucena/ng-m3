@@ -22,7 +22,7 @@
  *   (cancelled)="onCancel()" />
  * ```
  */
-import { Component, input, output, inject, signal, computed } from '@angular/core';
+import { Component, input, output, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   LeaseAgreementService,
@@ -212,6 +212,7 @@ import { createSignalForm, required, minLength, range } from '../../utils/signal
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .laf-container {
       background: var(--md-sys-color-surface);

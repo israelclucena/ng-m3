@@ -7,13 +7,14 @@
  * Thin wrapper around `iu-not-found-page` so the component is routable
  * without touching the library component directly.
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { NotFoundPageComponent } from '@israel-ui/core';
 
 @Component({
   selector: 'app-not-found-page-wrapper',
   standalone: true,
   imports: [NotFoundPageComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<iu-not-found-page />`,
 })
 export class NotFoundPageWrapperComponent {}
