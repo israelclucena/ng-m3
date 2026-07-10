@@ -1,10 +1,10 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
-import { CardComponent, ListComponent, ListItemComponent } from '@israel-ui/core';
+import { CardComponent } from '@israel-ui/core';
 
 @Component({
   selector: 'app-investment-widget',
   standalone: true,
-  imports: [CardComponent, ListComponent, ListItemComponent],
+  imports: [CardComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
     <iu-card variant="filled" title="Investments" avatar="trending_up">
