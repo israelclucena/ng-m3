@@ -8,7 +8,7 @@
   "dependencies": {
     "@angular-architects/module-federation": "^21.2.0",
     "@angular-architects/module-federation-runtime": "^21.2.0",
-    "@angular-architects/native-federation": "^22.0.4",
+    "@angular-architects/native-federation": "^22.0.5",
     "@angular/animations": "22.0.6",
     "@angular/cdk": "22.0.4",
     "@angular/common": "22.0.6",
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@angular-devkit/core": "~21.2.13",
-    "@angular-devkit/schematics": "22.0.5",
+    "@angular-devkit/schematics": "22.0.6",
     "@angular/build": "22.0.6",
     "@angular/cli": "22.0.6",
     "@angular/compiler-cli": "22.0.6",
