@@ -32,7 +32,7 @@
     "rxjs": "~7.8.0"
   },
   "devDependencies": {
-    "@angular-devkit/core": "~21.2.13",
+    "@angular-devkit/core": "~22.0.6",
     "@angular-devkit/schematics": "22.0.6",
     "@angular/build": "22.0.6",
     "@angular/cli": "22.0.6",
@@ -50,7 +50,7 @@
     "@nx/web": "23.0.2",
     "@nx/workspace": "23.0.2",
     "@playwright/test": "^1.61.1",
-    "@schematics/angular": "~21.2.13",
+    "@schematics/angular": "~22.0.6",
     "@storybook/addon-a11y": "^10.5.0",
     "@storybook/angular": "^10.5.0",
     "@storybook/test-runner": "^0.24.4",
@@ -68,7 +68,7 @@
     "jest-environment-jsdom": "^30.4.1",
     "jest-preset-angular": "~16.0.0",
     "jest-util": "^30.4.1",
-    "ng-packagr": "^21.2.0",
+    "ng-packagr": "^22.0.1",
     "nx": "23.0.2",
     "prettier": "~3.9.5",
     "storybook": "^10.5.0",
