@@ -20,7 +20,10 @@ export default [
         'error',
         {
           type: 'element',
-          prefix: 'lib',
+          // Real convention in this lib is `iu-` (israel-ui); `story*`/`sb-`
+          // are Storybook-only helper components. The historical `lib` prefix
+          // never matched the codebase, so this rule was ~167 false errors.
+          prefix: ['iu', 'lib', 'story', 'storybook', 'sb'],
           style: 'kebab-case',
         },
       ],
