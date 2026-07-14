@@ -29,22 +29,16 @@
       }
     },
     "storybook": {
-      "executor": "@storybook/angular:start-storybook",
+      "executor": "nx:run-commands",
       "options": {
-        "port": 4400,
-        "configDir": "libs/core/.storybook",
-        "browserTarget": "demo:build",
-        "compodoc": false
+        "command": "storybook dev -p 4400 -c libs/core/.storybook"
       }
     },
     "build-storybook": {
-      "executor": "@storybook/angular:build-storybook",
-      "outputs": ["{options.outputDir}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/storybook/core"],
       "options": {
-        "outputDir": "dist/storybook/core",
-        "configDir": "libs/core/.storybook",
-        "browserTarget": "demo:build",
-        "compodoc": false
+        "command": "storybook build -c libs/core/.storybook -o dist/storybook/core"
       }
     },
     "test": {
