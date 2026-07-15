@@ -17,7 +17,11 @@
     "baseUrl": ".",
     "paths": {
       "@israel-ui/core": ["libs/core/src/index.ts"]
-    }
+    },
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "esModuleInterop": false
   },
   "exclude": ["node_modules", "tmp"]
 }

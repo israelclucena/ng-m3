@@ -4,7 +4,8 @@
     "emitDecoratorMetadata": true,
     "moduleResolution": "bundler",
     "strict": false,
-    "noEmitOnError": false
+    "noEmitOnError": false,
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["../**/*.spec.ts"],
   "include": [
