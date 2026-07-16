@@ -2,7 +2,9 @@
   "name": "@israel-ui/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "audit:lockfile": "node scripts/audit-lockfile.mjs"
+  },
   "private": true,
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
