@@ -79,8 +79,8 @@ importers:
         specifier: 22.0.7
         version: 22.0.7(a119a722a795e97544a8bf525be77be8)
       '@material/web':
-        specifier: ^2.4.1
-        version: 2.4.1
+        specifier: ^2.5.0
+        version: 2.5.0
       '@softarc/native-federation-node':
         specifier: ^3.3.4
         version: 3.5.5
@@ -2277,6 +2277,9 @@ packages:
   '@lit-labs/ssr-dom-shim@1.5.1':
     resolution: {integrity: sha512-Aou5UdlSpr5whQe8AA/bZG0jMj96CoJIWbGfZ91qieWu5AWUMKw8VR/pAkQkJYvBNhmCcWnZlyyk5oze8JIqYA==}
 
+  '@lit/context@1.1.6':
+    resolution: {integrity: sha512-M26qDE6UkQbZA2mQ3RjJ3Gzd8TxP+/0obMgE5HfkfLhEEyYE3Bui4A5XHiGPjy0MUGAyxB3QgVuw2ciS0kHn6A==}
+
   '@lit/reactive-element@2.1.2':
     resolution: {integrity: sha512-pbCDiVMnne1lYUIaYNN5wrwQXDtHaYtg7YEFPeW+hws6U47WeFvISGUWekPGKWOP1ygrs0ef0o1VJMk1exos5A==}
 
@@ -2350,8 +2353,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@material/web@2.4.1':
-    resolution: {integrity: sha512-0sk9t25acJ72Qv3r0n9r0lgDbPaAKnpm0p+QmEAAwYyZomHxuVbgrrAdtNXaRm7jFyGh+WsTr8bhtvCnpPRFjw==}
+  '@material/web@2.5.0':
+    resolution: {integrity: sha512-x2Uovyq8E/Zc1xHXd9s1eBMXF5pMHVAt70pISKd0fL3Ajj4L6zQaQUY/awcfR2RDAMKXC7i4+vr0arv1YaOR/g==}
 
   '@modelcontextprotocol/sdk@1.29.0':
     resolution: {integrity: sha512-zo37mZA9hJWpULgkRpowewez1y6ML5GsXJPY8FI0tBBCd77HEvza4jDqRKOXgHNn867PVGCyTdzqpz0izu5ZjQ==}
@@ -12653,6 +12656,10 @@ snapshots:
 
   '@lit-labs/ssr-dom-shim@1.5.1': {}
 
+  '@lit/context@1.1.6':
+    dependencies:
+      '@lit/reactive-element': 2.1.2
+
   '@lit/reactive-element@2.1.2':
     dependencies:
       '@lit-labs/ssr-dom-shim': 1.5.1
@@ -12699,8 +12706,9 @@ snapshots:
   '@lmdb/lmdb-win32-x64@3.5.4':
     optional: true
 
-  '@material/web@2.4.1':
+  '@material/web@2.5.0':
     dependencies:
+      '@lit/context': 1.1.6
       lit: 3.3.2
       tslib: 2.8.1
 
