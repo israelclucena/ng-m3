@@ -26,6 +26,17 @@ export default [
     },
   },
   {
+    // Storybook stories intentionally import components/types/services through
+    // the public `@israel-ui/core` barrel (see CLAUDE.md "STORYBOOK RULE"):
+    // stories exist to demonstrate real consumer usage via the published API,
+    // not the lib's internal relative paths. Exempt them from the self-barrel
+    // module-boundary check rather than rewriting the documented convention.
+    files: ['**/*.stories.ts'],
+    rules: {
+      '@nx/enforce-module-boundaries': 'off',
+    },
+  },
+  {
     files: [
       '**/*.ts',
       '**/*.tsx',
