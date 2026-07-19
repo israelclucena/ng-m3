@@ -18,7 +18,6 @@ import {
   input,
   computed,
   inject,
-  OnInit,
   effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -280,7 +279,7 @@ import { RevenueAnalyticsService } from '../../services/revenue-analytics.servic
     </div>
   `,
 })
-export class LandlordRevenueComponent implements OnInit {
+export class LandlordRevenueComponent {
   readonly analytics = inject(RevenueAnalyticsService);
 
   /** Landlord identifier used for data fetching */
@@ -310,10 +309,6 @@ export class LandlordRevenueComponent implements OnInit {
         void this.analytics.load(this.landlordId());
       }
     });
-  }
-
-  ngOnInit(): void {
-    // effect() handles the load — nothing to do here
   }
 
   /**

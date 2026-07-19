@@ -163,13 +163,14 @@ export class SearchComponent {
         event.preventDefault();
         this.activeIndex.update(i => Math.max(i - 1, -1));
         break;
-      case 'Enter':
+      case 'Enter': {
         event.preventDefault();
         const idx = this.activeIndex();
         if (idx >= 0 && idx < results.length) {
           this.selectResult(results[idx]);
         }
         break;
+      }
       case 'Escape':
         this.focused.set(false);
         break;

@@ -21,7 +21,7 @@
  * <iu-tenant-dashboard [tenantId]="currentUser().id" />
  * ```
  */
-import { Component, input, effect, inject, computed, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, effect, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   TenantDashboardService,
@@ -816,7 +816,7 @@ import {
     .td-fav-star { font-size: 14px; color: #f9a825; }
   `],
 })
-export class TenantDashboardComponent implements OnInit {
+export class TenantDashboardComponent {
 
   // ── Deps ──────────────────────────────────────────────────────────────────
 
@@ -859,10 +859,6 @@ export class TenantDashboardComponent implements OnInit {
         void this.svc.load(id);
       }
     });
-  }
-
-  ngOnInit(): void {
-    // Auto-load handled by effect in constructor
   }
 
   // ── Public methods ────────────────────────────────────────────────────────

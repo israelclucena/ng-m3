@@ -195,7 +195,11 @@ export class NavRailComponent implements OnInit {
   toggleGroup(groupId: string): void {
     this.expandedGroups.update((groups) => {
       const next = new Set(groups);
-      next.has(groupId) ? next.delete(groupId) : next.add(groupId);
+      if (next.has(groupId)) {
+        next.delete(groupId);
+      } else {
+        next.add(groupId);
+      }
       return next;
     });
   }

@@ -19,7 +19,7 @@
  * ```
  */
 import {
-  Component, ElementRef, ViewChild, AfterViewInit, OnDestroy,
+  Component, ElementRef, ViewChild, AfterViewInit,
   input, output, signal, computed, ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -188,7 +188,7 @@ interface Stroke { points: Point[]; }
     .sp-btn--filled:hover:not(:disabled) { filter: brightness(1.08); }
   `],
 })
-export class SignaturePadComponent implements AfterViewInit, OnDestroy {
+export class SignaturePadComponent implements AfterViewInit {
   @ViewChild('sigCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   /** @input Display label above the pad */
@@ -226,8 +226,6 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy {
     this.ctx = canvas.getContext('2d')!;
     this._setupCanvas();
   }
-
-  ngOnDestroy(): void { /* nothing to tear down */ }
 
   // ─── Drawing handlers ─────────────────────────────────────────────────────
 

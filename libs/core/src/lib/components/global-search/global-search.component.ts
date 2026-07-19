@@ -470,7 +470,7 @@ export class GlobalSearchComponent implements OnDestroy {
         event.preventDefault();
         this.activeIndex.update(i => Math.max(i - 1, -1));
         break;
-      case 'Enter':
+      case 'Enter': {
         event.preventDefault();
         const idx = this.activeIndex();
         if (idx >= 0 && items[idx]) {
@@ -479,6 +479,7 @@ export class GlobalSearchComponent implements OnDestroy {
           this.submitSearch();
         }
         break;
+      }
       case 'Escape':
         this.showDropdown.set(false);
         this.isExpanded.set(false);
