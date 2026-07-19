@@ -115,7 +115,7 @@ const TYPE_LABELS: Record<UtilityType, string> = {
                 </div>
                 <div class="ub-card-right">
                   <div class="ub-amount">€{{ bill.amount | number:'1.2-2' }}</div>
-                  @if (bill.payer === 'split' && bill.splitRatio != null) {
+                  @if (bill.payer === 'split' && bill.splitRatio !== undefined) {
                     <div class="ub-split-note">
                       Landlord {{ bill.splitRatio }}% · Tenant {{ 100 - bill.splitRatio }}%
                     </div>
