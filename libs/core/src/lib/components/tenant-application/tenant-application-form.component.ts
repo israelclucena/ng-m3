@@ -87,8 +87,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
             </h3>
             <div class="taf-row">
               <div class="taf-field">
-                <label class="taf-label">Telefone</label>
-                <input class="taf-input" [class.error]="form.fields.phone.showError()"
+                <label class="taf-label" for="taf-phone">Telefone</label>
+                <input class="taf-input" id="taf-phone" [class.error]="form.fields.phone.showError()"
                   type="tel" placeholder="+351 9XX XXX XXX"
                   [value]="form.fields.phone.value()"
                   (input)="form.fields.phone.setValue($any($event.target).value)"
@@ -98,8 +98,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
                 }
               </div>
               <div class="taf-field">
-                <label class="taf-label">NIF</label>
-                <input class="taf-input" [class.error]="form.fields.nif.showError()"
+                <label class="taf-label" for="taf-nif">NIF</label>
+                <input class="taf-input" id="taf-nif" [class.error]="form.fields.nif.showError()"
                   type="text" placeholder="123456789" maxlength="9"
                   [value]="form.fields.nif.value()"
                   (input)="form.fields.nif.setValue($any($event.target).value)"
@@ -111,8 +111,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
             </div>
             <div class="taf-row">
               <div class="taf-field">
-                <label class="taf-label">Nacionalidade</label>
-                <input class="taf-input" [class.error]="form.fields.nationality.showError()"
+                <label class="taf-label" for="taf-nationality">Nacionalidade</label>
+                <input class="taf-input" id="taf-nationality" [class.error]="form.fields.nationality.showError()"
                   type="text" placeholder="Portuguesa"
                   [value]="form.fields.nationality.value()"
                   (input)="form.fields.nationality.setValue($any($event.target).value)"
@@ -122,8 +122,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
                 }
               </div>
               <div class="taf-field">
-                <label class="taf-label">Nº de Ocupantes</label>
-                <input class="taf-input"
+                <label class="taf-label" for="taf-occupants">Nº de Ocupantes</label>
+                <input class="taf-input" id="taf-occupants"
                   type="number" min="1" max="10" placeholder="1"
                   [value]="form.fields.numOccupants.value()"
                   (input)="form.fields.numOccupants.setValue($any($event.target).value)"
@@ -131,8 +131,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
               </div>
             </div>
             <div class="taf-field">
-              <label class="taf-label">Animais de Estimação?</label>
-              <div class="taf-segment">
+              <span class="taf-label" id="taf-pets-label">Animais de Estimação?</span>
+              <div class="taf-segment" role="group" aria-labelledby="taf-pets-label">
                 <button type="button" class="taf-seg-btn" [class.active]="form.fields.hasPets.value() === 'false'"
                   (click)="form.fields.hasPets.setValue('false')">
                   <span class="material-symbols-outlined">pets</span> Não
@@ -154,8 +154,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
               Emprego e Rendimento
             </h3>
             <div class="taf-field">
-              <label class="taf-label">Situação Profissional</label>
-              <div class="taf-segment taf-segment--wrap">
+              <span class="taf-label" id="taf-employment-label">Situação Profissional</span>
+              <div class="taf-segment taf-segment--wrap" role="group" aria-labelledby="taf-employment-label">
                 @for (opt of employmentOptions; track opt.value) {
                   <button type="button" class="taf-seg-btn"
                     [class.active]="form.fields.employmentType.value() === opt.value"
@@ -167,8 +167,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
             </div>
             <div class="taf-row">
               <div class="taf-field">
-                <label class="taf-label">Rendimento Mensal Líquido (€)</label>
-                <input class="taf-input" [class.error]="form.fields.monthlyIncome.showError()"
+                <label class="taf-label" for="taf-income">Rendimento Mensal Líquido (€)</label>
+                <input class="taf-input" id="taf-income" [class.error]="form.fields.monthlyIncome.showError()"
                   type="number" min="0" placeholder="ex: 2000"
                   [value]="form.fields.monthlyIncome.value()"
                   (input)="form.fields.monthlyIncome.setValue($any($event.target).value)"
@@ -178,8 +178,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
                 }
               </div>
               <div class="taf-field">
-                <label class="taf-label">Profissão / Cargo</label>
-                <input class="taf-input" [class.error]="form.fields.occupation.showError()"
+                <label class="taf-label" for="taf-occupation">Profissão / Cargo</label>
+                <input class="taf-input" id="taf-occupation" [class.error]="form.fields.occupation.showError()"
                   type="text" placeholder="ex: Engenheiro de Software"
                   [value]="form.fields.occupation.value()"
                   (input)="form.fields.occupation.setValue($any($event.target).value)"
@@ -191,8 +191,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
             </div>
             @if (form.fields.employmentType.value() === 'employed' || form.fields.employmentType.value() === 'self-employed') {
               <div class="taf-field">
-                <label class="taf-label">Entidade Empregadora</label>
-                <input class="taf-input"
+                <label class="taf-label" for="taf-employer">Entidade Empregadora</label>
+                <input class="taf-input" id="taf-employer"
                   type="text" placeholder="Nome da empresa"
                   [value]="form.fields.employer.value()"
                   (input)="form.fields.employer.setValue($any($event.target).value)" />
@@ -219,13 +219,13 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
                 </div>
                 <div class="taf-row">
                   <div class="taf-field">
-                    <label class="taf-label">Nome</label>
-                    <input class="taf-input" type="text" [value]="ref.name"
+                    <label class="taf-label" for="taf-ref-name-{{ ref.id }}">Nome</label>
+                    <input class="taf-input" id="taf-ref-name-{{ ref.id }}" type="text" [value]="ref.name"
                       (input)="updateRef(ref.id, 'name', $any($event.target).value)" />
                   </div>
                   <div class="taf-field">
-                    <label class="taf-label">Relação</label>
-                    <select class="taf-input" [value]="ref.relationship"
+                    <label class="taf-label" for="taf-ref-rel-{{ ref.id }}">Relação</label>
+                    <select class="taf-input" id="taf-ref-rel-{{ ref.id }}" [value]="ref.relationship"
                       (change)="updateRef(ref.id, 'relationship', $any($event.target).value)">
                       <option value="landlord">Senhorio anterior</option>
                       <option value="employer">Empregador</option>
@@ -235,13 +235,13 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
                 </div>
                 <div class="taf-row">
                   <div class="taf-field">
-                    <label class="taf-label">Telefone</label>
-                    <input class="taf-input" type="tel" [value]="ref.phone ?? ''"
+                    <label class="taf-label" for="taf-ref-phone-{{ ref.id }}">Telefone</label>
+                    <input class="taf-input" id="taf-ref-phone-{{ ref.id }}" type="tel" [value]="ref.phone ?? ''"
                       (input)="updateRef(ref.id, 'phone', $any($event.target).value)" />
                   </div>
                   <div class="taf-field">
-                    <label class="taf-label">Email</label>
-                    <input class="taf-input" type="email" [value]="ref.email ?? ''"
+                    <label class="taf-label" for="taf-ref-email-{{ ref.id }}">Email</label>
+                    <input class="taf-input" id="taf-ref-email-{{ ref.id }}" type="email" [value]="ref.email ?? ''"
                       (input)="updateRef(ref.id, 'email', $any($event.target).value)" />
                   </div>
                 </div>
@@ -265,8 +265,8 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
             </h3>
             <p class="taf-hint">Apresente-se ao senhorio. Porque é que é o inquilino ideal? O que o torna diferente?</p>
             <div class="taf-field">
-              <label class="taf-label">A sua mensagem</label>
-              <textarea class="taf-textarea"
+              <label class="taf-label" for="taf-cover">A sua mensagem</label>
+              <textarea class="taf-textarea" id="taf-cover"
                 [class.error]="form.fields.coverLetter.showError()"
                 rows="8"
                 placeholder="Ex: Somos um casal profissional e responsável..."

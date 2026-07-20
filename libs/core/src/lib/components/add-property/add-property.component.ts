@@ -86,16 +86,16 @@ export interface NewPropertyForm {
             <h3 class="section-title">Informações Básicas</h3>
 
             <div class="field-group">
-              <label class="field-label">Título do anúncio *</label>
-              <input class="field-input" type="text" placeholder="Ex: Apartamento T2 renovado em Príncipe Real"
+              <label class="field-label" for="ap-title">Título do anúncio *</label>
+              <input class="field-input" id="ap-title" type="text" placeholder="Ex: Apartamento T2 renovado em Príncipe Real"
                 [(ngModel)]="form.title" maxlength="100" />
               <span class="field-hint">{{ form.title.length }}/100 caracteres</span>
             </div>
 
             <div class="field-row">
               <div class="field-group">
-                <label class="field-label">Tipo de imóvel *</label>
-                <select class="field-select" [(ngModel)]="form.type">
+                <label class="field-label" for="ap-type">Tipo de imóvel *</label>
+                <select class="field-select" id="ap-type" [(ngModel)]="form.type">
                   <option value="">-- selecionar --</option>
                   <option value="apartment">Apartamento</option>
                   <option value="studio">Estúdio</option>
@@ -105,14 +105,14 @@ export interface NewPropertyForm {
                 </select>
               </div>
               <div class="field-group">
-                <label class="field-label">Zona / Bairro *</label>
-                <input class="field-input" type="text" placeholder="Ex: Príncipe Real, Lisboa" [(ngModel)]="form.location" />
+                <label class="field-label" for="ap-location">Zona / Bairro *</label>
+                <input class="field-input" id="ap-location" type="text" placeholder="Ex: Príncipe Real, Lisboa" [(ngModel)]="form.location" />
               </div>
             </div>
 
             <div class="field-group">
-              <label class="field-label">Endereço completo</label>
-              <input class="field-input" type="text" placeholder="Rua, número, código postal" [(ngModel)]="form.address" />
+              <label class="field-label" for="ap-address">Endereço completo</label>
+              <input class="field-input" id="ap-address" type="text" placeholder="Rua, número, código postal" [(ngModel)]="form.address" />
             </div>
           </div>
         }
@@ -124,57 +124,65 @@ export interface NewPropertyForm {
 
             <div class="field-row">
               <div class="field-group">
-                <label class="field-label">Renda mensal (€) *</label>
-                <input class="field-input" type="number" placeholder="1200" min="100" [(ngModel)]="form.priceMonthly" />
+                <label class="field-label" for="ap-price">Renda mensal (€) *</label>
+                <input class="field-input" id="ap-price" type="number" placeholder="1200" min="100" [(ngModel)]="form.priceMonthly" />
               </div>
               <div class="field-group">
-                <label class="field-label">Disponível a partir de</label>
-                <input class="field-input" type="date" [(ngModel)]="form.availableFrom" />
+                <label class="field-label" for="ap-available">Disponível a partir de</label>
+                <input class="field-input" id="ap-available" type="date" [(ngModel)]="form.availableFrom" />
               </div>
             </div>
 
             <div class="field-row three-col">
               <div class="field-group">
-                <label class="field-label">Quartos</label>
-                <div class="number-control">
+                <span class="field-label" id="ap-bedrooms-label">Quartos</span>
+                <div class="number-control" role="group" aria-labelledby="ap-bedrooms-label">
                   <button class="num-btn" (click)="adjust('bedrooms', -1)" [disabled]="form.bedrooms <= 0">−</button>
                   <span class="num-val">{{ form.bedrooms === 0 ? 'Studio' : form.bedrooms }}</span>
                   <button class="num-btn" (click)="adjust('bedrooms', 1)" [disabled]="form.bedrooms >= 10">+</button>
                 </div>
               </div>
               <div class="field-group">
-                <label class="field-label">WC</label>
-                <div class="number-control">
+                <span class="field-label" id="ap-bathrooms-label">WC</span>
+                <div class="number-control" role="group" aria-labelledby="ap-bathrooms-label">
                   <button class="num-btn" (click)="adjust('bathrooms', -1)" [disabled]="form.bathrooms <= 1">−</button>
                   <span class="num-val">{{ form.bathrooms }}</span>
                   <button class="num-btn" (click)="adjust('bathrooms', 1)" [disabled]="form.bathrooms >= 5">+</button>
                 </div>
               </div>
               <div class="field-group">
-                <label class="field-label">Área (m²)</label>
-                <input class="field-input" type="number" placeholder="75" min="10" [(ngModel)]="form.areaSqm" />
+                <label class="field-label" for="ap-area">Área (m²)</label>
+                <input class="field-input" id="ap-area" type="number" placeholder="75" min="10" [(ngModel)]="form.areaSqm" />
               </div>
             </div>
 
             <div class="toggle-row">
-              <label class="toggle-item">
-                <span class="toggle-track" [class.on]="form.furnished" (click)="form.furnished = !form.furnished">
+              <div class="toggle-item">
+                <span class="toggle-track" role="switch" tabindex="0" aria-label="Mobilado"
+                  [class.on]="form.furnished" [attr.aria-checked]="form.furnished"
+                  (click)="form.furnished = !form.furnished"
+                  (keydown.enter)="form.furnished = !form.furnished"
+                  (keydown.space)="form.furnished = !form.furnished; $event.preventDefault()">
                   <span class="toggle-thumb"></span>
                 </span>
                 <span class="toggle-label">
                   <span class="material-symbols-outlined">chair</span>
                   Mobilado
                 </span>
-              </label>
-              <label class="toggle-item">
-                <span class="toggle-track" [class.on]="form.petsAllowed" (click)="form.petsAllowed = !form.petsAllowed">
+              </div>
+              <div class="toggle-item">
+                <span class="toggle-track" role="switch" tabindex="0" aria-label="Aceita animais"
+                  [class.on]="form.petsAllowed" [attr.aria-checked]="form.petsAllowed"
+                  (click)="form.petsAllowed = !form.petsAllowed"
+                  (keydown.enter)="form.petsAllowed = !form.petsAllowed"
+                  (keydown.space)="form.petsAllowed = !form.petsAllowed; $event.preventDefault()">
                   <span class="toggle-thumb"></span>
                 </span>
                 <span class="toggle-label">
                   <span class="material-symbols-outlined">pets</span>
                   Aceita animais
                 </span>
-              </label>
+              </div>
             </div>
           </div>
         }
@@ -185,28 +193,28 @@ export interface NewPropertyForm {
             <h3 class="section-title">Descrição e Média</h3>
 
             <div class="field-group">
-              <label class="field-label">Descrição do imóvel *</label>
-              <textarea class="field-textarea" rows="5" maxlength="1000"
+              <label class="field-label" for="ap-description">Descrição do imóvel *</label>
+              <textarea class="field-textarea" id="ap-description" rows="5" maxlength="1000"
                 placeholder="Descreve o imóvel: localização, estado de conservação, vizinhança, transportes próximos..."
                 [(ngModel)]="form.description"></textarea>
               <span class="field-hint">{{ form.description.length }}/1000 caracteres</span>
             </div>
 
             <div class="field-group">
-              <label class="field-label">Características</label>
-              <div class="features-grid">
+              <span class="field-label" id="ap-features-label">Características</span>
+              <div class="features-grid" role="group" aria-labelledby="ap-features-label">
                 @for (feat of featureOptions; track feat.key) {
-                  <label class="feat-chip" [class.selected]="hasFeature(feat.key)" (click)="toggleFeature(feat.key)">
+                  <button type="button" class="feat-chip" [class.selected]="hasFeature(feat.key)" (click)="toggleFeature(feat.key)">
                     <span class="material-symbols-outlined">{{ feat.icon }}</span>
                     {{ feat.label }}
-                  </label>
+                  </button>
                 }
               </div>
             </div>
 
             <div class="field-group">
-              <label class="field-label">URLs de imagens (uma por linha)</label>
-              <textarea class="field-textarea" rows="3"
+              <label class="field-label" for="ap-images">URLs de imagens (uma por linha)</label>
+              <textarea class="field-textarea" id="ap-images" rows="3"
                 placeholder="https://images.unsplash.com/..."
                 [value]="form.imageUrls.join('\n')"
                 (blur)="onImagesInput($event)"></textarea>
@@ -561,6 +569,7 @@ export interface NewPropertyForm {
       border: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
       background: var(--md-sys-color-surface-container-low, #f7f2fa);
       color: var(--md-sys-color-on-surface-variant, #49454f);
+      font-family: inherit;
       font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s;
