@@ -224,7 +224,15 @@
 
   <!-- Scrim (modal overlay for < breakpoint) -->
   @if (expanded() && isModalMode()) {
-    <div class="m3-rail__scrim" (click)="closePanel()"></div>
+    <div
+      class="m3-rail__scrim"
+      role="button"
+      tabindex="0"
+      aria-label="Fechar painel"
+      (click)="closePanel()"
+      (keydown.enter)="closePanel()"
+      (keydown.space)="closePanel(); $event.preventDefault()"
+    ></div>
   }
 }
 
@@ -287,7 +295,7 @@
         </span>
         @if (expanded()) {
           <span class="m3-rail__toggle-label">{{ isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
-          <div class="m3-rail__switch" [class.m3-rail__switch--active]="isDarkMode()" role="switch">
+          <div class="m3-rail__switch" [class.m3-rail__switch--active]="isDarkMode()" role="switch" [attr.aria-checked]="isDarkMode()">
             <div class="m3-rail__switch-track">
               <div class="m3-rail__switch-thumb"></div>
             </div>
@@ -298,6 +306,14 @@
   </nav>
 
   @if (expanded() && isModalMode()) {
-    <div class="m3-rail__scrim" (click)="closePanel()"></div>
+    <div
+      class="m3-rail__scrim"
+      role="button"
+      tabindex="0"
+      aria-label="Fechar painel"
+      (click)="closePanel()"
+      (keydown.enter)="closePanel()"
+      (keydown.space)="closePanel(); $event.preventDefault()"
+    ></div>
   }
 }

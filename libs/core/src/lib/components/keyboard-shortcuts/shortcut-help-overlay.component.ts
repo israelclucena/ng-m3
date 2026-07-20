@@ -23,7 +23,18 @@ import { KeyboardShortcutService } from './keyboard-shortcut.service';
   imports: [CommonModule],
   template: `
     @if (service.helpVisible()) {
-      <div class="iu-shortcut-overlay" (click)="service.helpVisible.set(false)">
+      <div
+        class="iu-shortcut-overlay"
+        role="button"
+        tabindex="0"
+        aria-label="Fechar"
+        (click)="service.helpVisible.set(false)"
+        (keydown.enter)="service.helpVisible.set(false)"
+        (keydown.space)="service.helpVisible.set(false); $event.preventDefault()"
+      >
+        <!-- Panel swallows clicks so they don't dismiss the overlay; it is a
+             presentational container, not an interactive control. -->
+        <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
         <div class="iu-shortcut-overlay__panel" (click)="$event.stopPropagation()">
           <div class="iu-shortcut-overlay__header">
             <h2 class="iu-shortcut-overlay__title">Keyboard Shortcuts</h2>

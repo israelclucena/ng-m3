@@ -62,7 +62,15 @@ import { AppNotification, NotificationCategory } from '../notification-bell/noti
     <!-- Overlay -->
     @if (svc.isOpen() || embedded()) {
       @if (!embedded()) {
-        <div class="nc-overlay" (click)="svc.close()"></div>
+        <div
+          class="nc-overlay"
+          role="button"
+          tabindex="0"
+          aria-label="Fechar notificações"
+          (click)="svc.close()"
+          (keydown.enter)="svc.close()"
+          (keydown.space)="svc.close(); $event.preventDefault()"
+        ></div>
       }
 
       <!-- Drawer -->
@@ -117,7 +125,15 @@ import { AppNotification, NotificationCategory } from '../notification-bell/noti
             </div>
           } @else {
             @for (n of svc.filtered(); track n.id) {
-              <div class="nc-item" [class.nc-item--unread]="!n.read" (click)="onItemClick(n)">
+              <div
+                class="nc-item"
+                [class.nc-item--unread]="!n.read"
+                role="button"
+                tabindex="0"
+                (click)="onItemClick(n)"
+                (keydown.enter)="onItemClick(n)"
+                (keydown.space)="onItemClick(n); $event.preventDefault()"
+              >
                 <!-- Category icon -->
                 <div class="nc-item-icon" [attr.data-category]="n.category">
                   <span class="material-symbols-outlined">{{ categoryIcon(n.category) }}</span>

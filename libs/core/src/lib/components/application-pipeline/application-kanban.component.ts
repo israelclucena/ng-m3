@@ -88,7 +88,11 @@ import { TenantApplication } from '../../services/tenant-application.service';
                   <div
                     class="ak-card"
                     [class.ak-card--selected]="selectedId() === app.id"
+                    role="button"
+                    tabindex="0"
                     (click)="toggleSelect(app.id)"
+                    (keydown.enter)="toggleSelect(app.id)"
+                    (keydown.space)="toggleSelect(app.id); $event.preventDefault()"
                   >
                     <!-- Card top row -->
                     <div class="ak-card-top">
@@ -158,6 +162,9 @@ import { TenantApplication } from '../../services/tenant-application.service';
 
                     <!-- Rejection reason input -->
                     @if (rejectingId() === app.id) {
+                      <!-- Swallows clicks so selecting inside the form doesn't
+                           toggle the card; presentational, not a control. -->
+                      <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
                       <div class="ak-reject-form" (click)="$event.stopPropagation()">
                         <textarea
                           class="ak-reject-input"

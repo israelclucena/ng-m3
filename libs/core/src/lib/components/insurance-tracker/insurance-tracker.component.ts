@@ -163,7 +163,18 @@ const daysBetween = (a: string, b: string): number => {
       }
 
       @if (formOpen()) {
-        <div class="it-modal-backdrop" (click)="closeForm()">
+        <div
+          class="it-modal-backdrop"
+          role="button"
+          tabindex="0"
+          aria-label="Fechar"
+          (click)="closeForm()"
+          (keydown.enter)="closeForm()"
+          (keydown.space)="closeForm(); $event.preventDefault()"
+        >
+          <!-- Swallows clicks so interacting with the form doesn't dismiss the
+               modal; presentational wrapper, not an interactive control. -->
+          <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events -->
           <form class="it-modal" (click)="$event.stopPropagation()" (submit)="submit($event)">
             <header class="it-modal-head">
               <h3 class="it-modal-title">Nova apólice</h3>
