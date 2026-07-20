@@ -69,8 +69,8 @@ const TYPE_LABELS: Record<UtilityType, string> = {
       <!-- Filters -->
       <div class="ub-filters">
         <div class="ub-filter-group">
-          <label class="ub-filter-label">Status</label>
-          <div class="ub-chips">
+          <span class="ub-filter-label" id="ub-status-label">Status</span>
+          <div class="ub-chips" role="group" aria-labelledby="ub-status-label">
             @for (opt of statusOpts; track opt.value) {
               <button
                 class="ub-chip"
@@ -81,8 +81,8 @@ const TYPE_LABELS: Record<UtilityType, string> = {
           </div>
         </div>
         <div class="ub-filter-group">
-          <label class="ub-filter-label">Type</label>
-          <div class="ub-chips">
+          <span class="ub-filter-label" id="ub-type-label">Type</span>
+          <div class="ub-chips" role="group" aria-labelledby="ub-type-label">
             @for (opt of typeOpts; track opt.value) {
               <button
                 class="ub-chip"

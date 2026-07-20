@@ -61,7 +61,7 @@ import {
       <!-- Label -->
       @if (label()) {
         <div class="du-label-row">
-          <label class="du-label">{{ label() }}</label>
+          <span class="du-label">{{ label() }}</span>
           @if (!multiple()) {
             <span class="du-hint">1 file max</span>
           } @else if (maxFiles() > 0) {

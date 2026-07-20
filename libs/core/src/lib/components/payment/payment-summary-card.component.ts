@@ -113,8 +113,9 @@ import {
         @if (selectedMethod() === 'card') {
           <div class="iu-payment-card__card-fields">
             <div class="iu-payment-card__field">
-              <label class="iu-payment-card__label">Nome no cartão</label>
+              <label class="iu-payment-card__label" for="iu-pay-holder">Nome no cartão</label>
               <input
+                id="iu-pay-holder"
                 class="iu-payment-card__input"
                 type="text"
                 placeholder="Ex: Maria João Silva"
@@ -124,8 +125,9 @@ import {
               />
             </div>
             <div class="iu-payment-card__field">
-              <label class="iu-payment-card__label">Número do cartão</label>
+              <label class="iu-payment-card__label" for="iu-pay-number">Número do cartão</label>
               <input
+                id="iu-pay-number"
                 class="iu-payment-card__input"
                 type="text"
                 placeholder="•••• •••• •••• ••••"
@@ -136,8 +138,9 @@ import {
               />
             </div>
             <div class="iu-payment-card__field">
-              <label class="iu-payment-card__label">Validade</label>
+              <label class="iu-payment-card__label" for="iu-pay-expiry">Validade</label>
               <input
+                id="iu-pay-expiry"
                 class="iu-payment-card__input iu-payment-card__input--half"
                 type="text"
                 placeholder="MM/AA"
@@ -154,8 +157,9 @@ import {
         @if (selectedMethod() === 'mbway') {
           <div class="iu-payment-card__card-fields">
             <div class="iu-payment-card__field">
-              <label class="iu-payment-card__label">Número de telemóvel (MBWay)</label>
+              <label class="iu-payment-card__label" for="iu-pay-mbway">Número de telemóvel (MBWay)</label>
               <input
+                id="iu-pay-mbway"
                 class="iu-payment-card__input"
                 type="tel"
                 placeholder="+351 9XX XXX XXX"

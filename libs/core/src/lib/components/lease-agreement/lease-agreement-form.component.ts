@@ -65,8 +65,8 @@ import { createSignalForm, required, minLength, range } from '../../utils/signal
 
           <!-- Lease Type -->
           <div class="laf-section">
-            <label class="laf-label">Tipo de Arrendamento</label>
-            <div class="laf-segment">
+            <span class="laf-label" id="laf-lease-type-label">Tipo de Arrendamento</span>
+            <div class="laf-segment" role="group" aria-labelledby="laf-lease-type-label">
               @for (opt of leaseTypeOptions; track opt.value) {
                 <button
                   type="button"

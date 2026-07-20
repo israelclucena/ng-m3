@@ -31,7 +31,19 @@ export default [
   },
   {
     files: ['**/*.html'],
-    // Override or add rules here
-    rules: {},
+    rules: {
+      // `iu-switch`/`iu-radio`/`iu-checkbox` wrap Material Web form-associated
+      // custom elements (`md-switch`/`md-radio`/`md-checkbox`) inside a
+      // `<label>` — the intended M3 pattern (clicking the text toggles the
+      // control). The linter doesn't know these custom elements are controls,
+      // so it flags a false positive. Whitelisting them as control components
+      // keeps the a11y check meaningful while recognising the real controls.
+      '@angular-eslint/template/label-has-associated-control': [
+        'error',
+        {
+          controlComponents: ['md-switch', 'md-radio', 'md-checkbox'],
+        },
+      ],
+    },
   },
 ];

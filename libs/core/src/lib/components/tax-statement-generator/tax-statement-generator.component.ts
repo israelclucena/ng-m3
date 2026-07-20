@@ -43,8 +43,9 @@ const CATEGORIES: ReadonlyArray<CategoryMeta> = [
           <p class="tsg-subtitle">Rendimentos prediais · Modelo 3 / Anexo F</p>
         </div>
         <div class="tsg-year-block">
-          <label class="tsg-year-label">Ano</label>
+          <label class="tsg-year-label" for="tsg-year">Ano</label>
           <input
+            id="tsg-year"
             type="number" min="1990" max="2099" step="1"
             class="tsg-year-input"
             [value]="svc.year()"

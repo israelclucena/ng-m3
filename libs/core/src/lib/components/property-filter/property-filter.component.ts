@@ -145,8 +145,9 @@ const PRICE_PRESETS: { label: string; min: number | null; max: number | null }[]
         <!-- Custom range inputs -->
         <div class="iu-pf__range-row">
           <div class="iu-pf__range-field">
-            <label class="iu-pf__range-label">Mín (€)</label>
+            <label class="iu-pf__range-label" for="iu-pf-price-min">Mín (€)</label>
             <input
+              id="iu-pf-price-min"
               class="iu-pf__range-input"
               type="number"
               min="0"
@@ -159,8 +160,9 @@ const PRICE_PRESETS: { label: string; min: number | null; max: number | null }[]
           </div>
           <span class="iu-pf__range-sep">–</span>
           <div class="iu-pf__range-field">
-            <label class="iu-pf__range-label">Máx (€)</label>
+            <label class="iu-pf__range-label" for="iu-pf-price-max">Máx (€)</label>
             <input
+              id="iu-pf-price-max"
               class="iu-pf__range-input"
               type="number"
               min="0"
@@ -204,8 +206,9 @@ const PRICE_PRESETS: { label: string; min: number | null; max: number | null }[]
         <h3 class="iu-pf__section-title">Área (m²)</h3>
         <div class="iu-pf__range-row">
           <div class="iu-pf__range-field">
-            <label class="iu-pf__range-label">Mín</label>
+            <label class="iu-pf__range-label" for="iu-pf-area-min">Mín</label>
             <input
+              id="iu-pf-area-min"
               class="iu-pf__range-input"
               type="number"
               min="0"
@@ -218,8 +221,9 @@ const PRICE_PRESETS: { label: string; min: number | null; max: number | null }[]
           </div>
           <span class="iu-pf__range-sep">–</span>
           <div class="iu-pf__range-field">
-            <label class="iu-pf__range-label">Máx</label>
+            <label class="iu-pf__range-label" for="iu-pf-area-max">Máx</label>
             <input
+              id="iu-pf-area-max"
               class="iu-pf__range-input"
               type="number"
               min="0"

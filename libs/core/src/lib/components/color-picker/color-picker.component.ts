@@ -45,7 +45,11 @@ const M3_PALETTE = [
   template: `
     <div class="iu-color-picker" [class.iu-color-picker--open]="open()">
       <!-- Trigger -->
-      <div class="iu-color-picker__trigger" (click)="toggle()">
+      <div class="iu-color-picker__trigger" role="button" tabindex="0"
+        [attr.aria-expanded]="open()"
+        (click)="toggle()"
+        (keydown.enter)="toggle()"
+        (keydown.space)="toggle(); $event.preventDefault()">
         <div
           class="iu-color-picker__swatch iu-color-picker__swatch--lg"
           [style.background-color]="previewColor()"
@@ -83,8 +87,9 @@ const M3_PALETTE = [
           <!-- Hex input -->
           <div class="iu-color-picker__inputs">
             <div class="iu-color-picker__input-group">
-              <label class="iu-color-picker__input-label">HEX</label>
+              <label class="iu-color-picker__input-label" for="iu-cp-hex">HEX</label>
               <input
+                id="iu-cp-hex"
                 class="iu-color-picker__input"
                 [value]="hexInput()"
                 (input)="onHexInput($event)"
@@ -96,8 +101,9 @@ const M3_PALETTE = [
             </div>
 
             <div class="iu-color-picker__input-group">
-              <label class="iu-color-picker__input-label">R</label>
+              <label class="iu-color-picker__input-label" for="iu-cp-r">R</label>
               <input
+                id="iu-cp-r"
                 class="iu-color-picker__input iu-color-picker__input--sm"
                 type="number"
                 min="0" max="255"
@@ -106,8 +112,9 @@ const M3_PALETTE = [
               />
             </div>
             <div class="iu-color-picker__input-group">
-              <label class="iu-color-picker__input-label">G</label>
+              <label class="iu-color-picker__input-label" for="iu-cp-g">G</label>
               <input
+                id="iu-cp-g"
                 class="iu-color-picker__input iu-color-picker__input--sm"
                 type="number"
                 min="0" max="255"
@@ -116,8 +123,9 @@ const M3_PALETTE = [
               />
             </div>
             <div class="iu-color-picker__input-group">
-              <label class="iu-color-picker__input-label">B</label>
+              <label class="iu-color-picker__input-label" for="iu-cp-b">B</label>
               <input
+                id="iu-cp-b"
                 class="iu-color-picker__input iu-color-picker__input--sm"
                 type="number"
                 min="0" max="255"
@@ -130,8 +138,9 @@ const M3_PALETTE = [
           <!-- Opacity slider -->
           @if (showOpacity()) {
             <div class="iu-color-picker__opacity-row">
-              <label class="iu-color-picker__input-label">Opacity</label>
+              <label class="iu-color-picker__input-label" for="iu-cp-opacity">Opacity</label>
               <input
+                id="iu-cp-opacity"
                 type="range"
                 min="0" max="100"
                 class="iu-color-picker__slider"
