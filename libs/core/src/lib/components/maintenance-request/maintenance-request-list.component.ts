@@ -130,7 +130,15 @@ const PRIORITY_DOT: Record<MaintenancePriority, string> = {
             <li class="mrl-item" [class.mrl-item-expanded]="expandedId() === req.id">
 
               <!-- Summary row -->
-              <div class="mrl-item-summary" (click)="toggleExpand(req.id)">
+              <div
+                class="mrl-item-summary"
+                role="button"
+                tabindex="0"
+                [attr.aria-expanded]="expandedId() === req.id"
+                (click)="toggleExpand(req.id)"
+                (keydown.enter)="toggleExpand(req.id)"
+                (keydown.space)="toggleExpand(req.id); $event.preventDefault()"
+              >
 
                 <div class="mrl-item-left">
                   <span

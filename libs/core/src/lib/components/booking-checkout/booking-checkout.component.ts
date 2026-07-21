@@ -110,7 +110,15 @@ function formatDate(d: Date): string {
     <div class="iu-checkout" role="dialog" aria-modal="true" aria-label="Checkout">
 
       <!-- ══ Backdrop ══════════════════════════════════════════════════════ -->
-      <div class="iu-checkout__backdrop" (click)="onCancel()"></div>
+      <div
+        class="iu-checkout__backdrop"
+        role="button"
+        tabindex="0"
+        aria-label="Fechar"
+        (click)="onCancel()"
+        (keydown.enter)="onCancel()"
+        (keydown.space)="onCancel(); $event.preventDefault()"
+      ></div>
 
       <!-- ══ Panel ═════════════════════════════════════════════════════════ -->
       <div class="iu-checkout__panel" role="document">

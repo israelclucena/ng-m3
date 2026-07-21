@@ -72,7 +72,15 @@ import {
           @for (app of filtered(); track app.id) {
             <div class="as-card" [class.expanded]="expandedId() === app.id">
               <!-- Card header -->
-              <div class="as-card-header" (click)="toggle(app.id)">
+              <div
+                class="as-card-header"
+                role="button"
+                tabindex="0"
+                [attr.aria-expanded]="expandedId() === app.id"
+                (click)="toggle(app.id)"
+                (keydown.enter)="toggle(app.id)"
+                (keydown.space)="toggle(app.id); $event.preventDefault()"
+              >
                 <div class="as-applicant">
                   <div class="as-avatar">{{ initials(app.tenantName) }}</div>
                   <div class="as-applicant-info">

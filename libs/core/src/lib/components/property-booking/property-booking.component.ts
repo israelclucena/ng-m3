@@ -91,7 +91,15 @@ const TIME_SLOTS = [
     <div class="iu-pb" role="dialog" aria-modal="true" [attr.aria-label]="'Reservar ' + property().title">
 
       <!-- ── Backdrop ──────────────────────────────────────────────── -->
-      <div class="iu-pb__backdrop" (click)="onClose()"></div>
+      <div
+        class="iu-pb__backdrop"
+        role="button"
+        tabindex="0"
+        aria-label="Fechar"
+        (click)="onClose()"
+        (keydown.enter)="onClose()"
+        (keydown.space)="onClose(); $event.preventDefault()"
+      ></div>
 
       <!-- ── Panel ─────────────────────────────────────────────────── -->
       <div class="iu-pb__panel" role="document">

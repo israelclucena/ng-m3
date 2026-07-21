@@ -44,6 +44,9 @@ export interface TagInputChange {
   standalone: true,
   imports: [CommonModule],
   template: `
+    <!-- Presentational wrapper: click just delegates focus to the inner <input>, which is
+         directly tabbable and the real keyboard-accessible control. -->
+    <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
     <div
       class="iu-tag-input"
       [class.iu-tag-input--focused]="focused()"
@@ -93,6 +96,7 @@ export interface TagInputChange {
               class="iu-tag-input__suggestion"
               [class.iu-tag-input__suggestion--active]="activeIndex() === i"
               role="option"
+              [attr.aria-selected]="activeIndex() === i"
               (mousedown)="addSuggestion($event, suggestion)"
               (mouseenter)="activeIndex.set(i)"
             >

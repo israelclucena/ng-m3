@@ -64,6 +64,10 @@ export interface GlobalSearchSubmitEvent {
       [class.iu-global-search--has-results]="showSuggestions()"
     >
       <!-- Search field -->
+      <!-- Presentational wrapper: the real control is the inner <input>, which is fully
+           keyboard-accessible and expands the field via its (focus)="onFocus()". The (click)
+           here only mirrors that for mouse users clicking the field padding/icon. -->
+      <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
       <div class="iu-global-search__field" (click)="expand()">
         <span class="material-symbols-outlined iu-global-search__icon">search</span>
         <input

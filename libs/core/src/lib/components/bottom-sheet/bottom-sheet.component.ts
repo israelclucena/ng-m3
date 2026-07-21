@@ -25,7 +25,15 @@ export type BottomSheetVariant = 'standard' | 'modal';
   imports: [CommonModule],
   template: `
     @if (variant() === 'modal' && open()) {
-      <div class="iu-bottom-sheet__scrim" (click)="dismiss()"></div>
+      <div
+        class="iu-bottom-sheet__scrim"
+        role="button"
+        tabindex="0"
+        aria-label="Fechar"
+        (click)="dismiss()"
+        (keydown.enter)="dismiss()"
+        (keydown.space)="dismiss(); $event.preventDefault()"
+      ></div>
     }
     <div [class]="hostClass()">
       @if (dragHandle()) {

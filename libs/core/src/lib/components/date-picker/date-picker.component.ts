@@ -58,7 +58,13 @@ const MONTHS = [
         [class.iu-date-picker__field--focused]="open()"
         [class.iu-date-picker__field--error]="!!errorMessage()"
         [class.iu-date-picker__field--disabled]="disabled()"
+        role="button"
+        [attr.tabindex]="disabled() ? -1 : 0"
+        [attr.aria-haspopup]="'dialog'"
+        [attr.aria-expanded]="open()"
         (click)="toggle()"
+        (keydown.enter)="toggle()"
+        (keydown.space)="toggle(); $event.preventDefault()"
       >
         <span class="material-symbols-outlined iu-date-picker__calendar-icon">calendar_month</span>
         <div class="iu-date-picker__text">
