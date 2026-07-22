@@ -185,6 +185,16 @@ import {
   AnnualPropertyTaxBurdenComponent,
   // Sprint 054
   InsuranceTrackerComponent,
+  // Sprint 055 — Catalog wiring de tools/calculators standalone órfãos
+  IMICalculatorComponent,
+  IRSCategoriaFCalculatorComponent,
+  CreditoHabitacaoSimulatorComponent,
+  RentEscalationCalculatorComponent,
+  RentReceiptGeneratorComponent,
+  TaxStatementGeneratorComponent,
+  DepositReturnEstimatorComponent,
+  EnergyCertificateCheckerComponent,
+  CommunicationCenterComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -361,6 +371,16 @@ const SEARCH_DATA: SearchResult[] = [
     AnnualPropertyTaxBurdenComponent,
     // Sprint 054
     InsuranceTrackerComponent,
+    // Sprint 055 — Catalog wiring de tools/calculators standalone órfãos
+    IMICalculatorComponent,
+    IRSCategoriaFCalculatorComponent,
+    CreditoHabitacaoSimulatorComponent,
+    RentEscalationCalculatorComponent,
+    RentReceiptGeneratorComponent,
+    TaxStatementGeneratorComponent,
+    DepositReturnEstimatorComponent,
+    EnergyCertificateCheckerComponent,
+    CommunicationCenterComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2110,6 +2130,129 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
+      <!-- ═══════════════ Sprint 055 — Catalog wiring de tools/calculators standalone órfãos ═══════════════ -->
+
+      @if (flags.IMI_CALCULATOR) {
+        <section class="feature-section" id="imi-calculator">
+          <h2>IMI Calculator</h2>
+          <p class="feature-desc">
+            <strong>IMICalculatorService + IMICalculatorComponent</strong> —
+            Imposto Municipal sobre Imóveis: VPT × taxa do concelho (Lisboa/Porto/Cascais/etc.),
+            desconto por agregado familiar (dependentes) e calendário de fraccionamento AT
+            (1/2/3 prestações). Componente existente sem entrada navegável até agora.
+            Feature flag: <code>IMI_CALCULATOR</code>.
+          </p>
+          <iu-imi-calculator />
+        </section>
+      }
+
+      @if (flags.IRS_CAT_F_CALCULATOR) {
+        <section class="feature-section" id="irs-categoria-f">
+          <h2>IRS Categoria F Calculator</h2>
+          <p class="feature-desc">
+            <strong>IRSCategoriaFService + IRSCategoriaFCalculatorComponent</strong> —
+            Rendimentos prediais (arrendamento): rendimento bruto menos despesas dedutíveis por
+            categoria, taxa autónoma 28% vs englobamento nos escalões progressivos 2026, com
+            taxa efectiva. Componente existente sem entrada navegável até agora.
+            Feature flag: <code>IRS_CAT_F_CALCULATOR</code>.
+          </p>
+          <iu-irs-categoria-f-calculator />
+        </section>
+      }
+
+      @if (flags.CREDITO_HABITACAO_SIMULATOR) {
+        <section class="feature-section" id="credito-habitacao">
+          <h2>Crédito Habitação Simulator</h2>
+          <p class="feature-desc">
+            <strong>CreditoHabitacaoService + CreditoHabitacaoSimulatorComponent</strong> —
+            Simulador de crédito à habitação PT: fórmula Price, TAEG aproximada (Newton-Raphson),
+            Euribor 3M/6M/12M ou taxa fixa, LTV e plano de amortização parcial (primeiros 12 +
+            últimos 12 meses). Componente existente sem entrada navegável até agora.
+            Feature flag: <code>CREDITO_HABITACAO_SIMULATOR</code>.
+          </p>
+          <iu-credito-habitacao-simulator />
+        </section>
+      }
+
+      @if (flags.RENT_ESCALATION_CALCULATOR) {
+        <section class="feature-section" id="rent-escalation">
+          <h2>Rent Escalation Calculator</h2>
+          <p class="feature-desc">
+            <strong>RentEscalationService + RentEscalationCalculatorComponent</strong> —
+            Actualização anual de renda NRAU art. 24.º com coeficientes das Portarias (2018-2026)
+            e tabela de override ano-a-ano. Componente existente sem entrada navegável até agora.
+            Feature flag: <code>RENT_ESCALATION_CALCULATOR</code>.
+          </p>
+          <iu-rent-escalation-calculator />
+        </section>
+      }
+
+      @if (flags.RENT_RECEIPT_GENERATOR) {
+        <section class="feature-section" id="rent-receipt">
+          <h2>Rent Receipt Generator</h2>
+          <p class="feature-desc">
+            <strong>RentReceiptService + RentReceiptGeneratorComponent</strong> —
+            Emissor de recibo de renda com retenção IRS Cat. F (default 25%) e layout imprimível
+            estilo AT. Componente existente sem entrada navegável até agora.
+            Feature flag: <code>RENT_RECEIPT_GENERATOR</code>.
+          </p>
+          <iu-rent-receipt-generator />
+        </section>
+      }
+
+      @if (flags.TAX_STATEMENT_GENERATOR) {
+        <section class="feature-section" id="tax-statement">
+          <h2>Tax Statement Generator</h2>
+          <p class="feature-desc">
+            <strong>TaxStatementService + TaxStatementGeneratorComponent</strong> —
+            Mapa anual IRS Cat. F (rendimento bruto / despesas dedutíveis por categoria / líquido /
+            taxa efectiva) para Modelo 3 Anexo F. Componente existente sem entrada navegável até agora.
+            Feature flag: <code>TAX_STATEMENT_GENERATOR</code>.
+          </p>
+          <iu-tax-statement-generator />
+        </section>
+      }
+
+      @if (flags.DEPOSIT_RETURN_ESTIMATOR) {
+        <section class="feature-section" id="deposit-return">
+          <h2>Deposit Return Estimator</h2>
+          <p class="feature-desc">
+            <strong>DepositReturnService + DepositReturnEstimatorComponent</strong> —
+            Estimador de devolução de caução (NRAU art. 13.º): deduções itemizadas por categoria
+            e percentagem de retenção administrativa. Componente existente sem entrada navegável até agora.
+            Feature flag: <code>DEPOSIT_RETURN_ESTIMATOR</code>.
+          </p>
+          <iu-deposit-return-estimator />
+        </section>
+      }
+
+      @if (flags.ENERGY_CERTIFICATE_CHECKER) {
+        <section class="feature-section" id="energy-certificate">
+          <h2>Energy Certificate Checker</h2>
+          <p class="feature-desc">
+            <strong>EnergyCertificateService + EnergyCertificateCheckerComponent</strong> —
+            Validador de Certificado Energético (classes ADENE A+/A/B/B-/C/D/E/F): validade,
+            poupança vs classe A e conformidade legal (DL 118/2013). Componente existente sem
+            entrada navegável até agora.
+            Feature flag: <code>ENERGY_CERTIFICATE_CHECKER</code>.
+          </p>
+          <iu-energy-certificate-checker />
+        </section>
+      }
+
+      @if (flags.COMMUNICATION_CENTER) {
+        <section class="feature-section" id="communication-center">
+          <h2>Communication Center</h2>
+          <p class="feature-desc">
+            <strong>CommunicationCenterStateService + CommunicationCenterComponent</strong> —
+            Consumidor de templates: sidebar por categoria, editor de placeholders, pré-visualização
+            live e acções send/copy com histórico. Componente existente sem entrada navegável até agora.
+            Feature flag: <code>COMMUNICATION_CENTER</code>.
+          </p>
+          <iu-communication-center />
+        </section>
+      }
+
       <!-- ═══════════════ Sprint 045 — Dashboard consumer trilogy ═══════════════ -->
 
       @if (flags.PORTFOLIO_ROUNDUP) {
@@ -2571,46 +2714,94 @@ export class FeaturesPageComponent implements OnInit, OnDestroy {
   // ── Sprint 046 — Features page TOC quick-jump nav ──
   readonly tocSections: ReadonlyArray<{ id: string; label: string; flag?: keyof typeof FeatureFlags }> = [
     { id: 'feat-data-table', label: 'Data Table' },
-    { id: 'feat-search', label: 'Search' },
-    { id: 'feat-charts', label: 'Charts' },
+    { id: 'feat-search', label: 'Search — Autocomplete' },
+    { id: 'feat-charts', label: 'Charts — SVG puro' },
+    { id: 'feat-empty-states', label: 'Empty States' },
+    { id: 'feat-notifications', label: 'Notification System' },
+    { id: 'feat-keyboard', label: 'Keyboard Shortcuts' },
+    { id: 'feat-theme', label: 'Theme Switcher' },
+    { id: 'feat-export', label: 'Export System' },
+    { id: 'feat-voice', label: 'Voice Commands' },
     { id: 'feat-form-builder', label: 'Form Builder' },
-    { id: 'feat-stepper', label: 'Stepper' },
-    { id: 'feat-property-listing', label: 'Property Listing' },
-    { id: 'feat-property-map', label: 'Property Map' },
-    { id: 'feat-property-booking', label: 'Property Booking' },
-    { id: 'feat-auth', label: 'Auth' },
-    { id: 'feat-user-profile', label: 'User Profile' },
-    { id: 'feat-manage-listings', label: 'Manage Listings' },
-    { id: 'feat-messaging', label: 'Messaging' },
-    { id: 'feat-global-search', label: 'Global Search' },
-    { id: 'feat-reviews', label: 'Reviews' },
-    { id: 'payment', label: 'Payment Flow' },
-    { id: 'landlord-analytics', label: 'Landlord Analytics' },
-    { id: 'i18n', label: 'i18n' },
-    { id: 'admin-panel', label: 'Admin Panel' },
-    { id: 'web-vitals', label: 'Web Vitals' },
-    { id: 'availability-calendar', label: 'Availability Calendar' },
-    { id: 'tenant-application-form', label: 'Tenant Application', flag: 'TENANT_APPLICATION' },
-    { id: 'lease-signing-flow', label: 'Lease Signing', flag: 'E_SIGNATURE_MODULE' },
-    { id: 'rent-payment-portal', label: 'Rent Payment', flag: 'RENT_PAYMENT_PORTAL' },
+    { id: 'feat-avatar', label: 'Avatar', flag: 'AVATAR' },
+    { id: 'feat-tag-input', label: 'Tag Input', flag: 'TAG_INPUT' },
+    { id: 'feat-stepper', label: 'Stepper', flag: 'STEPPER' },
+    { id: 'feat-timeline', label: 'Timeline', flag: 'TIMELINE' },
+    { id: 'feat-date-picker', label: 'Date Picker', flag: 'DATE_PICKER' },
+    { id: 'feat-color-picker', label: 'Color Picker', flag: 'COLOR_PICKER' },
+    { id: 'feat-data-table-v2', label: 'Data Table v2', flag: 'DATA_TABLE_V2' },
+    { id: 'feat-widget-system', label: 'Widget System', flag: 'WIDGET_SYSTEM' },
+    { id: 'feat-property-listing', label: 'LisboaRent — Property System', flag: 'PROPERTY_LISTING' },
+    { id: 'feat-property-map', label: 'Property Map', flag: 'PROPERTY_MAP' },
+    { id: 'feat-property-comparison', label: 'Property Comparison', flag: 'PROPERTY_COMPARISON' },
+    { id: 'feat-paginator', label: 'Paginator', flag: 'PAGINATOR' },
+    { id: 'feat-property-booking', label: 'Property Booking', flag: 'PROPERTY_BOOKING' },
+    { id: 'feat-auth', label: 'Auth Module', flag: 'AUTH_MODULE' },
+    { id: 'feat-user-profile', label: 'User Profile', flag: 'USER_PROFILE' },
+    { id: 'feat-my-bookings', label: 'As Minhas Reservas', flag: 'MY_BOOKINGS' },
+    { id: 'feat-my-favourites', label: 'Os Meus Favoritos', flag: 'MY_FAVOURITES' },
+    { id: 'feat-manage-listings', label: 'Gerir Imóveis (Proprietário)', flag: 'MANAGE_LISTINGS' },
+    { id: 'feat-add-property', label: 'Adicionar Imóvel', flag: 'ADD_PROPERTY' },
+    { id: 'feat-messaging', label: 'Mensagens', flag: 'MESSAGING_MODULE' },
+    { id: 'feat-notification-bell', label: 'Notification Bell', flag: 'NOTIFICATION_BELL' },
+    { id: 'feat-global-search', label: 'Global Search', flag: 'GLOBAL_SEARCH' },
+    { id: 'feat-reviews', label: 'Reviews Module', flag: 'REVIEWS_MODULE' },
+    { id: 'payment', label: 'Payment / Checkout Flow', flag: 'PAYMENT_MODULE' },
+    { id: 'landlord-analytics', label: 'Landlord Analytics Dashboard', flag: 'LANDLORD_ANALYTICS' },
+    { id: 'i18n', label: 'Internacionalização (PT-PT / EN-GB)', flag: 'I18N_PT' },
+    { id: 'admin-panel', label: 'Admin / Moderation Panel', flag: 'ADMIN_PANEL' },
+    { id: 'error-pages', label: 'Error Pages', flag: 'ERROR_PAGES' },
+    { id: 'ssr', label: 'Server-Side Rendering (SSR)', flag: 'SSR_MODULE' },
+    { id: 'web-vitals', label: 'Core Web Vitals', flag: 'WEB_VITALS' },
+    { id: 'availability-calendar', label: 'Property Availability Calendar', flag: 'AVAILABILITY_CALENDAR' },
+    { id: 'booking-checkout', label: 'Booking Checkout Flow', flag: 'BOOKING_CONFIRMATION_FLOW' },
+    { id: 'payment-gateway', label: 'Payment Gateway (Mock Stripe)', flag: 'PAYMENT_GATEWAY' },
+    { id: 'payment-receipt', label: 'Payment Receipt', flag: 'PAYMENT_RECEIPT' },
+    { id: 'landlord-revenue', label: 'Landlord Revenue Dashboard', flag: 'LANDLORD_REVENUE' },
+    { id: 'tenant-dashboard', label: 'Tenant Dashboard', flag: 'TENANT_DASHBOARD' },
+    { id: 'maintenance-module', label: 'Maintenance Module', flag: 'MAINTENANCE_MODULE' },
+    { id: 'document-upload', label: 'Document Upload', flag: 'DOCUMENT_UPLOAD' },
+    { id: 'lease-agreement-form', label: 'Lease Agreement Form', flag: 'LEASE_MODULE' },
+    { id: 'lease-agreement-viewer', label: 'Lease Agreement Viewer', flag: 'LEASE_VIEWER' },
+    { id: 'tenant-application-form', label: 'Tenant Application Form', flag: 'TENANT_APPLICATION' },
+    { id: 'application-review', label: 'Application Review Panel', flag: 'APPLICATION_REVIEW' },
+    { id: 'e-signature', label: 'Digital E-Signature Flow', flag: 'E_SIGNATURE_MODULE' },
+    { id: 'application-pipeline', label: 'Application Pipeline Board', flag: 'APPLICATION_PIPELINE' },
+    { id: 'notification-center', label: 'Notification Center', flag: 'NOTIFICATION_CENTER' },
+    { id: 'rent-payment-portal', label: 'Rent Payment Portal', flag: 'RENT_PAYMENT_PORTAL' },
+    { id: 'property-inspection', label: 'Property Inspection', flag: 'PROPERTY_INSPECTION' },
     { id: 'document-vault', label: 'Document Vault', flag: 'DOCUMENT_VAULT' },
     { id: 'viewing-scheduler', label: 'Viewing Scheduler', flag: 'VIEWING_SCHEDULER' },
-    { id: 'utility-bills', label: 'Utility Bills', flag: 'UTILITY_BILLS' },
+    { id: 'lease-renewal', label: 'Lease Renewal', flag: 'LEASE_RENEWAL' },
+    { id: 'rent-arrears', label: 'Rent Arrears Manager', flag: 'RENT_ARREARS' },
+    { id: 'utility-bills', label: 'Utility Bills Tracker', flag: 'UTILITY_BILLS' },
     { id: 'portfolio-overview', label: 'Portfolio Overview', flag: 'PORTFOLIO_OVERVIEW' },
+    { id: 'notification-preferences', label: 'Notification Preferences', flag: 'NOTIFICATION_PREFERENCES' },
     { id: 'yield-calculator', label: 'Yield Calculator', flag: 'YIELD_CALCULATOR' },
     { id: 'move-in-checklist', label: 'Move-In Checklist', flag: 'MOVE_IN_CHECKLIST' },
     { id: 'move-out-checklist', label: 'Move-Out Checklist', flag: 'MOVE_OUT_CHECKLIST' },
     { id: 'property-inventory', label: 'Property Inventory', flag: 'PROPERTY_INVENTORY' },
-    { id: 'mais-valias', label: 'Mais-Valias Calculator', flag: 'MAIS_VALIAS_IMOBILIARIAS_CALCULATOR' },
+    { id: 'portfolio-tax-lifecycle', label: 'Portfolio Tax Lifecycle', flag: 'PORTFOLIO_TAX_LIFECYCLE_WIDGET' },
+    { id: 'portfolio-lifecycle', label: 'Portfolio Operational Lifecycle', flag: 'PORTFOLIO_LIFECYCLE_WIDGET' },
+    { id: 'property-transaction-cost-calculator', label: 'Property Transaction Cost Calculator', flag: 'PROPERTY_TRANSACTION_COST_CALCULATOR' },
+    { id: 'mais-valias', label: 'Mais-Valias Imobiliárias Calculator', flag: 'MAIS_VALIAS_IMOBILIARIAS_CALCULATOR' },
     { id: 'aimi', label: 'AIMI Calculator', flag: 'AIMI_CALCULATOR' },
     { id: 'imt', label: 'IMT Calculator', flag: 'IMT_CALCULATOR' },
-    { id: 'annual-tax-burden', label: '★ Annual Tax Burden', flag: 'ANNUAL_TAX_BURDEN_AGGREGATOR' },
+    { id: 'annual-tax-burden', label: 'Annual Property Tax Burden', flag: 'ANNUAL_TAX_BURDEN_AGGREGATOR' },
     { id: 'insurance-tracker', label: 'Insurance Tracker', flag: 'INSURANCE_TRACKER_CATALOG_WIRING' },
-    { id: 'portfolio-lifecycle', label: '★ Portfolio Lifecycle', flag: 'PORTFOLIO_LIFECYCLE_WIDGET' },
-    { id: 'portfolio-roundup', label: '★ Portfolio Roundup', flag: 'PORTFOLIO_ROUNDUP' },
-    { id: 'portfolio-yield-overview', label: '★ Yield Overview', flag: 'PORTFOLIO_YIELD_OVERVIEW' },
-    { id: 'portfolio-fiscal-summary', label: '★ Fiscal Summary', flag: 'PORTFOLIO_FISCAL_SUMMARY' },
-    { id: 'portfolio-compliance-matrix', label: '★ Compliance Matrix', flag: 'PORTFOLIO_COMPLIANCE_MATRIX' },
+    { id: 'imi-calculator', label: 'IMI Calculator', flag: 'IMI_CALCULATOR' },
+    { id: 'irs-categoria-f', label: 'IRS Categoria F Calculator', flag: 'IRS_CAT_F_CALCULATOR' },
+    { id: 'credito-habitacao', label: 'Crédito Habitação Simulator', flag: 'CREDITO_HABITACAO_SIMULATOR' },
+    { id: 'rent-escalation', label: 'Rent Escalation Calculator', flag: 'RENT_ESCALATION_CALCULATOR' },
+    { id: 'rent-receipt', label: 'Rent Receipt Generator', flag: 'RENT_RECEIPT_GENERATOR' },
+    { id: 'tax-statement', label: 'Tax Statement Generator', flag: 'TAX_STATEMENT_GENERATOR' },
+    { id: 'deposit-return', label: 'Deposit Return Estimator', flag: 'DEPOSIT_RETURN_ESTIMATOR' },
+    { id: 'energy-certificate', label: 'Energy Certificate Checker', flag: 'ENERGY_CERTIFICATE_CHECKER' },
+    { id: 'communication-center', label: 'Communication Center', flag: 'COMMUNICATION_CENTER' },
+    { id: 'portfolio-roundup', label: 'Portfolio Roundup', flag: 'PORTFOLIO_ROUNDUP' },
+    { id: 'portfolio-yield-overview', label: 'Portfolio Yield Overview', flag: 'PORTFOLIO_YIELD_OVERVIEW' },
+    { id: 'portfolio-fiscal-summary', label: 'Portfolio Fiscal Summary', flag: 'PORTFOLIO_FISCAL_SUMMARY' },
+    { id: 'portfolio-compliance-matrix', label: 'Portfolio Compliance Matrix', flag: 'PORTFOLIO_COMPLIANCE_MATRIX' },
   ];
 
   readonly tocItems = computed(() =>
