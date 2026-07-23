@@ -41,7 +41,7 @@ import { Router } from '@angular/router';
       </div>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host {
       display: flex;

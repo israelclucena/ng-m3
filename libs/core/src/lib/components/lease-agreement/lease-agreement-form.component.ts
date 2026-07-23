@@ -212,7 +212,7 @@ import { createSignalForm, required, minLength, range } from '../../utils/signal
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .laf-container {
       background: var(--md-sys-color-surface);

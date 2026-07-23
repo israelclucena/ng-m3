@@ -208,7 +208,7 @@ import {
 
     </form>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host { display: block; }
 

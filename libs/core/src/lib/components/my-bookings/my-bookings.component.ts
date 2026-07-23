@@ -152,7 +152,7 @@ export interface BookingRecord {
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host { display: block; }
 

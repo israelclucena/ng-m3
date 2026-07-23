@@ -81,7 +81,7 @@ import { VoiceCommandService } from './voice-command.service';
       </div>
     }
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host { display: block; }
     .voice-widget {

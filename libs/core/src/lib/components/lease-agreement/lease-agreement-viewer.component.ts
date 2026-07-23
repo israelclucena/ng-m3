@@ -193,7 +193,7 @@ import {
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .lav-container {
       background: var(--md-sys-color-surface);

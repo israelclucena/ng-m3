@@ -167,7 +167,7 @@ import {
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .du-wrapper { display: flex; flex-direction: column; gap: 12px; }
     .du-label-row {

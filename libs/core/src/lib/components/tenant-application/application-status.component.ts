@@ -227,7 +227,7 @@ import {
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .as-container {
       background: var(--md-sys-color-surface);

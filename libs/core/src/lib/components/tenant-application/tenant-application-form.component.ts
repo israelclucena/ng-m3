@@ -357,7 +357,7 @@ type Step = 'personal' | 'employment' | 'references' | 'cover' | 'review';
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .taf-container {
       background: var(--md-sys-color-surface);
