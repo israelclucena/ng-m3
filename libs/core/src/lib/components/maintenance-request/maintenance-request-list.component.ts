@@ -224,7 +224,7 @@ const PRIORITY_DOT: Record<MaintenancePriority, string> = {
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .mrl-container {
       background: var(--md-sys-color-surface, #fffbfe);
