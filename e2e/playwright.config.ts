@@ -59,13 +59,17 @@ export default defineConfig({
   ],
 
   // Web server — auto-started in CI when no external server is running.
-  // In CI the dashboard is pre-built with `npx nx build dashboard --configuration=development`
-  // and served via `npx nx serve dashboard` or a static server.
+  // The dashboard uses the `@angular/build:application` builder (module-federation +
+  // prerender aware), so `npx nx serve dashboard` is the reliable server and the primary
+  // command here. The static fallback serves the builder's `browser/` output — note the
+  // path: `@angular/build:application` emits under `dist/apps/dashboard/browser/`, not the
+  // outputPath root (which only holds `3rdpartylicenses.txt` + `prerendered-routes.json`).
+  // `-s` makes the static server fall back to index.html so client-side routes resolve.
   // Locally, set E2E_BASE_URL or let the dev server spin up.
   webServer: process.env['CI']
     ? {
-        // Serve the pre-built dashboard from dist in CI
-        command: 'npx serve dist/apps/dashboard -l 4200 --no-clipboard 2>/dev/null || npx nx serve dashboard --port=4200 --no-open',
+        command:
+          'npx nx serve dashboard --port=4200 --no-open || npx serve dist/apps/dashboard/browser -l 4200 -s --no-clipboard',
         url: 'http://localhost:4200',
         reuseExistingServer: false,
         timeout: 120_000,
