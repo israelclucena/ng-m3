@@ -13,46 +13,39 @@
  *
  * Run: npx playwright test --config=e2e/playwright.config.ts
  */
-import { test, expect, Page } from '@playwright/test';
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/** Collect JS errors during a test */
-function collectErrors(page: Page): string[] {
-  const errors: string[] = [];
-  page.on('pageerror', err => errors.push(err.message));
-  page.on('console', msg => {
-    if (msg.type() === 'error') errors.push(msg.text());
-  });
-  return errors;
-}
+import { test, expect } from '@playwright/test';
+import { captureErrors, realErrors, waitForContent } from './helpers';
 
 // ─── Suite: Navigation ────────────────────────────────────────────────────────
 
 test.describe('Navigation — shell routes', () => {
+  // Generous timeout: under `nx serve` the dev server compiles each lazy route
+  // chunk on first request, so the first navigation to a route can be slow.
+  const NAV_TIMEOUT = 15_000;
+
   test('redirects / to /dashboard', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveURL(/\/dashboard/);
+    await expect(page).toHaveURL(/\/dashboard/, { timeout: NAV_TIMEOUT });
   });
 
   test('dashboard page title is correct', async ({ page }) => {
     await page.goto('/dashboard');
-    await expect(page).toHaveTitle(/Dashboard.*Israel UI/i);
+    await expect(page).toHaveTitle(/Dashboard.*Israel UI/i, { timeout: NAV_TIMEOUT });
   });
 
   test('features page title is correct', async ({ page }) => {
     await page.goto('/features');
-    await expect(page).toHaveTitle(/Features.*Israel UI/i);
+    await expect(page).toHaveTitle(/Features.*Israel UI/i, { timeout: NAV_TIMEOUT });
   });
 
   test('components page title is correct', async ({ page }) => {
     await page.goto('/components');
-    await expect(page).toHaveTitle(/Components.*Israel UI/i);
+    await expect(page).toHaveTitle(/Components.*Israel UI/i, { timeout: NAV_TIMEOUT });
   });
 
   test('settings page title is correct', async ({ page }) => {
     await page.goto('/settings');
-    await expect(page).toHaveTitle(/Settings.*Israel UI/i);
+    await expect(page).toHaveTitle(/Settings.*Israel UI/i, { timeout: NAV_TIMEOUT });
   });
 });
 
@@ -64,10 +57,10 @@ test.describe('Dashboard page', () => {
   });
 
   test('renders without JS errors', async ({ page }) => {
-    const errors = collectErrors(page);
+    const errors = captureErrors(page);
     await page.goto('/dashboard');
     await page.waitForLoadState('networkidle');
-    expect(errors.filter(e => !e.includes('favicon'))).toHaveLength(0);
+    expect(realErrors(errors)).toHaveLength(0);
   });
 
   test('has a visible nav/sidebar element', async ({ page }) => {
@@ -77,9 +70,8 @@ test.describe('Dashboard page', () => {
   });
 
   test('shows page content (not blank)', async ({ page }) => {
-    await page.waitForLoadState('domcontentloaded');
-    const body = await page.locator('body').textContent();
-    expect(body?.trim().length).toBeGreaterThan(50);
+    const body = await waitForContent(page);
+    expect(body.length).toBeGreaterThan(50);
   });
 });
 
@@ -91,16 +83,10 @@ test.describe('Features page', () => {
   });
 
   test('renders without JS errors', async ({ page }) => {
-    const errors = collectErrors(page);
+    const errors = captureErrors(page);
     await page.goto('/features');
     await page.waitForLoadState('networkidle');
-    // Filter noise from dev tooling / service worker
-    const real = errors.filter(e =>
-      !e.includes('favicon') &&
-      !e.includes('service-worker') &&
-      !e.includes('ngsw')
-    );
-    expect(real).toHaveLength(0);
+    expect(realErrors(errors)).toHaveLength(0);
   });
 
   test('renders Feature Showcase heading', async ({ page }) => {
@@ -123,24 +109,22 @@ test.describe('Features page', () => {
 test.describe('Error pages', () => {
   test('unknown route shows a 404 page (not blank)', async ({ page }) => {
     await page.goto('/this-route-does-not-exist-xyz');
-    await page.waitForLoadState('domcontentloaded');
-    const body = await page.locator('body').textContent();
+    const body = (await waitForContent(page)).toLowerCase();
     // Either redirected to 404 or the body has error text
     const url = page.url();
     const has404Content =
       url.includes('not-found') ||
-      body?.toLowerCase().includes('404') ||
-      body?.toLowerCase().includes('not found') ||
-      body?.toLowerCase().includes('não encontrada');
+      body.includes('404') ||
+      body.includes('not found') ||
+      body.includes('não encontrada');
     expect(has404Content).toBe(true);
   });
 
   test('/error route renders the error page component', async ({ page }) => {
     await page.goto('/error');
-    await page.waitForLoadState('domcontentloaded');
-    const body = await page.locator('body').textContent();
+    const body = await waitForContent(page);
     // Should contain some error page text
-    expect(body?.trim().length).toBeGreaterThan(20);
+    expect(body.length).toBeGreaterThan(20);
   });
 });
 
@@ -149,17 +133,15 @@ test.describe('Error pages', () => {
 test.describe('Components page', () => {
   test('renders without blank content', async ({ page }) => {
     await page.goto('/components');
-    await page.waitForLoadState('domcontentloaded');
-    const body = await page.locator('body').textContent();
-    expect(body?.trim().length).toBeGreaterThan(50);
+    const body = await waitForContent(page);
+    expect(body.length).toBeGreaterThan(50);
   });
 
   test('deep link to a component works', async ({ page }) => {
     await page.goto('/components/button');
     await expect(page).toHaveURL(/\/components\/button/);
-    await page.waitForLoadState('domcontentloaded');
-    const body = await page.locator('body').textContent();
-    expect(body?.trim().length).toBeGreaterThan(50);
+    const body = await waitForContent(page);
+    expect(body.length).toBeGreaterThan(50);
   });
 });
 
