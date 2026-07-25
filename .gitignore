@@ -29,3 +29,7 @@ Thumbs.db
 .nx/polygraph
 .nx/self-healing
 .nx/migrate-runs
+
+# Playwright / e2e run artifacts (not versioned)
+playwright-report
+test-results
