@@ -100,11 +100,11 @@ import {
           <div class="lav-terms-grid">
             <div class="lav-term">
               <span class="lav-term-label">Renda Mensal</span>
-              <span class="lav-term-value primary">{{ lease()!.monthlyRent | currency:'EUR':'symbol':'1.0-0':'pt' }}</span>
+              <span class="lav-term-value primary">{{ lease()!.monthlyRent | currency:'EUR':'symbol':'1.0-0' }}</span>
             </div>
             <div class="lav-term">
               <span class="lav-term-label">Depósito</span>
-              <span class="lav-term-value">{{ lease()!.depositAmount | currency:'EUR':'symbol':'1.0-0':'pt' }}</span>
+              <span class="lav-term-value">{{ lease()!.depositAmount | currency:'EUR':'symbol':'1.0-0' }}</span>
             </div>
             <div class="lav-term">
               <span class="lav-term-label">Início</span>
