@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { PropertyDetailComponent, PropertyDetail } from './property-detail.component';
 
 // ─── Sample Data ──────────────────────────────────────────────────────────────
@@ -100,9 +98,6 @@ const MINIMAL: PropertyDetail = {
 const meta: Meta<PropertyDetailComponent> = {
   title: 'LisboaRent/PropertyDetail',
   component: PropertyDetailComponent,
-  decorators: [
-    applicationConfig({ providers: [provideAnimations()] }),
-  ],
   parameters: {
     layout: 'padded',
     docs: {

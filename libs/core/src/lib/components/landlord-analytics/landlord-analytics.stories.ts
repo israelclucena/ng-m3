@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OccupancyChartComponent } from './occupancy-chart.component';
@@ -102,9 +100,6 @@ const mockListings: ListingStats[] = [
 
 const meta: Meta = {
   title: 'LisboaRent/LandlordAnalytics',
-  decorators: [
-    applicationConfig({ providers: [provideAnimations()] }),
-  ],
   parameters: {
     layout: 'padded',
     docs: {

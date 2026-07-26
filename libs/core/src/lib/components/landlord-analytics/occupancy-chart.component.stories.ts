@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { OccupancyChartComponent } from '@israel-ui/core';
 import type { OccupancySummary } from './landlord-analytics.types';
 
@@ -22,11 +20,6 @@ function summary(
 const meta: Meta<OccupancyChartComponent> = {
   title: 'LisboaRent/LandlordAnalytics/OccupancyChart',
   component: OccupancyChartComponent,
-  decorators: [
-    applicationConfig({
-      providers: [provideAnimations()],
-    }),
-  ],
   parameters: {
     layout: 'padded',
     docs: {

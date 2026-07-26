@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { ReviewCardComponent, PropertyReview } from '@israel-ui/core';
 
 const REVIEW_VERIFIED_WITH_REPLY: PropertyReview = {
@@ -44,11 +42,6 @@ const REVIEW_LOW_RATING_WITH_REPLY: PropertyReview = {
 const meta: Meta<ReviewCardComponent> = {
   title: 'LisboaRent/ReviewCard',
   component: ReviewCardComponent,
-  decorators: [
-    applicationConfig({
-      providers: [provideAnimations()],
-    }),
-  ],
   parameters: {
     layout: 'padded',
     docs: {

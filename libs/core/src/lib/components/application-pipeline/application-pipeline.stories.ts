@@ -2,16 +2,11 @@
  * @fileoverview Storybook stories for ApplicationKanbanComponent — Sprint 036
  */
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { ApplicationKanbanComponent } from './application-kanban.component';
 
 const meta: Meta<ApplicationKanbanComponent> = {
   title: 'Application/ApplicationKanban',
   component: ApplicationKanbanComponent,
-  decorators: [
-    applicationConfig({ providers: [provideAnimations()] }),
-  ],
   tags: ['autodocs'],
   argTypes: {
     landlordId: { control: 'text' },

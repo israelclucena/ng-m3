@@ -2,16 +2,11 @@
  * @fileoverview Storybook stories for NotificationCenterComponent — Sprint 036
  */
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { NotificationCenterComponent } from './notification-center.component';
 
 const meta: Meta<NotificationCenterComponent> = {
   title: 'Notifications/NotificationCenter',
   component: NotificationCenterComponent,
-  decorators: [
-    applicationConfig({ providers: [provideAnimations()] }),
-  ],
   tags: ['autodocs'],
 };
 

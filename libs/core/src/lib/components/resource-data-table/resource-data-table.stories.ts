@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { signal } from '@angular/core';
 import { ResourceDataTableComponent, ResourceRef } from './resource-data-table.component';
 import { DataTableV2Column } from '../data-table-v2/data-table-v2.component';
@@ -63,11 +61,6 @@ function makeErrorResource<T>(message: string): ResourceRef<T> {
 const meta: Meta<ResourceDataTableComponent<Property>> = {
   title: 'Sprint 009/ResourceDataTable',
   component: ResourceDataTableComponent,
-  decorators: [
-    applicationConfig({
-      providers: [provideAnimations()],
-    }),
-  ],
   parameters: {
     layout: 'fullscreen',
     docs: {

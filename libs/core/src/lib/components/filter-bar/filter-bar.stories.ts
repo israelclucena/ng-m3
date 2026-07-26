@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { FilterBarComponent, FilterConfig } from './filter-bar.component';
 
 // ─── Filter configs ───────────────────────────────────────────────────────────
@@ -82,11 +80,6 @@ const dateRangeFilters: FilterConfig[] = [
 const meta: Meta<FilterBarComponent> = {
   title: 'Sprint 009/FilterBar',
   component: FilterBarComponent,
-  decorators: [
-    applicationConfig({
-      providers: [provideAnimations()],
-    }),
-  ],
   parameters: {
     layout: 'fullscreen',
     docs: {

@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PaymentSummaryCardComponent } from './payment-summary-card.component';
@@ -55,9 +53,6 @@ const mockFailed: BookingConfirmationData = {
 
 const meta: Meta = {
   title: 'LisboaRent/PaymentFlow',
-  decorators: [
-    applicationConfig({ providers: [provideAnimations()] }),
-  ],
   parameters: {
     layout: 'padded',
     docs: {

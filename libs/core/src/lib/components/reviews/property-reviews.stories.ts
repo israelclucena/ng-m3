@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { PropertyReviewsComponent, PropertyReview, RatingDisplayComponent } from '@israel-ui/core';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -61,11 +59,6 @@ const MOCK_REVIEWS: PropertyReview[] = [
 const meta: Meta<PropertyReviewsComponent> = {
   title: 'LisboaRent/PropertyReviews',
   component: PropertyReviewsComponent,
-  decorators: [
-    applicationConfig({
-      providers: [provideAnimations()],
-    }),
-  ],
   parameters: {
     layout: 'padded',
     docs: {

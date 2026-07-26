@@ -1,16 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { GlobalSearchComponent } from '@israel-ui/core';
 
 const meta: Meta<GlobalSearchComponent> = {
   title: 'LisboaRent/GlobalSearch',
   component: GlobalSearchComponent,
-  decorators: [
-    applicationConfig({
-      providers: [provideAnimations()],
-    }),
-  ],
   parameters: {
     layout: 'padded',
     docs: {

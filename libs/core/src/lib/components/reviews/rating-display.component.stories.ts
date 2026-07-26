@@ -1,16 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { RatingDisplayComponent } from '@israel-ui/core';
 
 const meta: Meta<RatingDisplayComponent> = {
   title: 'LisboaRent/RatingDisplay',
   component: RatingDisplayComponent,
-  decorators: [
-    applicationConfig({
-      providers: [provideAnimations()],
-    }),
-  ],
   parameters: {
     layout: 'padded',
     docs: {

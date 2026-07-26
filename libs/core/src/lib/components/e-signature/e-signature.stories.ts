@@ -8,8 +8,6 @@
  *   - LeaseSigningFlowTenant — full flow (tenant role)
  */
 import type { Meta, StoryObj } from '@storybook/angular';
-import { applicationConfig } from '@storybook/angular';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { SignaturePadComponent } from './signature-pad.component';
 import { LeaseSigningFlowComponent } from './lease-signing-flow.component';
 
@@ -18,9 +16,6 @@ import { LeaseSigningFlowComponent } from './lease-signing-flow.component';
 const padMeta: Meta<SignaturePadComponent> = {
   title: 'E-Signature/SignaturePad',
   component: SignaturePadComponent,
-  decorators: [
-    applicationConfig({ providers: [provideAnimations()] }),
-  ],
   tags: ['autodocs'],
   argTypes: {
     label: { control: 'text' },
@@ -64,9 +59,6 @@ export const TenantPad: PadStory = {
 const flowMeta: Meta<LeaseSigningFlowComponent> = {
   title: 'E-Signature/LeaseSigningFlow',
   component: LeaseSigningFlowComponent,
-  decorators: [
-    applicationConfig({ providers: [provideAnimations()] }),
-  ],
   tags: ['autodocs'],
   argTypes: {
     currentRole: { control: 'radio', options: ['landlord', 'tenant'] },
