@@ -1,7 +1,7 @@
 /**
- * Express server for Angular SSR — Sprint 023
+ * Express server for Angular SSR — Sprint 023 (modernized)
  *
- * Serves the Angular Universal app with SSR.
+ * Serves the Angular app with zoneless SSR via AngularNodeAppEngine.
  * Static assets are served directly; all other requests go through
  * the Angular app engine for server-side rendering.
  *
@@ -14,52 +14,51 @@
  * @see app.config.server.ts — Angular server-side providers
  * @see app.routes.server.ts — per-route render mode config
  */
-import 'zone.js/node';
-import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr/node';
+import {
+  AngularNodeAppEngine,
+  createNodeRequestHandler,
+  isMainModule,
+  writeResponseToNodeResponse,
+} from '@angular/ssr/node';
 import express from 'express';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname, join, resolve } from 'node:path';
-import bootstrap from './src/main.server';
 
 // ── Paths ─────────────────────────────────────────────────────────────────
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
-const indexHtml = join(serverDistFolder, 'index.server.html');
 
 // ── Express app ───────────────────────────────────────────────────────────
 const app = express();
-const PORT = process.env['PORT'] || 4000;
-
-const commonEngine = new CommonEngine();
+const angularApp = new AngularNodeAppEngine();
 
 // ── Static assets ─────────────────────────────────────────────────────────
-app.get(
-  '**',
+app.use(
   express.static(browserDistFolder, {
     maxAge: '1y',
     index: false,
     redirect: false,
-  })
+  }),
 );
 
 // ── All routes → Angular SSR ───────────────────────────────────────────────
-app.get('**', (req, res, next) => {
-  const { protocol, originalUrl, baseUrl, headers } = req;
-
-  commonEngine
-    .render({
-      bootstrap,
-      documentFilePath: indexHtml,
-      url: `${protocol}://${headers.host}${originalUrl}`,
-      publicPath: browserDistFolder,
-      providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-    })
-    .then(html => res.send(html))
-    .catch(err => next(err));
+// express 5 / path-to-regexp 8: use '/{*splat}' — bare '**' throws PathError.
+app.use('/{*splat}', (req, res, next) => {
+  angularApp
+    .handle(req)
+    .then((response) =>
+      response ? writeResponseToNodeResponse(response, res) : next(),
+    )
+    .catch(next);
 });
 
 // ── Start ──────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`[SSR] Node Express server listening on http://localhost:${PORT}`);
-});
+if (isMainModule(import.meta.url) || process.env['pm_id']) {
+  const port = process.env['PORT'] || 4000;
+  app.listen(port, () => {
+    console.log(`[SSR] Node Express server listening on http://localhost:${port}`);
+  });
+}
+
+// Request handler used by the Angular CLI (dev-server / build) or PM2.
+export const reqHandler = createNodeRequestHandler(app);

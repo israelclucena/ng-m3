@@ -90,8 +90,10 @@
         "outputPath": "dist/apps/dashboard",
         "browser": "apps/dashboard/src/main.ts",
         "server": "apps/dashboard/src/main.server.ts",
-        "ssrEntry": "apps/dashboard/server.ts",
-        "prerender": true,
+        "ssr": {
+          "entry": "apps/dashboard/server.ts"
+        },
+        "outputMode": "server",
         "tsConfig": "apps/dashboard/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [

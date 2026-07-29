@@ -78,16 +78,25 @@ export const appRoutes: Routes = [
   // The remote is not deployed alongside the shell; if it is not running on
   // :4201, fall back to a self-documenting placeholder. See
   // remote-properties/README.md for setup.
+  //
+  // SSR-safety: this route is RenderMode.Client (the remote entry is a
+  // cross-origin browser-only micro-frontend, and native-federation is only
+  // initialized in the browser via main.ts). On the server — including the
+  // build-time route-extraction pass of `outputMode: server` — attempting
+  // `loadRemoteModule` would hang on a network fetch to the (uninitialized)
+  // remote. Short-circuit to the local fallback when there is no browser
+  // window so extraction stays deterministic and offline.
   {
     path: 'properties',
     loadChildren: () =>
-      loadRemoteModule('remoteProperties', './Routes')
-        .then(m => m.appRoutes)
-        .catch(() =>
-          import('./pages/federation-fallback.component').then(m => [
-            { path: '**', component: m.FederationFallbackComponent },
-          ]),
-        ),
+      (typeof window === 'undefined'
+        ? Promise.reject(new Error('federation-remote-is-browser-only'))
+        : loadRemoteModule('remoteProperties', './Routes').then(m => m.appRoutes)
+      ).catch(() =>
+        import('./pages/federation-fallback.component').then(m => [
+          { path: '**', component: m.FederationFallbackComponent },
+        ]),
+      ),
   },
 
   // ── Error pages (Sprint 023 — ERROR_PAGES flag) ───────────────────────────

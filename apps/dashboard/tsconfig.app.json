@@ -8,6 +8,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "server.ts",
     "../../libs/core/src/index.ts"
   ],
   "exclude": [
