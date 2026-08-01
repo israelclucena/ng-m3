@@ -74,7 +74,7 @@ describe('LeaseAgreementFormComponent', () => {
   it('does not submit an invalid form', () => {
     let emitted = 0;
     component.submitted.subscribe(() => emitted++);
-    component.onSubmit({ preventDefault() {} } as unknown as Event);
+    component.onSubmit({ preventDefault() { /* noop */ } } as unknown as Event);
     expect(component.saving()).toBe(false);
     expect(emitted).toBe(0);
   });
@@ -88,7 +88,7 @@ describe('LeaseAgreementFormComponent', () => {
       let created: LeaseAgreement | undefined;
       component.submitted.subscribe((l) => (created = l));
 
-      component.onSubmit({ preventDefault() {} } as unknown as Event);
+      component.onSubmit({ preventDefault() { /* noop */ } } as unknown as Event);
       expect(component.saving()).toBe(true);
 
       jest.advanceTimersByTime(500);

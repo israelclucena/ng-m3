@@ -14,8 +14,8 @@ describe('DocumentUploadComponent', () => {
   /** Simulate a drop with the given files. */
   function drop(files: File[]): void {
     const ev = {
-      preventDefault() {},
-      stopPropagation() {},
+      preventDefault() { /* noop */ },
+      stopPropagation() { /* noop */ },
       dataTransfer: { files },
     } as unknown as DragEvent;
     component.onDrop(ev);
@@ -143,7 +143,7 @@ describe('DocumentUploadComponent', () => {
   // ── drag state + limit guards ─────────────────────────────────────────────────
 
   it('onDragOver sets dragging, onDragLeave clears it', () => {
-    const ev = { preventDefault() {}, stopPropagation() {} } as unknown as DragEvent;
+    const ev = { preventDefault() { /* noop */ }, stopPropagation() { /* noop */ } } as unknown as DragEvent;
     component.onDragOver(ev);
     expect(component.dragging()).toBe(true);
     component.onDragLeave();
@@ -156,7 +156,7 @@ describe('DocumentUploadComponent', () => {
     drop([makeFile('a.pdf', 'application/pdf', 10)]);
     expect(component.isAtLimit()).toBe(true);
 
-    const over = { preventDefault() {}, stopPropagation() {} } as unknown as DragEvent;
+    const over = { preventDefault() { /* noop */ }, stopPropagation() { /* noop */ } } as unknown as DragEvent;
     component.onDragOver(over);
     expect(component.dragging()).toBe(false);
 

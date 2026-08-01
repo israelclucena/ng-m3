@@ -156,21 +156,21 @@ describe('FilterBarComponent', () => {
 
   it('should not add duplicate tags', () => {
     setup();
-    component.onTagEnter('labels', { target: { value: 'porto' }, preventDefault: () => {} } as unknown as Event);
-    component.onTagEnter('labels', { target: { value: 'porto' }, preventDefault: () => {} } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'porto' }, preventDefault: () => { /* noop */ } } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'porto' }, preventDefault: () => { /* noop */ } } as unknown as Event);
     expect(component.getTagsValue('labels')).toEqual(['porto']);
   });
 
   it('should not add empty/whitespace tags', () => {
     setup();
-    component.onTagEnter('labels', { target: { value: '   ' }, preventDefault: () => {} } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: '   ' }, preventDefault: () => { /* noop */ } } as unknown as Event);
     expect(component.getTagsValue('labels')).toEqual([]);
   });
 
   it('should remove a tag via removeTag', () => {
     setup();
-    component.onTagEnter('labels', { target: { value: 'a' }, preventDefault: () => {} } as unknown as Event);
-    component.onTagEnter('labels', { target: { value: 'b' }, preventDefault: () => {} } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'a' }, preventDefault: () => { /* noop */ } } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'b' }, preventDefault: () => { /* noop */ } } as unknown as Event);
     component.removeTag('labels', 'a');
     expect(component.getTagsValue('labels')).toEqual(['b']);
   });
@@ -178,7 +178,7 @@ describe('FilterBarComponent', () => {
   it('should report tags as full once maxTags reached and hide the input', () => {
     setup();
     for (const t of ['a', 'b', 'c']) {
-      component.onTagEnter('labels', { target: { value: t }, preventDefault: () => {} } as unknown as Event);
+      component.onTagEnter('labels', { target: { value: t }, preventDefault: () => { /* noop */ } } as unknown as Event);
     }
     fixture.detectChanges();
     expect(component.isTagsFull('labels', 3)).toBe(true);
@@ -187,15 +187,15 @@ describe('FilterBarComponent', () => {
 
   it('should remove the last tag on backspace when the input is empty', () => {
     setup();
-    component.onTagEnter('labels', { target: { value: 'x' }, preventDefault: () => {} } as unknown as Event);
-    component.onTagEnter('labels', { target: { value: 'y' }, preventDefault: () => {} } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'x' }, preventDefault: () => { /* noop */ } } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'y' }, preventDefault: () => { /* noop */ } } as unknown as Event);
     component.onTagBackspace('labels', { target: { value: '' } } as unknown as Event);
     expect(component.getTagsValue('labels')).toEqual(['x']);
   });
 
   it('should not remove a tag on backspace when the input still has text', () => {
     setup();
-    component.onTagEnter('labels', { target: { value: 'keep' }, preventDefault: () => {} } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'keep' }, preventDefault: () => { /* noop */ } } as unknown as Event);
     component.onTagBackspace('labels', { target: { value: 'typ' } } as unknown as Event);
     expect(component.getTagsValue('labels')).toEqual(['keep']);
   });
@@ -220,7 +220,7 @@ describe('FilterBarComponent', () => {
 
   it('should reset a tags field to empty array via clearField', () => {
     setup();
-    component.onTagEnter('labels', { target: { value: 'z' }, preventDefault: () => {} } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'z' }, preventDefault: () => { /* noop */ } } as unknown as Event);
     component.clearField('labels');
     expect(component.getTagsValue('labels')).toEqual([]);
   });
@@ -235,7 +235,7 @@ describe('FilterBarComponent', () => {
     let emitted: FilterValues | undefined;
     selectEl().value = 'active';
     selectEl().dispatchEvent(new Event('change'));
-    component.onTagEnter('labels', { target: { value: 'q' }, preventDefault: () => {} } as unknown as Event);
+    component.onTagEnter('labels', { target: { value: 'q' }, preventDefault: () => { /* noop */ } } as unknown as Event);
 
     component.filtersChange.subscribe(v => (emitted = v));
     component.clearAll();

@@ -34,26 +34,26 @@ describe('KeyboardShortcutService', () => {
   });
 
   it('register() adds a shortcut', () => {
-    service.register({ id: 'a', keys: 'ctrl+k', description: 'Search', handler: () => {} });
+    service.register({ id: 'a', keys: 'ctrl+k', description: 'Search', handler: () => { /* noop */ } });
     expect(service.shortcuts().length).toBe(1);
   });
 
   it('register() with an existing id replaces the previous binding', () => {
-    service.register({ id: 'a', keys: 'ctrl+k', description: 'First', handler: () => {} });
-    service.register({ id: 'a', keys: 'ctrl+j', description: 'Second', handler: () => {} });
+    service.register({ id: 'a', keys: 'ctrl+k', description: 'First', handler: () => { /* noop */ } });
+    service.register({ id: 'a', keys: 'ctrl+j', description: 'Second', handler: () => { /* noop */ } });
     expect(service.shortcuts().length).toBe(1);
     expect(service.shortcuts()[0].description).toBe('Second');
   });
 
   it('unregister() removes a shortcut by id', () => {
-    service.register({ id: 'a', keys: 'ctrl+k', description: 'Search', handler: () => {} });
+    service.register({ id: 'a', keys: 'ctrl+k', description: 'Search', handler: () => { /* noop */ } });
     service.unregister('a');
     expect(service.shortcuts().length).toBe(0);
   });
 
   it('shortcutsByCategory() groups bindings, defaulting to "General"', () => {
-    service.register({ id: 'a', keys: 'ctrl+k', description: 'Search', category: 'Nav', handler: () => {} });
-    service.register({ id: 'b', keys: 'ctrl+j', description: 'Jump', handler: () => {} });
+    service.register({ id: 'a', keys: 'ctrl+k', description: 'Search', category: 'Nav', handler: () => { /* noop */ } });
+    service.register({ id: 'b', keys: 'ctrl+j', description: 'Jump', handler: () => { /* noop */ } });
     const map = service.shortcutsByCategory();
     expect(map.get('Nav')?.length).toBe(1);
     expect(map.get('General')?.length).toBe(1);

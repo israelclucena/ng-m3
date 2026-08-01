@@ -136,7 +136,7 @@ describe('InsuranceTrackerComponent', () => {
       endDate: '2027-01-01',
       premium: 150,
     });
-    component['submit']({ preventDefault() {} } as unknown as Event);
+    component['submit']({ preventDefault() { /* noop */ } } as unknown as Event);
 
     expect(service.policies().some((p) => p.policyNumber === 'POL-NEW')).toBe(true);
     expect(component['formOpen']()).toBe(false);
@@ -144,7 +144,7 @@ describe('InsuranceTrackerComponent', () => {
 
   it('submit is a no-op when the draft is invalid', () => {
     component['openForm']();
-    component['submit']({ preventDefault() {} } as unknown as Event);
+    component['submit']({ preventDefault() { /* noop */ } } as unknown as Event);
     expect(service.policies().length).toBe(0);
   });
 
