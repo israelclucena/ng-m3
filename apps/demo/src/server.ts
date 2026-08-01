@@ -11,8 +11,22 @@ import { fileURLToPath } from 'node:url';
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 
+// Angular's SSR engine returns HTTP 400 for any host header not in this set
+// (SSRF protection). Loopback is always allowed so local/PM2 health checks
+// render; production hosts are supplied at deploy time via NG_ALLOWED_HOSTS
+// (comma-separated, supports `*.suffix` wildcards). No `*` default — the
+// allow-list stays explicit.
+function resolveAllowedHosts(): string[] {
+  const loopback = ['localhost', '127.0.0.1', '[::1]'];
+  const fromEnv = (process.env['NG_ALLOWED_HOSTS'] ?? '')
+    .split(',')
+    .map((h) => h.trim())
+    .filter(Boolean);
+  return [...new Set([...loopback, ...fromEnv])];
+}
+
 const app = express();
-const angularApp = new AngularNodeAppEngine();
+const angularApp = new AngularNodeAppEngine({ allowedHosts: resolveAllowedHosts() });
 
 /**
  * Example Express Rest API endpoints can be defined here.
