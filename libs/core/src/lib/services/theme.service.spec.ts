@@ -177,4 +177,53 @@ describe('ThemeService', () => {
     mq._trigger(false);
     expect(service.isDark()).toBe(false);
   });
+
+  describe('M3 Expressive variant', () => {
+    it('defaults to disabled with no expressive class or vars on :root', () => {
+      const service = createService();
+      expect(service.expressive()).toBe(false);
+      const root = document.documentElement;
+      expect(root.classList.contains('expressive-theme')).toBe(false);
+      expect(root.style.getPropertyValue('--md-sys-shape-corner-large')).toBe('');
+    });
+
+    it('setExpressive(true) applies the expressive class and shape/motion vars', () => {
+      const service = createService();
+      service.setExpressive(true);
+      TestBed.tick();
+      const root = document.documentElement;
+      expect(service.expressive()).toBe(true);
+      expect(root.classList.contains('expressive-theme')).toBe(true);
+      expect(root.style.getPropertyValue('--md-sys-shape-corner-large')).toBe('20px');
+      expect(root.style.getPropertyValue('--md-sys-shape-corner-extra-large')).toBe('32px');
+      expect(root.style.getPropertyValue('--md-sys-motion-easing-emphasized')).toContain('cubic-bezier');
+    });
+
+    it('disabling expressive removes the class and clears the vars', () => {
+      const service = createService();
+      service.setExpressive(true);
+      TestBed.tick();
+      service.setExpressive(false);
+      TestBed.tick();
+      const root = document.documentElement;
+      expect(root.classList.contains('expressive-theme')).toBe(false);
+      expect(root.style.getPropertyValue('--md-sys-shape-corner-large')).toBe('');
+    });
+
+    it('toggleExpressive flips and persists the flag', () => {
+      const service = createService();
+      service.toggleExpressive();
+      expect(service.expressive()).toBe(true);
+      expect(storage['m3-expressive']).toBe('true');
+      service.toggleExpressive();
+      expect(service.expressive()).toBe(false);
+      expect(storage['m3-expressive']).toBe('false');
+    });
+
+    it('loads persisted expressive flag on construction', () => {
+      storage['m3-expressive'] = 'true';
+      const service = createService();
+      expect(service.expressive()).toBe(true);
+    });
+  });
 });

@@ -58,6 +58,10 @@ export * from './lib/components/nav-drawer/nav-drawer.component';
 
 // Tokens
 export * from './lib/tokens/theme.tokens';
+export * from './lib/tokens/expressive.tokens';
+
+// M3 Expressive — flag-gated variant demo (Sprint 055)
+export * from './lib/components/expressive-showcase/expressive-showcase.component';
 
 // Sprint 003 — Card Variants
 export * from './lib/components/card-variants/stat-card.component';

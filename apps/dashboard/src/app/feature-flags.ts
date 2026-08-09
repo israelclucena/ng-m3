@@ -235,4 +235,7 @@ export const FeatureFlags = {
   DASHBOARD_ANNUAL_BURDEN_WIDGET: true,        // AnnualTaxBurdenWidgetComponent — dashboard wrapper around AnnualPropertyTaxBurdenComponent (Sprint 053) with router navigation to /features#annual-tax-burden
   DASHBOARD_INSURANCE_TRACKER_WIDGET: true,    // InsuranceTrackerWidgetComponent — dashboard wrapper around InsuranceTrackerComponent (Sprint 043) with router navigation to /features#insurance-tracker; surfaces 3 buckets (active/expiring/expired) at-a-glance
   INSURANCE_TRACKER_CATALOG_WIRING: true,      // features-page section #insurance-tracker rendering <iu-insurance-tracker> (Sprint 043 standalone) — fecha o ponto de entrada faltante para a UI flag INSURANCE_TRACKER_UI desde Sprint 043
+
+  // Sprint 055 — Night Shift 2026-08-09 (M3 Expressive — variant prototype, RATIFICATION-GATED)
+  M3_EXPRESSIVE_THEME: false,  // EXPRESSIVE_TOKENS (shape/spring-motion/vibrant palettes) + ThemeService.setExpressive + ExpressiveShowcaseComponent. Additive + fully opt-in — the variant applies no CSS unless explicitly enabled. Kept OFF pending Israel's visual ratification (feedback_ui_bonita_sempre / feedback_ui_taste_grounding).
 } as const;
