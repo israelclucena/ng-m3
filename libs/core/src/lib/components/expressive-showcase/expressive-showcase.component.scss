@@ -135,9 +135,160 @@
       transform: translateY(0) scale(0.97);
     }
   }
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__btn {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    will-change: transform, border-radius;
+
+    // Expressive signature: shape morphs toward the pill on hover.
+    &:hover,
+    &:focus-visible {
+      border-radius: 22px;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+
+    &--filled {
+      color: #fff;
+      background: linear-gradient(135deg, var(--iu-exp-primary), var(--iu-exp-tertiary));
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--iu-exp-primary) 30%, transparent);
+    }
+
+    &--tonal {
+      color: var(--iu-exp-primary);
+      background: color-mix(in srgb, var(--iu-exp-primary) 16%, transparent);
+    }
+
+    &--outlined {
+      color: var(--iu-exp-primary);
+      background: transparent;
+      box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--iu-exp-primary) 55%, transparent);
+    }
+
+    &--text {
+      color: var(--iu-exp-primary);
+      background: transparent;
+      padding-inline: 12px;
+    }
+  }
+
+  &__fab {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 18px;
+    color: #fff;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--iu-exp-secondary), var(--iu-exp-primary));
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--iu-exp-secondary) 32%, transparent);
+    will-change: border-radius, transform;
+
+    &:hover,
+    &:focus-visible {
+      border-radius: 28px;
+      transform: rotate(90deg) scale(1.05);
+    }
+  }
+
+  &__fab-plus {
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+    border-radius: 20px;
+    background: var(--md-sys-color-surface-container, #f3edf7);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    will-change: transform, box-shadow, border-radius;
+
+    &:hover,
+    &:focus-within {
+      transform: translateY(-4px);
+      border-radius: 28px;
+      box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.1),
+        0 12px 28px color-mix(in srgb, var(--iu-exp-primary) 22%, transparent);
+    }
+  }
+
+  &__card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--iu-exp-primary);
+  }
+
+  &__card-body {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    opacity: 0.75;
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__chip {
+    padding: 8px 16px;
+    border-radius: 9999px;
+    border: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+    background: transparent;
+    color: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    will-change: transform;
+
+    &:hover,
+    &:focus-visible {
+      transform: scale(1.06);
+      border-color: var(--iu-exp-primary);
+      background: color-mix(in srgb, var(--iu-exp-primary) 12%, transparent);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
 }
 
 .dark-theme .iu-expressive {
   background: var(--md-sys-color-surface, #1c1b1f);
   color: var(--md-sys-color-on-surface, #e6e1e5);
+
+  .iu-expressive__card {
+    background: var(--md-sys-color-surface-container, #2b2930);
+  }
 }

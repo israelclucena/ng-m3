@@ -50,4 +50,27 @@ describe('ExpressiveShowcaseComponent', () => {
   it('exposes a spring-derived CSS transition', () => {
     expect(component.hoverTransition()).toMatch(/^all \d+ms cubic-bezier\(/);
   });
+
+  it('renders one button per demo variant plus a FAB', () => {
+    const buttons = fixture.nativeElement.querySelectorAll('.iu-expressive__btn');
+    expect(buttons.length).toBe(component.buttons().length);
+    expect(fixture.nativeElement.querySelectorAll('.iu-expressive__fab').length).toBe(1);
+  });
+
+  it('renders every demo card and chip', () => {
+    const cards = fixture.nativeElement.querySelectorAll('.iu-expressive__card');
+    const chips = fixture.nativeElement.querySelectorAll('.iu-expressive__chip');
+    expect(cards.length).toBe(component.cards().length);
+    expect(chips.length).toBe(component.chips().length);
+  });
+
+  it('exposes distinct spring transitions per surface (property + duration)', () => {
+    expect(component.pressTransition()).toMatch(/^transform \d+ms cubic-bezier\(/);
+    expect(component.shapeTransition()).toMatch(/^border-radius \d+ms cubic-bezier\(/);
+    expect(component.liftTransition()).toMatch(/^all \d+ms cubic-bezier\(/);
+    // Faster spring (press) resolves to a shorter duration than the slow lift.
+    const pressMs = Number(component.pressTransition().match(/(\d+)ms/)?.[1]);
+    const liftMs = Number(component.liftTransition().match(/(\d+)ms/)?.[1]);
+    expect(pressMs).toBeLessThan(liftMs);
+  });
 });

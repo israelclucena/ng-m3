@@ -25,6 +25,18 @@ interface PaletteEntry extends ExpressivePalette {
   readonly key: string;
 }
 
+/** An Expressive button style demonstrated in the surfaces block. */
+interface DemoButton {
+  readonly label: string;
+  readonly variant: 'filled' | 'tonal' | 'outlined' | 'text';
+}
+
+/** An Expressive elevated card demonstrated in the surfaces block. */
+interface DemoCard {
+  readonly title: string;
+  readonly body: string;
+}
+
 /**
  * ExpressiveShowcase — a flag-gated demo of the M3 Expressive token set.
  *
@@ -87,6 +99,50 @@ interface PaletteEntry extends ExpressivePalette {
           Hover / focus me
         </button>
       </div>
+
+      <div class="iu-expressive__block">
+        <span class="iu-expressive__label">Buttons</span>
+        <div class="iu-expressive__buttons">
+          @for (b of buttons(); track b.label) {
+            <button type="button"
+                    class="iu-expressive__btn"
+                    [class.iu-expressive__btn--filled]="b.variant === 'filled'"
+                    [class.iu-expressive__btn--tonal]="b.variant === 'tonal'"
+                    [class.iu-expressive__btn--outlined]="b.variant === 'outlined'"
+                    [class.iu-expressive__btn--text]="b.variant === 'text'"
+                    [style.transition]="pressTransition()">
+              {{ b.label }}
+            </button>
+          }
+          <button type="button" class="iu-expressive__fab"
+                  [style.transition]="shapeTransition()" aria-label="Create">
+            <span class="iu-expressive__fab-plus">+</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="iu-expressive__block">
+        <span class="iu-expressive__label">Cards</span>
+        <div class="iu-expressive__cards">
+          @for (c of cards(); track c.title) {
+            <article class="iu-expressive__card" [style.transition]="liftTransition()">
+              <h4 class="iu-expressive__card-title">{{ c.title }}</h4>
+              <p class="iu-expressive__card-body">{{ c.body }}</p>
+            </article>
+          }
+        </div>
+      </div>
+
+      <div class="iu-expressive__block">
+        <span class="iu-expressive__label">Chips</span>
+        <div class="iu-expressive__chips">
+          @for (chip of chips(); track chip) {
+            <button type="button" class="iu-expressive__chip" [style.transition]="pressTransition()">
+              {{ chip }}
+            </button>
+          }
+        </div>
+      </div>
     </section>
   `,
   styleUrl: './expressive-showcase.component.scss',
@@ -123,4 +179,36 @@ export class ExpressiveShowcaseComponent {
   readonly hoverTransition = computed(() =>
     springToTransition(EXPRESSIVE_SPRING.spatialDefault, 'all'),
   );
+
+  /** Snappy transform spring for press/hover feedback on buttons & chips */
+  readonly pressTransition = computed(() =>
+    springToTransition(EXPRESSIVE_SPRING.spatialFast, 'transform'),
+  );
+
+  /** Shape-morph spring — the Expressive signature (radius grows on hover) */
+  readonly shapeTransition = computed(() =>
+    springToTransition(EXPRESSIVE_SPRING.spatialDefault, 'border-radius'),
+  );
+
+  /** Soft, slow lift spring for card elevation */
+  readonly liftTransition = computed(() =>
+    springToTransition(EXPRESSIVE_SPRING.spatialSlow, 'all'),
+  );
+
+  /** Button variants demonstrated with Expressive shape-morph + press motion */
+  readonly buttons = computed<DemoButton[]>(() => [
+    { label: 'Filled', variant: 'filled' },
+    { label: 'Tonal', variant: 'tonal' },
+    { label: 'Outlined', variant: 'outlined' },
+    { label: 'Text', variant: 'text' },
+  ]);
+
+  /** Elevated cards demonstrated with the soft lift spring */
+  readonly cards = computed<DemoCard[]>(() => [
+    { title: 'Shape', body: 'Contrasting corner radii give each surface its own silhouette.' },
+    { title: 'Motion', body: 'Physical springs make interactions feel alive, not linear.' },
+  ]);
+
+  /** Filter chips demonstrated with the snappy press spring */
+  readonly chips = computed<string[]>(() => ['Vibrant', 'Spring', 'Emphasis', 'Shape']);
 }
