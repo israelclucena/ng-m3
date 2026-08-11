@@ -11,8 +11,12 @@ import {
   EXPRESSIVE_SHAPE,
   EXPRESSIVE_SPRING,
   springToTransition,
+  standardTransition,
   type ExpressivePalette,
 } from '../../tokens/expressive.tokens';
+
+/** Rendering mode: the vibrant Expressive treatment, or the tame baseline M3 for A/B comparison. */
+export type ExpressiveMode = 'expressive' | 'baseline';
 
 /** A single labelled shape-scale swatch. */
 interface ShapeSwatch {
@@ -57,12 +61,14 @@ interface DemoCard {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <section class="iu-expressive" [style.--iu-exp-primary]="palette().primary"
+    <section class="iu-expressive"
+             [class.iu-expressive--baseline]="isBaseline()"
+             [style.--iu-exp-primary]="palette().primary"
              [style.--iu-exp-secondary]="palette().secondary"
              [style.--iu-exp-tertiary]="palette().tertiary">
       <header class="iu-expressive__header">
-        <h3 class="iu-expressive__title">Material 3 Expressive</h3>
-        <p class="iu-expressive__subtitle">Shape · Color · Motion — preview antes de ativar</p>
+        <h3 class="iu-expressive__title">{{ headerTitle() }}</h3>
+        <p class="iu-expressive__subtitle">{{ headerSubtitle() }}</p>
       </header>
 
       <div class="iu-expressive__block">
@@ -153,13 +159,35 @@ export class ExpressiveShowcaseComponent {
   /** Which vibrant palette to highlight as active */
   paletteKey = input<string>('vibrant');
 
+  /**
+   * Rendering mode. `expressive` (default) applies the full vibrant treatment;
+   * `baseline` renders the same surfaces with tame standard M3 shape/motion so
+   * the two can sit side-by-side for A/B ratification.
+   */
+  mode = input<ExpressiveMode>('expressive');
+
+  /** True when rendering the tame baseline M3 treatment. */
+  readonly isBaseline = computed(() => this.mode() === 'baseline');
+
   /** The active palette (falls back to `vibrant`) */
   readonly palette = computed<ExpressivePalette>(
     () => EXPRESSIVE_PALETTES[this.paletteKey()] ?? EXPRESSIVE_PALETTES['vibrant'],
   );
 
-  /** Ordered shape-scale swatches for display */
-  readonly shapes = computed<ShapeSwatch[]>(() => [
+  /** Header title reflecting the current mode */
+  readonly headerTitle = computed(() =>
+    this.isBaseline() ? 'Baseline M3' : 'Material 3 Expressive',
+  );
+
+  /** Header subtitle reflecting the current mode */
+  readonly headerSubtitle = computed(() =>
+    this.isBaseline()
+      ? 'Shape · Color · Motion — versão atual (sem Expressive)'
+      : 'Shape · Color · Motion — preview antes de ativar',
+  );
+
+  /** Dramatic, high-contrast Expressive shape scale */
+  private readonly expressiveShapes: readonly ShapeSwatch[] = [
     { label: 'Extra small', radius: EXPRESSIVE_SHAPE.extraSmall },
     { label: 'Small', radius: EXPRESSIVE_SHAPE.small },
     { label: 'Medium', radius: EXPRESSIVE_SHAPE.medium },
@@ -168,31 +196,49 @@ export class ExpressiveShowcaseComponent {
     { label: 'Extra large', radius: EXPRESSIVE_SHAPE.extraLarge },
     { label: 'Extra large increased', radius: EXPRESSIVE_SHAPE.extraLargeIncreased },
     { label: 'Extra extra large', radius: EXPRESSIVE_SHAPE.extraExtraLarge },
-  ]);
+  ];
+
+  /** Tame, low-contrast baseline scale — gentle linear ramp, same labels */
+  private readonly baselineShapes: readonly ShapeSwatch[] = this.expressiveShapes.map(
+    (s, i) => ({ label: s.label, radius: 2 + i * 2 }),
+  );
+
+  /** Ordered shape-scale swatches for display (mode-aware) */
+  readonly shapes = computed<readonly ShapeSwatch[]>(() =>
+    this.isBaseline() ? this.baselineShapes : this.expressiveShapes,
+  );
 
   /** All vibrant palettes as an array with keys */
   readonly palettes = computed<PaletteEntry[]>(() =>
     Object.entries(EXPRESSIVE_PALETTES).map(([key, p]) => ({ key, ...p })),
   );
 
-  /** Emphasized spring transition applied to interactive elements */
+  /** Emphasized spring transition applied to interactive elements (tame in baseline) */
   readonly hoverTransition = computed(() =>
-    springToTransition(EXPRESSIVE_SPRING.spatialDefault, 'all'),
+    this.isBaseline()
+      ? standardTransition('all')
+      : springToTransition(EXPRESSIVE_SPRING.spatialDefault, 'all'),
   );
 
-  /** Snappy transform spring for press/hover feedback on buttons & chips */
+  /** Snappy transform spring for press/hover feedback on buttons & chips (tame in baseline) */
   readonly pressTransition = computed(() =>
-    springToTransition(EXPRESSIVE_SPRING.spatialFast, 'transform'),
+    this.isBaseline()
+      ? standardTransition('transform')
+      : springToTransition(EXPRESSIVE_SPRING.spatialFast, 'transform'),
   );
 
-  /** Shape-morph spring — the Expressive signature (radius grows on hover) */
+  /** Shape-morph spring — the Expressive signature; flat in baseline */
   readonly shapeTransition = computed(() =>
-    springToTransition(EXPRESSIVE_SPRING.spatialDefault, 'border-radius'),
+    this.isBaseline()
+      ? standardTransition('border-radius')
+      : springToTransition(EXPRESSIVE_SPRING.spatialDefault, 'border-radius'),
   );
 
-  /** Soft, slow lift spring for card elevation */
+  /** Soft, slow lift spring for card elevation (tame in baseline) */
   readonly liftTransition = computed(() =>
-    springToTransition(EXPRESSIVE_SPRING.spatialSlow, 'all'),
+    this.isBaseline()
+      ? standardTransition('all')
+      : springToTransition(EXPRESSIVE_SPRING.spatialSlow, 'all'),
   );
 
   /** Button variants demonstrated with Expressive shape-morph + press motion */

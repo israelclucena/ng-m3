@@ -73,4 +73,41 @@ describe('ExpressiveShowcaseComponent', () => {
     const liftMs = Number(component.liftTransition().match(/(\d+)ms/)?.[1]);
     expect(pressMs).toBeLessThan(liftMs);
   });
+
+  it('renders in expressive mode by default (no baseline modifier)', () => {
+    expect(component.mode()).toBe('expressive');
+    expect(component.isBaseline()).toBe(false);
+    const section = fixture.nativeElement.querySelector('.iu-expressive');
+    expect(section.classList.contains('iu-expressive--baseline')).toBe(false);
+    expect(component.headerTitle()).toContain('Expressive');
+  });
+
+  describe('baseline mode (A/B counterpart)', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('mode', 'baseline');
+      fixture.detectChanges();
+    });
+
+    it('applies the baseline modifier class', () => {
+      expect(component.isBaseline()).toBe(true);
+      const section = fixture.nativeElement.querySelector('.iu-expressive');
+      expect(section.classList.contains('iu-expressive--baseline')).toBe(true);
+    });
+
+    it('swaps the header copy to signal the current (non-expressive) surface', () => {
+      expect(component.headerTitle()).not.toContain('Expressive');
+    });
+
+    it('uses tame standard transitions instead of springs', () => {
+      expect(component.hoverTransition()).toBe('all 200ms cubic-bezier(0.4, 0, 0.2, 1)');
+      expect(component.shapeTransition()).toBe('border-radius 200ms cubic-bezier(0.4, 0, 0.2, 1)');
+      expect(component.pressTransition()).toBe('transform 200ms cubic-bezier(0.4, 0, 0.2, 1)');
+    });
+
+    it('uses a tamer, lower-contrast shape scale than Expressive', () => {
+      expect(component.shapes().length).toBe(8);
+      const baselineMax = Math.max(...component.shapes().map((s) => s.radius));
+      expect(baselineMax).toBeLessThan(EXPRESSIVE_SHAPE.extraExtraLarge);
+    });
+  });
 });

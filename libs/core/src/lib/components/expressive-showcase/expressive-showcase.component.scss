@@ -284,6 +284,70 @@
   }
 }
 
+// Baseline (non-Expressive) modifier — the tame A/B counterpart. Flat fills,
+// no vibrant gradients, no shape-morph and only subtle motion, so the same
+// surfaces can be compared side-by-side with the Expressive treatment.
+.iu-expressive--baseline {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  .iu-expressive__title {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: var(--md-sys-color-on-surface, #1c1b1f);
+  }
+
+  // Flat, less-saturated fills — no vibrant gradient.
+  .iu-expressive__shape,
+  .iu-expressive__motion,
+  .iu-expressive__fab,
+  .iu-expressive__btn--filled {
+    background: color-mix(in srgb, var(--iu-exp-primary) 78%, #607d8b);
+    box-shadow: none;
+  }
+
+  .iu-expressive__swatch {
+    filter: saturate(0.5);
+  }
+
+  // No Expressive shape-morph or exaggerated motion on hover.
+  .iu-expressive__shape:hover,
+  .iu-expressive__shape:focus-visible {
+    transform: scale(1.04);
+  }
+
+  .iu-expressive__motion:hover,
+  .iu-expressive__motion:focus-visible {
+    transform: translateY(-1px);
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  .iu-expressive__btn:hover,
+  .iu-expressive__btn:focus-visible {
+    border-radius: 12px;
+    transform: none;
+  }
+
+  .iu-expressive__fab:hover,
+  .iu-expressive__fab:focus-visible {
+    border-radius: 18px;
+    transform: none;
+  }
+
+  .iu-expressive__card:hover,
+  .iu-expressive__card:focus-within {
+    transform: translateY(-2px);
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .iu-expressive__chip:hover,
+  .iu-expressive__chip:focus-visible {
+    transform: none;
+  }
+}
+
 .dark-theme .iu-expressive {
   background: var(--md-sys-color-surface, #1c1b1f);
   color: var(--md-sys-color-on-surface, #e6e1e5);

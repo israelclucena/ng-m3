@@ -139,3 +139,19 @@ export function springToTransition(spec: SpringSpec, property = 'all'): string {
   const easing = spec.damping < 1 ? EXPRESSIVE_EASING.emphasizedDecelerate : EXPRESSIVE_EASING.emphasized;
   return `${property} ${duration}ms ${easing}`;
 }
+
+/** Baseline (non-Expressive) M3 standard easing — flat, no spring emphasis. */
+export const BASELINE_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
+/**
+ * Baseline M3 transition — the tame, spring-free counterpart to
+ * {@link springToTransition}. Fixed 200ms with the standard easing curve,
+ * used by the ExpressiveShowcase's A/B `baseline` mode so the same surface can
+ * be compared with and without Expressive motion.
+ *
+ * @param property CSS property to transition (default `all`)
+ * @returns CSS `transition` value, e.g. `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`
+ */
+export function standardTransition(property = 'all'): string {
+  return `${property} 200ms ${BASELINE_EASING}`;
+}
