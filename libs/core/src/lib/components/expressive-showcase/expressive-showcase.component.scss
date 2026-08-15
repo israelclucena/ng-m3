@@ -356,3 +356,35 @@
     background: var(--md-sys-color-surface-container, #2b2930);
   }
 }
+
+// Accessibility: honour prefers-reduced-motion. The spring transitions are
+// applied inline via [style.transition] (springToTransition), so the reset
+// needs !important to win over the element's own style attribute. Hover/focus
+// transforms are neutralised so the surfaces stay legible without motion.
+// Matches the M3 Expressive guidance (and the Mat Expressive lib) that all
+// expressive motion is opt-out under reduced-motion. Additive, flag-gated.
+@media (prefers-reduced-motion: reduce) {
+  .iu-expressive {
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    .iu-expressive__shape:hover,
+    .iu-expressive__shape:focus-visible,
+    .iu-expressive__motion:hover,
+    .iu-expressive__motion:focus-visible,
+    .iu-expressive__btn:hover,
+    .iu-expressive__btn:focus-visible,
+    .iu-expressive__fab:hover,
+    .iu-expressive__fab:focus-visible,
+    .iu-expressive__card:hover,
+    .iu-expressive__card:focus-within,
+    .iu-expressive__chip:hover,
+    .iu-expressive__chip:focus-visible {
+      transform: none;
+    }
+  }
+}
