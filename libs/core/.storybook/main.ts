@@ -25,7 +25,15 @@ const config: StorybookConfig = {
   addons: ['@storybook/addon-a11y'],
   framework: {
     name: '@storybook/angular-vite',
-    options: {},
+    options: {
+      // Compodoc is not installed (hand-rolled DS, never in the lockfile, 0 refs).
+      // The angular-vite preset runs `pnpm exec compodoc` by default, which fails
+      // non-fatally (exit 254, "Command 'compodoc' not found") — ~1.6s of wasted
+      // work plus an ExecaError stack dumped on every `build-storybook`. Since no
+      // component relies on compodoc-derived argTypes, disabling it drops the noise
+      // with zero behavioural change. (Night Shift 2026-08-18)
+      compodoc: false,
+    },
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   features: {
