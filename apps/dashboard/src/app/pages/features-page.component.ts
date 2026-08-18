@@ -195,6 +195,7 @@ import {
   DepositReturnEstimatorComponent,
   EnergyCertificateCheckerComponent,
   CommunicationCenterComponent,
+  SignalFormsPocComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -381,6 +382,8 @@ const SEARCH_DATA: SearchResult[] = [
     DepositReturnEstimatorComponent,
     EnergyCertificateCheckerComponent,
     CommunicationCenterComponent,
+    // Sprint 056 — Signal Forms PoC (Angular 22 GA)
+    SignalFormsPocComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2304,6 +2307,23 @@ const SEARCH_DATA: SearchResult[] = [
             Feature flag: <code>PORTFOLIO_COMPLIANCE_MATRIX</code>.
           </p>
           <iu-portfolio-compliance-matrix />
+        </section>
+      }
+
+      @if (flags.SIGNAL_FORMS_POC) {
+        <section class="feature-section" id="signal-forms-poc">
+          <h2>Signal Forms PoC (Angular 22 GA)</h2>
+          <p class="feature-desc">
+            <strong>SignalFormsPocComponent</strong> — property-inquiry form built with
+            Angular 22's official <code>&#64;angular/forms/signals</code> API
+            (<code>form()</code> + declarative schema), the GA replacement for the repo's
+            bespoke <code>createSignalForm</code> util. Side-by-side additive PoC:
+            <code>[formField]</code> two-way binding, inline
+            <code>required</code>/<code>email</code>/<code>minLength</code>/<code>maxLength</code>
+            validators, touched-aware errors + submit gating. Feature flag:
+            <code>SIGNAL_FORMS_POC</code>.
+          </p>
+          <iu-signal-forms-poc />
         </section>
       }
 

@@ -238,4 +238,7 @@ export const FeatureFlags = {
 
   // Sprint 055 — Night Shift 2026-08-09 (M3 Expressive — variant prototype, RATIFICATION-GATED)
   M3_EXPRESSIVE_THEME: false,  // EXPRESSIVE_TOKENS (shape/spring-motion/vibrant palettes) + ThemeService.setExpressive + ExpressiveShowcaseComponent. Additive + fully opt-in — the variant applies no CSS unless explicitly enabled. Kept OFF pending Israel's visual ratification (feedback_ui_bonita_sempre / feedback_ui_taste_grounding).
+
+  // Sprint 056 — Night Shift 2026-08-18 (Signal Forms PoC — Angular 22 GA)
+  SIGNAL_FORMS_POC: true,  // SignalFormsPocComponent — property-inquiry form built with Angular 22's official @angular/forms/signals API (form() + declarative schema), side-by-side PoC vs the bespoke createSignalForm util. Additive, replaces nothing; de-risks a future bespoke→official migration. Demonstrates [formField] two-way binding, inline required/email/minLength/maxLength validators, touched-aware errors + submit gating.
 } as const;

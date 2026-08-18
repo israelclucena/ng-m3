@@ -476,3 +476,7 @@ export type {
   AnnualBurdenResult,
 } from './lib/services/annual-property-tax-burden.service';
 export { AnnualPropertyTaxBurdenComponent } from './lib/components/annual-property-tax-burden/annual-property-tax-burden.component';
+export {
+  SignalFormsPocComponent,
+  type SignalFormsInquiry,
+} from './lib/components/signal-forms-poc/signal-forms-poc.component';
