@@ -196,6 +196,7 @@ import {
   EnergyCertificateCheckerComponent,
   CommunicationCenterComponent,
   SignalFormsPocComponent,
+  SignalFormsListingComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -384,6 +385,8 @@ const SEARCH_DATA: SearchResult[] = [
     CommunicationCenterComponent,
     // Sprint 056 — Signal Forms PoC (Angular 22 GA)
     SignalFormsPocComponent,
+    // Sprint 057 — Signal Forms cross-field (Angular 22)
+    SignalFormsListingComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2324,6 +2327,24 @@ const SEARCH_DATA: SearchResult[] = [
             <code>SIGNAL_FORMS_POC</code>.
           </p>
           <iu-signal-forms-poc />
+        </section>
+      }
+
+      @if (flags.SIGNAL_FORMS_LISTING) {
+        <section class="feature-section" id="signal-forms-listing">
+          <h2>Signal Forms — cross-field (Angular 22)</h2>
+          <p class="feature-desc">
+            <strong>SignalFormsListingComponent</strong> — the complex, cross-validated
+            companion to the inquiry PoC. A property-listing form (mirroring the bespoke
+            <code>AddProperty</code> fields) that stresses Angular 22's official
+            <code>&#64;angular/forms/signals</code> API on real cross-field rules via
+            <code>validate(path, (&#123;valueOf&#125;) =&gt; …)</code>: the deposit is
+            constrained to 1×–3× the monthly rent and a <em>studio</em> may not declare
+            bedrooms. Also typed number/enum/date fields with <code>min</code>/<code>max</code>
+            limits and a custom runtime future-date guard. Feature flag:
+            <code>SIGNAL_FORMS_LISTING</code>.
+          </p>
+          <iu-signal-forms-listing />
         </section>
       }
 

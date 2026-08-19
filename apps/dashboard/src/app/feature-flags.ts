@@ -241,4 +241,5 @@ export const FeatureFlags = {
 
   // Sprint 056 — Night Shift 2026-08-18 (Signal Forms PoC — Angular 22 GA)
   SIGNAL_FORMS_POC: true,  // SignalFormsPocComponent — property-inquiry form built with Angular 22's official @angular/forms/signals API (form() + declarative schema), side-by-side PoC vs the bespoke createSignalForm util. Additive, replaces nothing; de-risks a future bespoke→official migration. Demonstrates [formField] two-way binding, inline required/email/minLength/maxLength validators, touched-aware errors + submit gating.
+  SIGNAL_FORMS_LISTING: true,  // SignalFormsListingComponent — complex property-listing form (Sprint 057), the cross-validated companion to SignalFormsPoc. Stresses the official @angular/forms/signals API on a realistic surface mirroring the bespoke AddProperty fields: cross-field validators via validate(path, ({valueOf}) => …) (deposit ∈ 1×–3× rent; studio ⇒ 0 bedrooms), typed number/enum/date fields with min/max limits, and a custom runtime future-date guard returning a bespoke ValidationError. Additive, replaces nothing.
 } as const;
