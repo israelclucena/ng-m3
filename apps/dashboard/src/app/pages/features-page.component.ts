@@ -198,6 +198,7 @@ import {
   SignalFormsPocComponent,
   SignalFormsListingComponent,
   SignalFormsRosterComponent,
+  SignalFormsAsyncComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -390,6 +391,8 @@ const SEARCH_DATA: SearchResult[] = [
     SignalFormsListingComponent,
     // Sprint 058 — Signal Forms dynamic arrays (Angular 22)
     SignalFormsRosterComponent,
+    // Sprint 059 — Signal Forms async validation (Angular 22)
+    SignalFormsAsyncComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2365,6 +2368,24 @@ const SEARCH_DATA: SearchResult[] = [
             <code>SIGNAL_FORMS_ROSTER</code>.
           </p>
           <iu-signal-forms-roster />
+        </section>
+      }
+
+      @if (flags.SIGNAL_FORMS_ASYNC) {
+        <section class="feature-section" id="signal-forms-async">
+          <h2>Signal Forms — async validation (Angular 22)</h2>
+          <p class="feature-desc">
+            <strong>SignalFormsAsyncComponent</strong> — the async-validation PoC, the
+            last unproven surface in the migration line. A listing-reference field checked
+            for uniqueness against a mock backend via
+            <code>validateAsync(path, &#123;params, factory: resource(), onSuccess, onError&#125;)</code>:
+            synchronous rules <em>gate</em> the async check (a too-short or invalid reference
+            never hits the backend), <code>field().pending()</code> drives a live spinner and
+            disables submit, and a debounce delays the resource until typing stops. Try
+            <code>lisboarent</code>, <code>admin</code>, <code>arroios-t3</code> or
+            <code>demo</code> — all taken. Feature flag: <code>SIGNAL_FORMS_ASYNC</code>.
+          </p>
+          <iu-signal-forms-async />
         </section>
       }
 

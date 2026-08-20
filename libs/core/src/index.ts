@@ -490,3 +490,7 @@ export {
   type SignalFormsRoster,
   type RosterTenant,
 } from './lib/components/signal-forms-roster/signal-forms-roster.component';
+export {
+  SignalFormsAsyncComponent,
+  type SignalFormsAsyncClaim,
+} from './lib/components/signal-forms-async/signal-forms-async.component';
