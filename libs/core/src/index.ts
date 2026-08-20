@@ -485,3 +485,8 @@ export {
   type SignalFormsListing,
   type ListingType,
 } from './lib/components/signal-forms-listing/signal-forms-listing.component';
+export {
+  SignalFormsRosterComponent,
+  type SignalFormsRoster,
+  type RosterTenant,
+} from './lib/components/signal-forms-roster/signal-forms-roster.component';

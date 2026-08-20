@@ -197,6 +197,7 @@ import {
   CommunicationCenterComponent,
   SignalFormsPocComponent,
   SignalFormsListingComponent,
+  SignalFormsRosterComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -387,6 +388,8 @@ const SEARCH_DATA: SearchResult[] = [
     SignalFormsPocComponent,
     // Sprint 057 — Signal Forms cross-field (Angular 22)
     SignalFormsListingComponent,
+    // Sprint 058 — Signal Forms dynamic arrays (Angular 22)
+    SignalFormsRosterComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2345,6 +2348,23 @@ const SEARCH_DATA: SearchResult[] = [
             <code>SIGNAL_FORMS_LISTING</code>.
           </p>
           <iu-signal-forms-listing />
+        </section>
+      }
+
+      @if (flags.SIGNAL_FORMS_ROSTER) {
+        <section class="feature-section" id="signal-forms-roster">
+          <h2>Signal Forms — dynamic arrays (Angular 22)</h2>
+          <p class="feature-desc">
+            <strong>SignalFormsRosterComponent</strong> — the dynamic-array PoC, third in
+            the migration line. A split-lease roster where co-tenants
+            (<code>&#123;name, email, sharePct&#125;</code>) are a <em>repeating array</em>
+            validated per-item with <code>applyEach(path.tenants, …)</code>, the array carries
+            a <code>minLength</code> (≥1 tenant), and a cross-item <em>tree rule</em> via
+            <code>validate(path.tenants, …)</code> requires the shares to sum to 100%. Add and
+            remove tenants live — <code>form()</code> reconciles the field nodes. Feature flag:
+            <code>SIGNAL_FORMS_ROSTER</code>.
+          </p>
+          <iu-signal-forms-roster />
         </section>
       }
 
