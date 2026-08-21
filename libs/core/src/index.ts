@@ -138,6 +138,7 @@ export * from './lib/components/property-booking/property-booking.component';
 export * from './lib/services/auth.service';
 export * from './lib/components/auth-login/auth-login.component';
 export * from './lib/components/auth-register/auth-register.component';
+export * from './lib/components/auth-register-signal-form/auth-register-signal-form.component';
 export * from './lib/guards/auth.guard';
 
 // Sprint 016 — Night Shift 2026-03-11

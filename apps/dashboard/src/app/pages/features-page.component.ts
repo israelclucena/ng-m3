@@ -199,6 +199,7 @@ import {
   SignalFormsListingComponent,
   SignalFormsRosterComponent,
   SignalFormsAsyncComponent,
+  AuthRegisterSignalFormComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -393,6 +394,8 @@ const SEARCH_DATA: SearchResult[] = [
     SignalFormsRosterComponent,
     // Sprint 059 — Signal Forms async validation (Angular 22)
     SignalFormsAsyncComponent,
+    // Sprint 060 — Signal Forms migration #1: real product form (auth-register)
+    AuthRegisterSignalFormComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2386,6 +2389,26 @@ const SEARCH_DATA: SearchResult[] = [
             <code>demo</code> — all taken. Feature flag: <code>SIGNAL_FORMS_ASYNC</code>.
           </p>
           <iu-signal-forms-async />
+        </section>
+      }
+
+      @if (flags.AUTH_REGISTER_SIGNAL_FORM) {
+        <section class="feature-section" id="auth-register-signal-form">
+          <h2>Signal Forms — real product form migration (Angular 22)</h2>
+          <p class="feature-desc">
+            <strong>AuthRegisterSignalFormComponent</strong> — the first migration of a
+            <em>real product form</em> (the LisboaRent registration form) off the bespoke
+            <code>createSignalForm</code> util onto Angular 22's official
+            <code>@angular/forms/signals</code> <code>form()</code> API, after four PoCs
+            de-risked every surface. It's a faithful side-by-side twin of
+            <code>AuthRegister</code>: identical markup, styles, outputs and
+            <code>AuthService</code> wiring — only the form engine differs. Confirm-password
+            is now a first-class model field validated cross-field via
+            <code>validate(path.confirmPassword, (&#123;valueOf&#125;) =&gt; …)</code> against
+            <code>password</code>. A parity spec asserts both twins hand <code>register()</code>
+            a byte-identical payload. Feature flag: <code>AUTH_REGISTER_SIGNAL_FORM</code>.
+          </p>
+          <iu-auth-register-signal-form />
         </section>
       }
 
