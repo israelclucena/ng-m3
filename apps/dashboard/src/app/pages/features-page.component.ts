@@ -200,6 +200,7 @@ import {
   SignalFormsRosterComponent,
   SignalFormsAsyncComponent,
   AuthRegisterSignalFormComponent,
+  TenantApplicationSignalFormComponent,
 } from '@israel-ui/core';
 import type { PaymentStatus, Invoice } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
@@ -396,6 +397,8 @@ const SEARCH_DATA: SearchResult[] = [
     SignalFormsAsyncComponent,
     // Sprint 060 — Signal Forms migration #1: real product form (auth-register)
     AuthRegisterSignalFormComponent,
+    // Sprint 061 — Signal Forms migration #2: real product form (tenant-application)
+    TenantApplicationSignalFormComponent,
   ],
   template: `
     <div class="features-layout" [class.has-toc]="flags.FEATURES_PAGE_TOC">
@@ -2409,6 +2412,34 @@ const SEARCH_DATA: SearchResult[] = [
             a byte-identical payload. Feature flag: <code>AUTH_REGISTER_SIGNAL_FORM</code>.
           </p>
           <iu-auth-register-signal-form />
+        </section>
+      }
+
+      @if (flags.TENANT_APPLICATION_SIGNAL_FORM) {
+        <section class="feature-section" id="tenant-application-signal-form">
+          <h2>Signal Forms — migration #2: multi-step tenant application (Angular 22)</h2>
+          <p class="feature-desc">
+            <strong>TenantApplicationSignalFormComponent</strong> — the second migration of a
+            <em>real product form</em> (the 5-step rental application) off the bespoke
+            <code>createSignalForm</code> util onto Angular 22's official
+            <code>@angular/forms/signals</code> <code>form()</code> API. A faithful side-by-side
+            twin of <code>TenantApplicationForm</code>: identical flow, markup, styles, outputs and
+            <code>TenantApplicationService</code> wiring — only the form engine differs. It exercises
+            surfaces migration #1 didn't: the NIF <code>pattern(/^\d&#123;9&#125;$/)</code> validator,
+            <strong>native number parse</strong> on income/occupants
+            (<code>[formField]</code> on <code>&lt;input type="number"&gt;</code>, replacing manual
+            <code>Number()</code> coercion), and imperative field writes via
+            <code>f.field().value.set()</code> for the segmented employment/pets choosers. A parity
+            spec asserts both twins hand <code>submit()</code> a byte-identical payload. Feature flag:
+            <code>TENANT_APPLICATION_SIGNAL_FORM</code>.
+          </p>
+          <iu-tenant-application-signal-form
+            tenantId="tenant-001"
+            tenantName="Ana Ferreira"
+            tenantEmail="ana.ferreira@email.pt"
+            propertyId="p1"
+            propertyTitle="Apartamento T2 no Chiado"
+            landlordId="landlord-001" />
         </section>
       }
 

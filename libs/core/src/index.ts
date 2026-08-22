@@ -240,6 +240,8 @@ export { LeaseAgreementViewerComponent } from './lib/components/lease-agreement/
 export { TenantApplicationService } from './lib/services/tenant-application.service';
 export type { TenantApplication, ApplicationStatus, EmploymentType, TenantReference, CreateApplicationPayload } from './lib/services/tenant-application.service';
 export { TenantApplicationFormComponent } from './lib/components/tenant-application/tenant-application-form.component';
+export { TenantApplicationSignalFormComponent } from './lib/components/tenant-application-signal-form/tenant-application-signal-form.component';
+export type { TenantApplicationModel } from './lib/components/tenant-application-signal-form/tenant-application-signal-form.component';
 export { ApplicationStatusComponent } from './lib/components/tenant-application/application-status.component';
 export { MaintenanceNotificationHandler } from './lib/services/maintenance-notification.handler';
 
