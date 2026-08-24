@@ -141,6 +141,7 @@ export * from './lib/components/auth-login-signal-form/auth-login-signal-form.co
 export * from './lib/components/auth-register/auth-register.component';
 export * from './lib/components/auth-register-signal-form/auth-register-signal-form.component';
 export * from './lib/components/maintenance-request-signal-form/maintenance-request-signal-form.component';
+export * from './lib/components/lease-agreement-signal-form/lease-agreement-signal-form.component';
 export * from './lib/guards/auth.guard';
 
 // Sprint 016 — Night Shift 2026-03-11
