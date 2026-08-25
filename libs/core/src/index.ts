@@ -205,6 +205,7 @@ export { PropertyAvailabilityComponent } from './lib/components/property-availab
 // Sprint 028 — Night Shift 2026-03-23
 export * from './lib/services/availability-resource.service';
 export * from './lib/components/booking-checkout/booking-checkout.component';
+export * from './lib/components/booking-checkout-signal-form/booking-checkout-signal-form.component';
 
 // Sprint 029 — Night Shift 2026-03-24
 export { PaymentService } from './lib/services/payment.service';
