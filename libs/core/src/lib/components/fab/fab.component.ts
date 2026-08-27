@@ -70,6 +70,12 @@ export class FabComponent {
     return c.join(' ');
   });
 
+  /**
+   * Effective accessible name. Falls back to the visible label, then the icon
+   * name, so an icon-only FAB is never nameless (WCAG 4.1.2 / axe `button-name`).
+   */
+  a11yLabel = computed(() => this.ariaLabel() || this.label() || this.icon());
+
   onClick(e: MouseEvent): void {
     this.clicked.emit(e);
   }

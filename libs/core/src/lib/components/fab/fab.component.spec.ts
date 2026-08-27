@@ -69,10 +69,19 @@ describe('FabComponent', () => {
     expect(fab.getAttribute('aria-label')).toBe('Add new item');
   });
 
-  it('should omit aria-label attribute when ariaLabel is empty', () => {
+  it('falls back to the icon name for aria-label when ariaLabel and label are empty', () => {
+    // Icon-only FAB must still expose an accessible name (WCAG button-name).
     fixture.componentRef.setInput('ariaLabel', '');
     fixture.detectChanges();
     const fab = fixture.nativeElement.querySelector('md-fab');
-    expect(fab.getAttribute('aria-label')).toBeNull();
+    expect(fab.getAttribute('aria-label')).toBe('add'); // default icon
+  });
+
+  it('falls back to the visible label for aria-label when ariaLabel is empty', () => {
+    fixture.componentRef.setInput('ariaLabel', '');
+    fixture.componentRef.setInput('label', 'Compose');
+    fixture.detectChanges();
+    const fab = fixture.nativeElement.querySelector('md-fab');
+    expect(fab.getAttribute('aria-label')).toBe('Compose');
   });
 });

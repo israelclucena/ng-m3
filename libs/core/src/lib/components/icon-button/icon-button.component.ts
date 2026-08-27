@@ -66,6 +66,12 @@ export class IconButtonComponent {
     return c.join(' ');
   });
 
+  /**
+   * Effective accessible name. Falls back to the icon name so an icon-only
+   * button is never nameless (WCAG 4.1.2 / axe `button-name`).
+   */
+  a11yLabel = computed(() => this.ariaLabel() || this.icon());
+
   onClick(e: MouseEvent): void {
     if (this.disabled()) {
       e.preventDefault();

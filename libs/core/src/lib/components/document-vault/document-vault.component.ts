@@ -73,7 +73,7 @@ const FILE_ICONS: Record<string, string> = {
         <!-- Storage indicator -->
         <div class="dv-storage">
           <div class="dv-storage-label">Storage used</div>
-          <div class="dv-storage-bar" role="progressbar" [attr.aria-valuenow]="storagePercent()">
+          <div class="dv-storage-bar" role="progressbar" aria-label="Storage used" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="storagePercent()">
             <div class="dv-storage-fill" [style.width.%]="storagePercent()"></div>
           </div>
           <div class="dv-storage-info">

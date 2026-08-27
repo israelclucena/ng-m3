@@ -80,9 +80,11 @@ export interface GlobalSearchSubmitEvent {
           (focus)="onFocus()"
           (keydown)="onKeydown($event)"
           autocomplete="off"
+          role="combobox"
           aria-label="Pesquisar propriedades"
           aria-autocomplete="list"
           [attr.aria-expanded]="showSuggestions()"
+          [attr.aria-controls]="showSuggestions() ? 'iu-global-search-listbox' : null"
         />
         @if (query()) {
           <button
@@ -108,7 +110,7 @@ export interface GlobalSearchSubmitEvent {
 
       <!-- Suggestions dropdown -->
       @if (showSuggestions()) {
-        <div class="iu-global-search__dropdown" role="listbox">
+        <div class="iu-global-search__dropdown" role="listbox" id="iu-global-search-listbox">
           <!-- Results -->
           @for (suggestion of suggestions(); track suggestion.id; let i = $index) {
             <button

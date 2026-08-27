@@ -95,9 +95,11 @@ describe('IconButtonComponent', () => {
     expect(el.selected).toBe(true);
   });
 
-  it('sets aria-label attribute when ariaLabel is provided, omits when empty', () => {
+  it('sets aria-label from ariaLabel, falling back to the icon name when empty', () => {
+    // Icon-only button must still expose an accessible name (WCAG button-name):
+    // with no explicit ariaLabel it falls back to the icon ('settings' from setup).
     let el = fixture.nativeElement.querySelector('md-icon-button') as HTMLElement;
-    expect(el.getAttribute('aria-label')).toBeNull();
+    expect(el.getAttribute('aria-label')).toBe('settings');
 
     fixture.componentRef.setInput('ariaLabel', 'Open settings');
     fixture.detectChanges();

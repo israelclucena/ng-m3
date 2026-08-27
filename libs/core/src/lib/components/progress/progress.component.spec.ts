@@ -112,9 +112,10 @@ describe('ProgressComponent', () => {
     expect(el.className).toContain('iu-progress--indeterminate');
   });
 
-  it('does not set aria-label attribute when ariaLabel() is empty', () => {
+  it('falls back to a default aria-label when ariaLabel() is empty', () => {
+    // A progressbar must always expose an accessible name (axe `aria-progressbar-name`).
     const el = fixture.nativeElement.querySelector('md-linear-progress') as HTMLElement;
-    expect(el.getAttribute('aria-label')).toBeNull();
+    expect(el.getAttribute('aria-label')).toBe('Progresso');
   });
 
   it('sets aria-label attribute when ariaLabel() is non-empty', () => {
