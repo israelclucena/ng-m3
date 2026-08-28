@@ -45,6 +45,7 @@ export const Default: Story = {
     indeterminate: false,
     disabled: false,
     label: '',
+    ariaLabel: 'Opção de exemplo',
   },
 };
 
@@ -53,6 +54,7 @@ export const Checked: Story = {
   args: {
     checked: true,
     label: '',
+    ariaLabel: 'Opção selecionada',
   },
 };
 
@@ -61,6 +63,7 @@ export const Indeterminate: Story = {
   args: {
     indeterminate: true,
     label: '',
+    ariaLabel: 'Opção em estado misto',
   },
 };
 

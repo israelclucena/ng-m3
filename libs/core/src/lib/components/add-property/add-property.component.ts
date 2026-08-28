@@ -61,7 +61,7 @@ export interface NewPropertyForm {
       <!-- ── Step Progress ── -->
       <div class="step-track" role="list">
         @for (step of steps; track step.index; let i = $index) {
-          <div class="step-item" [class.done]="currentStep() > i" [class.active]="currentStep() === i">
+          <div class="step-item" role="listitem" [class.done]="currentStep() > i" [class.active]="currentStep() === i">
             <div class="step-bubble">
               @if (currentStep() > i) {
                 <span class="material-symbols-outlined">check</span>

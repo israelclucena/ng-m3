@@ -76,6 +76,7 @@ const CATEGORIES: ReadonlyArray<CategoryMeta> = [
             type="text"
             class="dre-input"
             placeholder="Descrição (ex: pintura quarto)"
+            aria-label="Descrição da dedução"
             [value]="draftLabel()"
             (input)="setLabel($event)"
           />
@@ -83,11 +84,13 @@ const CATEGORIES: ReadonlyArray<CategoryMeta> = [
             type="number" min="0" step="10"
             class="dre-input"
             placeholder="Custo (€)"
+            aria-label="Custo da dedução (€)"
             [value]="draftCost()"
             (input)="setCost($event)"
           />
           <select
             class="dre-input"
+            aria-label="Categoria da dedução"
             [value]="draftCategory()"
             (change)="setCategory($event)"
           >

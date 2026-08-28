@@ -96,8 +96,8 @@ export const WithFooter: Story = {
       <iu-card [variant]="variant" [title]="title" [subtitle]="subtitle" style="width:320px">
         Moderno apartamento T2 com vista para o rio. Condomínio com piscina e ginásio.
         <div slot="footer">
-          <iu-button variant="ghost" size="sm">Guardar</iu-button>
-          <iu-button variant="primary" size="sm">Ver detalhes</iu-button>
+          <iu-button variant="ghost" size="sm" label="Guardar"></iu-button>
+          <iu-button variant="primary" size="sm" label="Ver detalhes"></iu-button>
         </div>
       </iu-card>
     `,
@@ -144,8 +144,8 @@ export const LisboaRentCard: Story = {
       <iu-card variant="elevated" title="Apartamento T2 — Alfama" subtitle="Lisboa · 1 200€/mês" avatar="apartment" style="width:320px">
         <p>Espaçoso T2 no coração de Alfama. Vista para o Tejo, varanda, totalmente equipado.</p>
         <div slot="footer">
-          <iu-button variant="ghost" size="sm">❤️ Guardar</iu-button>
-          <iu-button variant="primary" size="sm">Ver anúncio</iu-button>
+          <iu-button variant="ghost" size="sm" label="❤️ Guardar"></iu-button>
+          <iu-button variant="primary" size="sm" label="Ver anúncio"></iu-button>
         </div>
       </iu-card>
     `,

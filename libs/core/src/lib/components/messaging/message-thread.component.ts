@@ -57,7 +57,7 @@ import { CURRENT_USER_ID } from './messaging.service';
           </div>
         </div>
         @if (showClose()) {
-          <md-icon-button (click)="closed.emit()">
+          <md-icon-button aria-label="Fechar conversa" (click)="closed.emit()">
             <md-icon>close</md-icon>
           </md-icon-button>
         }

@@ -99,6 +99,7 @@ const CATEGORIES: ReadonlyArray<CategoryMeta> = [
             type="number" min="0" step="10"
             class="tsg-input"
             placeholder="Bruto (€)"
+            aria-label="Renda bruta (€)"
             [value]="rentGross()"
             (input)="setRentGross($event)"
           />
@@ -106,6 +107,7 @@ const CATEGORIES: ReadonlyArray<CategoryMeta> = [
             type="number" min="0" step="1"
             class="tsg-input"
             placeholder="Retenção (€)"
+            aria-label="Retenção na fonte (€)"
             [value]="rentWithhold()"
             (input)="setRentWithhold($event)"
           />
@@ -151,6 +153,7 @@ const CATEGORIES: ReadonlyArray<CategoryMeta> = [
             type="text"
             class="tsg-input"
             placeholder="Descrição"
+            aria-label="Descrição da despesa"
             [value]="expDescription()"
             (input)="setExpDescription($event)"
           />
@@ -158,11 +161,13 @@ const CATEGORIES: ReadonlyArray<CategoryMeta> = [
             type="number" min="0" step="1"
             class="tsg-input"
             placeholder="Valor (€)"
+            aria-label="Valor da despesa (€)"
             [value]="expAmount()"
             (input)="setExpAmount($event)"
           />
           <select
             class="tsg-input"
+            aria-label="Categoria da despesa"
             [value]="expCategory()"
             (change)="setExpCategory($event)"
           >
@@ -173,6 +178,7 @@ const CATEGORIES: ReadonlyArray<CategoryMeta> = [
           <input
             type="date"
             class="tsg-input"
+            aria-label="Data da despesa"
             [value]="expDate()"
             (input)="setExpDate($event)"
           />

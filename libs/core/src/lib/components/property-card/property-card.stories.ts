@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { Component } from '@angular/core';
 import { PropertyCardComponent, PropertyData } from '@israel-ui/core';
 
 // ─── Sample Properties ────────────────────────────────────────────
@@ -45,25 +44,6 @@ const SAMPLE_STUDIO: PropertyData = {
   badges: ['new'],
   isFavourited: false,
 };
-
-// ─── Grid wrapper for multi-card story ───────────────────────────
-@Component({
-  selector: 'story-property-grid',
-  standalone: true,
-  imports: [PropertyCardComponent],
-  template: `
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:16px;max-width:1000px">
-      <iu-property-card [property]="p1" />
-      <iu-property-card [property]="p2" />
-      <iu-property-card [property]="p3" />
-    </div>
-  `,
-})
-class PropertyGridWrapper {
-  p1 = SAMPLE_AVAILABLE;
-  p2 = SAMPLE_FEATURED;
-  p3 = SAMPLE_STUDIO;
-}
 
 // ─── Meta ─────────────────────────────────────────────────────────
 const meta: Meta<PropertyCardComponent> = {
@@ -113,7 +93,13 @@ export const Featured: Story = {
  */
 export const PropertyGrid: Story = {
   render: () => ({
-    component: PropertyGridWrapper,
-    props: {},
+    props: { p1: SAMPLE_AVAILABLE, p2: SAMPLE_FEATURED, p3: SAMPLE_STUDIO },
+    template: `
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:16px;max-width:1000px">
+        <iu-property-card [property]="p1" />
+        <iu-property-card [property]="p2" />
+        <iu-property-card [property]="p3" />
+      </div>
+    `,
   }),
 };

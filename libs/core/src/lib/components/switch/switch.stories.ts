@@ -45,6 +45,7 @@ export const Default: Story = {
     disabled: false,
     icons: false,
     label: '',
+    ariaLabel: 'Interruptor de exemplo',
   },
 };
 

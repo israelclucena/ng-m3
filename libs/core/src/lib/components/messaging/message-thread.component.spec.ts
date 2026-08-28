@@ -195,6 +195,14 @@ describe('MessageThreadComponent', () => {
     expect(fixture.nativeElement.querySelector('md-icon-button')).toBeTruthy();
   });
 
+  it('gives the icon-only close button an accessible name (WCAG button-name)', () => {
+    fixture.componentRef.setInput('thread', makeThread());
+    fixture.componentRef.setInput('showClose', true);
+    fixture.detectChanges();
+    const btn = fixture.nativeElement.querySelector('md-icon-button') as HTMLElement;
+    expect(btn.getAttribute('aria-label')?.trim()).toBeTruthy();
+  });
+
   it('clicking the close button emits closed', () => {
     fixture.componentRef.setInput('thread', makeThread());
     fixture.componentRef.setInput('showClose', true);

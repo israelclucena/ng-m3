@@ -74,6 +74,7 @@ import type { InspectionReport, RoomCondition } from '../../services/property-in
                     <div class="pi-room-edit">
                       <select
                         class="pi-select"
+                        [attr.aria-label]="'Estado — ' + room.name"
                         [ngModel]="room.condition"
                         (ngModelChange)="onConditionChange(report.id, room.id, $event)"
                       >
@@ -87,6 +88,7 @@ import type { InspectionReport, RoomCondition } from '../../services/property-in
                         class="pi-notes-input"
                         type="text"
                         placeholder="Notes…"
+                        [attr.aria-label]="'Notas — ' + room.name"
                         [ngModel]="room.notes"
                         (ngModelChange)="onNotesChange(report.id, room.id, $event)"
                       />

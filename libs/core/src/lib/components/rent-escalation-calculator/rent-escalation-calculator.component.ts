@@ -103,6 +103,7 @@ import { RentEscalationService } from '../../services/rent-escalation.service';
                         type="number"
                         min="0.9" max="1.5" step="0.0001"
                         class="re-coef-input"
+                        [attr.aria-label]="'Coeficiente para ' + row.year"
                         [value]="row.coeficiente"
                         (input)="overrideCoef(row.year, $event)"
                       />
