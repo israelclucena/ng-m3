@@ -71,26 +71,26 @@ import type { RentPayment } from '../../services/rent-payment-portal.service';
         <h3 class="rpp-section-title">Payment Schedule</h3>
         <div class="rpp-table" role="table">
           <div class="rpp-table-head" role="row">
-            <span>Period</span>
-            <span>Due Date</span>
-            <span>Amount</span>
-            <span>Status</span>
+            <span role="columnheader">Period</span>
+            <span role="columnheader">Due Date</span>
+            <span role="columnheader">Amount</span>
+            <span role="columnheader">Status</span>
             @if (mode === 'tenant') {
-              <span>Action</span>
+              <span role="columnheader">Action</span>
             }
           </div>
           @for (payment of svc.payments(); track payment.id) {
             <div class="rpp-table-row" [class]="rowClass(payment.status)" role="row">
-              <span class="rpp-period">{{ payment.periodLabel }}</span>
-              <span class="rpp-due">{{ payment.dueDate }}</span>
-              <span class="rpp-amount">€{{ payment.amount | number:'1.0-0' }}</span>
-              <span>
+              <span class="rpp-period" role="cell">{{ payment.periodLabel }}</span>
+              <span class="rpp-due" role="cell">{{ payment.dueDate }}</span>
+              <span class="rpp-amount" role="cell">€{{ payment.amount | number:'1.0-0' }}</span>
+              <span role="cell">
                 <span class="rpp-status-chip" [class]="'rpp-chip--' + payment.status">
                   {{ payment.status | titlecase }}
                 </span>
               </span>
               @if (mode === 'tenant') {
-                <span class="rpp-action-cell">
+                <span class="rpp-action-cell" role="cell">
                   @if (payment.status === 'pending' || payment.status === 'overdue') {
                     <button class="rpp-pay-btn" (click)="onPay(payment)">
                       <span class="material-symbols-outlined" style="font-size:16px">payments</span>

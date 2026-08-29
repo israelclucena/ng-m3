@@ -331,14 +331,16 @@ describe('NotificationCenterComponent', () => {
   // ─── Item interactions ───────────────────────────────────────────────────
 
   it('clicking an unread item calls svc.markRead with its id', () => {
-    const items = fixture.nativeElement.querySelectorAll('.nc-item');
-    (items[0] as HTMLElement).click();
+    // The clickable area is the inner .nc-item-main <button> (the dismiss
+    // button is its sibling, avoiding a nested-interactive a11y violation).
+    const mains = fixture.nativeElement.querySelectorAll('.nc-item-main');
+    (mains[0] as HTMLElement).click();
     expect(stub.markRead).toHaveBeenCalledWith('n1');
   });
 
   it('clicking a read item does not call svc.markRead', () => {
-    const items = fixture.nativeElement.querySelectorAll('.nc-item');
-    (items[1] as HTMLElement).click(); // n2 already read
+    const mains = fixture.nativeElement.querySelectorAll('.nc-item-main');
+    (mains[1] as HTMLElement).click(); // n2 already read
     expect(stub.markRead).not.toHaveBeenCalled();
   });
 

@@ -38,7 +38,7 @@ export type AvatarShape = 'circle' | 'rounded' | 'square';
       [class]="avatarClasses()"
       [style.background-color]="!src() ? colorFromName() : null"
       [title]="name()"
-      [attr.aria-label]="name()"
+      [attr.aria-label]="name() || 'Avatar'"
       role="img"
     >
       @if (src() && !imgError()) {

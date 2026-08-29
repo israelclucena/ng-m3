@@ -86,6 +86,13 @@ describe('AvatarComponent', () => {
     const root = fixture.nativeElement.querySelector('[role="img"]');
     expect(root.getAttribute('aria-label')).toBe('Israel Lucena');
   });
+
+  it('should fall back to a non-empty aria-label when name is empty (role="img" needs a name)', () => {
+    fixture.componentRef.setInput('name', '');
+    fixture.detectChanges();
+    const root = fixture.nativeElement.querySelector('[role="img"]');
+    expect(root.getAttribute('aria-label')).toBe('Avatar');
+  });
 });
 
 describe('AvatarGroupComponent', () => {

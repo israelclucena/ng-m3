@@ -101,16 +101,20 @@ import {
         @if (hintText()) {
           <p class="du-drop-hint">{{ hintText() }}</p>
         }
-
-        <input
-          #fileInput
-          type="file"
-          class="du-hidden-input"
-          [multiple]="multiple()"
-          [accept]="accept()"
-          (change)="onInputChange($event)"
-          aria-hidden="true" />
       </div>
+
+      <!-- Hidden file input — sibling of the dropzone (not nested inside the
+           role="button") so it is not a nested interactive control. Kept out
+           of the tab order + a11y tree; opened programmatically via the ref. -->
+      <input
+        #fileInput
+        type="file"
+        class="du-hidden-input"
+        [multiple]="multiple()"
+        [accept]="accept()"
+        (change)="onInputChange($event)"
+        tabindex="-1"
+        aria-hidden="true" />
 
       <!-- File list -->
       @if (files().length > 0) {
@@ -241,11 +245,13 @@ import {
     }
     .du-hidden-input {
       position: absolute;
-      inset: 0;
+      width: 1px;
+      height: 1px;
       opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
     }
     .du-file-list {
       list-style: none;

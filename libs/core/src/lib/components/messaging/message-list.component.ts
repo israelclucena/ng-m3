@@ -50,7 +50,8 @@ import { MessageThread } from './messaging.types';
 
       <ul class="iu-message-list__items">
         @for (thread of sortedThreads(); track thread.id) {
-          <li
+          <li class="iu-message-list__li">
+          <div
             class="iu-message-list__item"
             [class.iu-message-list__item--unread]="thread.unreadCount > 0"
             (click)="threadSelected.emit(thread)"
@@ -89,6 +90,7 @@ import { MessageThread } from './messaging.types';
                 }
               </div>
             </div>
+          </div>
           </li>
         }
       </ul>
@@ -156,6 +158,9 @@ import { MessageThread } from './messaging.types';
       margin: 0;
       padding: 0;
     }
+    .iu-message-list__li {
+      display: block;
+    }
     .iu-message-list__item {
       display: flex;
       align-items: center;
@@ -166,7 +171,7 @@ import { MessageThread } from './messaging.types';
       transition: background 0.15s ease;
       outline: none;
     }
-    .iu-message-list__item:last-child {
+    .iu-message-list__li:last-child .iu-message-list__item {
       border-bottom: none;
     }
     .iu-message-list__item:hover,

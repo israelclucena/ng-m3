@@ -90,4 +90,9 @@ describe('BadgeComponent', () => {
     span = fixture.nativeElement.querySelector('span.iu-badge');
     expect(span.getAttribute('aria-label')).toBe('3 notifications');
   });
+
+  it('should expose role="img" so aria-label is a permitted attribute (no aria-prohibited-attr)', () => {
+    const span = fixture.nativeElement.querySelector('span.iu-badge');
+    expect(span.getAttribute('role')).toBe('img');
+  });
 });

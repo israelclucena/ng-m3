@@ -128,23 +128,27 @@ import { AppNotification, NotificationCategory } from '../notification-bell/noti
               <div
                 class="nc-item"
                 [class.nc-item--unread]="!n.read"
-                role="button"
-                tabindex="0"
-                (click)="onItemClick(n)"
-                (keydown.enter)="onItemClick(n)"
-                (keydown.space)="onItemClick(n); $event.preventDefault()"
               >
-                <!-- Category icon -->
-                <div class="nc-item-icon" [attr.data-category]="n.category">
-                  <span class="material-symbols-outlined">{{ categoryIcon(n.category) }}</span>
-                </div>
+                <!-- Main clickable area — a real button so the dismiss button
+                     below is a sibling, not a nested interactive control. -->
+                <button
+                  type="button"
+                  class="nc-item-main"
+                  (click)="onItemClick(n)"
+                  [attr.aria-label]="n.title"
+                >
+                  <!-- Category icon -->
+                  <div class="nc-item-icon" [attr.data-category]="n.category">
+                    <span class="material-symbols-outlined">{{ categoryIcon(n.category) }}</span>
+                  </div>
 
-                <!-- Content -->
-                <div class="nc-item-content">
-                  <div class="nc-item-title">{{ n.title }}</div>
-                  <div class="nc-item-body">{{ n.body }}</div>
-                  <div class="nc-item-time">{{ timeAgo(n.timestamp) }}</div>
-                </div>
+                  <!-- Content -->
+                  <div class="nc-item-content">
+                    <div class="nc-item-title">{{ n.title }}</div>
+                    <div class="nc-item-body">{{ n.body }}</div>
+                    <div class="nc-item-time">{{ timeAgo(n.timestamp) }}</div>
+                  </div>
+                </button>
 
                 <!-- Unread dot + dismiss -->
                 <div class="nc-item-meta">
@@ -280,7 +284,13 @@ import { AppNotification, NotificationCategory } from '../notification-bell/noti
     /* Items */
     .nc-item {
       display: flex; gap: 10px; padding: 12px 10px; border-radius: 10px;
-      cursor: pointer; transition: background 0.12s; align-items: flex-start;
+      transition: background 0.12s; align-items: flex-start;
+    }
+    .nc-item-main {
+      display: flex; gap: 10px; align-items: flex-start;
+      flex: 1; min-width: 0;
+      background: transparent; border: none; padding: 0; margin: 0;
+      font: inherit; color: inherit; text-align: left; cursor: pointer;
     }
     .nc-item:hover { background: var(--md-sys-color-surface-container-low); }
     .nc-item--unread { background: var(--md-sys-color-surface-container-lowest); }
