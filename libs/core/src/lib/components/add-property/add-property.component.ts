@@ -1,6 +1,11 @@
 import { Component, output, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  createSignalForm,
+  required,
+  maxLength,
+  range,
+} from '../../utils/signal-form';
 
 // ─── Models ──────────────────────────────────────────────────────────────────
 
@@ -41,6 +46,11 @@ export interface NewPropertyForm {
  * with M3 inputs/tokens throughout. 4 steps: Basic Info → Details →
  * Description & Media → Review & Submit.
  *
+ * State is driven by the project `createSignalForm` utility (Signal Forms —
+ * no RxJS, no `FormsModule`/`ngModel`): the eight text/select/number/date
+ * inputs live in `form`, while the interactive controls (steppers, toggles,
+ * feature chips, image list) are plain writable signals.
+ *
  * Feature flag: `ADD_PROPERTY`
  *
  * @example
@@ -54,7 +64,7 @@ export interface NewPropertyForm {
 @Component({
   selector: 'iu-add-property',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   template: `
     <div class="iu-add-property">
 
@@ -88,14 +98,23 @@ export interface NewPropertyForm {
             <div class="field-group">
               <label class="field-label" for="ap-title">Título do anúncio *</label>
               <input class="field-input" id="ap-title" type="text" placeholder="Ex: Apartamento T2 renovado em Príncipe Real"
-                [(ngModel)]="form.title" maxlength="100" />
-              <span class="field-hint">{{ form.title.length }}/100 caracteres</span>
+                maxlength="100"
+                [value]="form.fields.title.value()"
+                (input)="form.fields.title.setValue($any($event.target).value)"
+                (blur)="form.fields.title.touch()" />
+              <span class="field-hint">{{ form.fields.title.value().length }}/100 caracteres</span>
+              @if (form.fields.title.showError()) {
+                <span class="field-error">{{ form.fields.title.firstError() }}</span>
+              }
             </div>
 
             <div class="field-row">
               <div class="field-group">
                 <label class="field-label" for="ap-type">Tipo de imóvel *</label>
-                <select class="field-select" id="ap-type" [(ngModel)]="form.type">
+                <select class="field-select" id="ap-type"
+                  [value]="form.fields.type.value()"
+                  (change)="form.fields.type.setValue($any($event.target).value)"
+                  (blur)="form.fields.type.touch()">
                   <option value="">-- selecionar --</option>
                   <option value="apartment">Apartamento</option>
                   <option value="studio">Estúdio</option>
@@ -103,16 +122,27 @@ export interface NewPropertyForm {
                   <option value="penthouse">Penthouse</option>
                   <option value="villa">Villa</option>
                 </select>
+                @if (form.fields.type.showError()) {
+                  <span class="field-error">{{ form.fields.type.firstError() }}</span>
+                }
               </div>
               <div class="field-group">
                 <label class="field-label" for="ap-location">Zona / Bairro *</label>
-                <input class="field-input" id="ap-location" type="text" placeholder="Ex: Príncipe Real, Lisboa" [(ngModel)]="form.location" />
+                <input class="field-input" id="ap-location" type="text" placeholder="Ex: Príncipe Real, Lisboa"
+                  [value]="form.fields.location.value()"
+                  (input)="form.fields.location.setValue($any($event.target).value)"
+                  (blur)="form.fields.location.touch()" />
+                @if (form.fields.location.showError()) {
+                  <span class="field-error">{{ form.fields.location.firstError() }}</span>
+                }
               </div>
             </div>
 
             <div class="field-group">
               <label class="field-label" for="ap-address">Endereço completo</label>
-              <input class="field-input" id="ap-address" type="text" placeholder="Rua, número, código postal" [(ngModel)]="form.address" />
+              <input class="field-input" id="ap-address" type="text" placeholder="Rua, número, código postal"
+                [value]="form.fields.address.value()"
+                (input)="form.fields.address.setValue($any($event.target).value)" />
             </div>
           </div>
         }
@@ -125,11 +155,19 @@ export interface NewPropertyForm {
             <div class="field-row">
               <div class="field-group">
                 <label class="field-label" for="ap-price">Renda mensal (€) *</label>
-                <input class="field-input" id="ap-price" type="number" placeholder="1200" min="100" [(ngModel)]="form.priceMonthly" />
+                <input class="field-input" id="ap-price" type="number" placeholder="1200" min="100"
+                  [value]="form.fields.priceMonthly.value()"
+                  (input)="form.fields.priceMonthly.setValue(+$any($event.target).value)"
+                  (blur)="form.fields.priceMonthly.touch()" />
+                @if (form.fields.priceMonthly.showError()) {
+                  <span class="field-error">{{ form.fields.priceMonthly.firstError() }}</span>
+                }
               </div>
               <div class="field-group">
                 <label class="field-label" for="ap-available">Disponível a partir de</label>
-                <input class="field-input" id="ap-available" type="date" [(ngModel)]="form.availableFrom" />
+                <input class="field-input" id="ap-available" type="date"
+                  [value]="form.fields.availableFrom.value()"
+                  (input)="form.fields.availableFrom.setValue($any($event.target).value)" />
               </div>
             </div>
 
@@ -137,32 +175,34 @@ export interface NewPropertyForm {
               <div class="field-group">
                 <span class="field-label" id="ap-bedrooms-label">Quartos</span>
                 <div class="number-control" role="group" aria-labelledby="ap-bedrooms-label">
-                  <button class="num-btn" (click)="adjust('bedrooms', -1)" [disabled]="form.bedrooms <= 0">−</button>
-                  <span class="num-val">{{ form.bedrooms === 0 ? 'Studio' : form.bedrooms }}</span>
-                  <button class="num-btn" (click)="adjust('bedrooms', 1)" [disabled]="form.bedrooms >= 10">+</button>
+                  <button class="num-btn" (click)="adjust('bedrooms', -1)" [disabled]="bedrooms() <= 0">−</button>
+                  <span class="num-val">{{ bedrooms() === 0 ? 'Studio' : bedrooms() }}</span>
+                  <button class="num-btn" (click)="adjust('bedrooms', 1)" [disabled]="bedrooms() >= 10">+</button>
                 </div>
               </div>
               <div class="field-group">
                 <span class="field-label" id="ap-bathrooms-label">WC</span>
                 <div class="number-control" role="group" aria-labelledby="ap-bathrooms-label">
-                  <button class="num-btn" (click)="adjust('bathrooms', -1)" [disabled]="form.bathrooms <= 1">−</button>
-                  <span class="num-val">{{ form.bathrooms }}</span>
-                  <button class="num-btn" (click)="adjust('bathrooms', 1)" [disabled]="form.bathrooms >= 5">+</button>
+                  <button class="num-btn" (click)="adjust('bathrooms', -1)" [disabled]="bathrooms() <= 1">−</button>
+                  <span class="num-val">{{ bathrooms() }}</span>
+                  <button class="num-btn" (click)="adjust('bathrooms', 1)" [disabled]="bathrooms() >= 5">+</button>
                 </div>
               </div>
               <div class="field-group">
                 <label class="field-label" for="ap-area">Área (m²)</label>
-                <input class="field-input" id="ap-area" type="number" placeholder="75" min="10" [(ngModel)]="form.areaSqm" />
+                <input class="field-input" id="ap-area" type="number" placeholder="75" min="10"
+                  [value]="form.fields.areaSqm.value()"
+                  (input)="form.fields.areaSqm.setValue(+$any($event.target).value)" />
               </div>
             </div>
 
             <div class="toggle-row">
               <div class="toggle-item">
                 <span class="toggle-track" role="switch" tabindex="0" aria-label="Mobilado"
-                  [class.on]="form.furnished" [attr.aria-checked]="form.furnished"
-                  (click)="form.furnished = !form.furnished"
-                  (keydown.enter)="form.furnished = !form.furnished"
-                  (keydown.space)="form.furnished = !form.furnished; $event.preventDefault()">
+                  [class.on]="furnished()" [attr.aria-checked]="furnished()"
+                  (click)="furnished.set(!furnished())"
+                  (keydown.enter)="furnished.set(!furnished())"
+                  (keydown.space)="furnished.set(!furnished()); $event.preventDefault()">
                   <span class="toggle-thumb"></span>
                 </span>
                 <span class="toggle-label">
@@ -172,10 +212,10 @@ export interface NewPropertyForm {
               </div>
               <div class="toggle-item">
                 <span class="toggle-track" role="switch" tabindex="0" aria-label="Aceita animais"
-                  [class.on]="form.petsAllowed" [attr.aria-checked]="form.petsAllowed"
-                  (click)="form.petsAllowed = !form.petsAllowed"
-                  (keydown.enter)="form.petsAllowed = !form.petsAllowed"
-                  (keydown.space)="form.petsAllowed = !form.petsAllowed; $event.preventDefault()">
+                  [class.on]="petsAllowed()" [attr.aria-checked]="petsAllowed()"
+                  (click)="petsAllowed.set(!petsAllowed())"
+                  (keydown.enter)="petsAllowed.set(!petsAllowed())"
+                  (keydown.space)="petsAllowed.set(!petsAllowed()); $event.preventDefault()">
                   <span class="toggle-thumb"></span>
                 </span>
                 <span class="toggle-label">
@@ -196,8 +236,9 @@ export interface NewPropertyForm {
               <label class="field-label" for="ap-description">Descrição do imóvel *</label>
               <textarea class="field-textarea" id="ap-description" rows="5" maxlength="1000"
                 placeholder="Descreve o imóvel: localização, estado de conservação, vizinhança, transportes próximos..."
-                [(ngModel)]="form.description"></textarea>
-              <span class="field-hint">{{ form.description.length }}/1000 caracteres</span>
+                [value]="form.fields.description.value()"
+                (input)="form.fields.description.setValue($any($event.target).value)"></textarea>
+              <span class="field-hint">{{ form.fields.description.value().length }}/1000 caracteres</span>
             </div>
 
             <div class="field-group">
@@ -216,7 +257,7 @@ export interface NewPropertyForm {
               <label class="field-label" for="ap-images">URLs de imagens (uma por linha)</label>
               <textarea class="field-textarea" id="ap-images" rows="3"
                 placeholder="https://images.unsplash.com/..."
-                [value]="form.imageUrls.join('\n')"
+                [value]="imageUrls().join('\n')"
                 (blur)="onImagesInput($event)"></textarea>
               <span class="field-hint">Suporta URLs do Unsplash, Cloudinary ou directo.</span>
             </div>
@@ -231,42 +272,42 @@ export interface NewPropertyForm {
             <div class="review-card">
               <div class="review-row">
                 <span class="review-label">Título</span>
-                <span class="review-value">{{ form.title || '—' }}</span>
+                <span class="review-value">{{ form.fields.title.value() || '—' }}</span>
               </div>
               <div class="review-row">
                 <span class="review-label">Tipo</span>
-                <span class="review-value">{{ typeLabel(form.type) }}</span>
+                <span class="review-value">{{ typeLabel(form.fields.type.value()) }}</span>
               </div>
               <div class="review-row">
                 <span class="review-label">Localização</span>
-                <span class="review-value">{{ form.location || '—' }}</span>
+                <span class="review-value">{{ form.fields.location.value() || '—' }}</span>
               </div>
               <div class="review-row">
                 <span class="review-label">Renda mensal</span>
-                <span class="review-value price">€{{ form.priceMonthly | number:'1.0-0' }}/mês</span>
+                <span class="review-value price">€{{ form.fields.priceMonthly.value() | number:'1.0-0' }}/mês</span>
               </div>
               <div class="review-row">
                 <span class="review-label">Quartos / WC / Área</span>
-                <span class="review-value">{{ form.bedrooms === 0 ? 'Studio' : form.bedrooms + ' qtos' }} · {{ form.bathrooms }} WC · {{ form.areaSqm }} m²</span>
+                <span class="review-value">{{ bedrooms() === 0 ? 'Studio' : bedrooms() + ' qtos' }} · {{ bathrooms() }} WC · {{ form.fields.areaSqm.value() }} m²</span>
               </div>
-              @if (form.availableFrom) {
+              @if (form.fields.availableFrom.value()) {
                 <div class="review-row">
                   <span class="review-label">Disponível a partir de</span>
-                  <span class="review-value">{{ form.availableFrom }}</span>
+                  <span class="review-value">{{ form.fields.availableFrom.value() }}</span>
                 </div>
               }
               <div class="review-row">
                 <span class="review-label">Extras</span>
                 <span class="review-value">
-                  @if (form.furnished) { <span class="mini-chip">Mobilado</span> }
-                  @if (form.petsAllowed) { <span class="mini-chip">Animais ✓</span> }
-                  @for (f of form.features; track f) { <span class="mini-chip">{{ f }}</span> }
+                  @if (furnished()) { <span class="mini-chip">Mobilado</span> }
+                  @if (petsAllowed()) { <span class="mini-chip">Animais ✓</span> }
+                  @for (f of features(); track f) { <span class="mini-chip">{{ f }}</span> }
                 </span>
               </div>
-              @if (form.description) {
+              @if (form.fields.description.value()) {
                 <div class="review-row description-row">
                   <span class="review-label">Descrição</span>
-                  <span class="review-value desc-preview">{{ form.description | slice:0:160 }}{{ form.description.length > 160 ? '…' : '' }}</span>
+                  <span class="review-value desc-preview">{{ form.fields.description.value() | slice:0:160 }}{{ form.fields.description.value().length > 160 ? '…' : '' }}</span>
                 </div>
               }
             </div>
@@ -455,6 +496,12 @@ export interface NewPropertyForm {
     .field-hint {
       font-size: 0.75rem;
       color: var(--md-sys-color-on-surface-variant, #49454f);
+    }
+
+    .field-error {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--md-sys-color-error, #b3261e);
     }
 
     .field-row {
@@ -736,22 +783,28 @@ export class AddPropertyComponent {
     { index: 3, label: 'Publicar' },
   ];
 
-  form: NewPropertyForm = {
-    title: '',
-    type: '' as 'apartment',
-    location: '',
-    address: '',
-    priceMonthly: 0,
-    bedrooms: 1,
-    bathrooms: 1,
-    areaSqm: 0,
-    availableFrom: '',
-    furnished: false,
-    petsAllowed: false,
-    description: '',
-    features: [],
-    imageUrls: [],
-  };
+  /**
+   * Signal-form state for the eight free-text / select / number / date inputs.
+   * Required validators back `isValid()`; `showError()` drives inline messages.
+   */
+  readonly form = createSignalForm({
+    title:         { value: '', validators: [required('Título obrigatório'), maxLength(100, 'Máximo 100 caracteres')] },
+    type:          { value: '' as NewPropertyForm['type'] | '', validators: [required('Tipo obrigatório')] },
+    location:      { value: '', validators: [required('Zona obrigatória')] },
+    address:       { value: '' },
+    priceMonthly:  { value: 0, validators: [range(1, 1_000_000, 'Renda deve ser maior que 0')] },
+    areaSqm:       { value: 0 },
+    availableFrom: { value: '' },
+    description:   { value: '', validators: [maxLength(1000, 'Máximo 1000 caracteres')] },
+  });
+
+  // ── Interactive (non-text) controls — plain writable signals ──────────────
+  readonly bedrooms    = signal(1);
+  readonly bathrooms   = signal(1);
+  readonly furnished   = signal(false);
+  readonly petsAllowed = signal(false);
+  readonly features    = signal<string[]>([]);
+  readonly imageUrls   = signal<string[]>([]);
 
   readonly featureOptions = [
     { key: 'Varanda', label: 'Varanda', icon: 'balcony' },
@@ -764,9 +817,16 @@ export class AddPropertyComponent {
     { key: 'Arrecadação', label: 'Arrecadação', icon: 'warehouse' },
   ];
 
-  readonly isValid = computed(() => {
-    return !!(this.form.title && this.form.type && this.form.location && this.form.priceMonthly > 0);
-  });
+  /**
+   * True when the four required inputs (title, type, location, priceMonthly)
+   * pass validation. Backed directly by the signal form's field validity.
+   */
+  readonly isValid = computed(() =>
+    !this.form.fields.title.invalid() &&
+    !this.form.fields.type.invalid() &&
+    !this.form.fields.location.invalid() &&
+    !this.form.fields.priceMonthly.invalid()
+  );
 
   onNext(): void {
     if (this.currentStep() < this.steps.length - 1) {
@@ -781,30 +841,53 @@ export class AddPropertyComponent {
   }
 
   onSubmit(): void {
-    if (this.isValid()) {
-      this.submitted.emit({ ...this.form });
-    }
+    // Mark all fields touched (reveals inline errors); bail if invalid.
+    this.form.submit();
+    if (!this.isValid()) return;
+    this.submitted.emit(this.snapshot());
+  }
+
+  /** Assemble the flat `NewPropertyForm` payload from form + signal state. */
+  private snapshot(): NewPropertyForm {
+    const v = this.form.value();
+    return {
+      title: v.title,
+      type: (v.type || 'apartment') as NewPropertyForm['type'],
+      location: v.location,
+      address: v.address,
+      priceMonthly: v.priceMonthly,
+      bedrooms: this.bedrooms(),
+      bathrooms: this.bathrooms(),
+      areaSqm: v.areaSqm,
+      availableFrom: v.availableFrom,
+      furnished: this.furnished(),
+      petsAllowed: this.petsAllowed(),
+      description: v.description,
+      features: [...this.features()],
+      imageUrls: [...this.imageUrls()],
+    };
   }
 
   adjust(field: 'bedrooms' | 'bathrooms', delta: number): void {
-    this.form[field] = Math.max(field === 'bedrooms' ? 0 : 1, Math.min(field === 'bedrooms' ? 10 : 5, this.form[field] + delta));
+    const sig = field === 'bedrooms' ? this.bedrooms : this.bathrooms;
+    const lo = field === 'bedrooms' ? 0 : 1;
+    const hi = field === 'bedrooms' ? 10 : 5;
+    sig.set(Math.max(lo, Math.min(hi, sig() + delta)));
   }
 
   hasFeature(key: string): boolean {
-    return this.form.features.includes(key);
+    return this.features().includes(key);
   }
 
   toggleFeature(key: string): void {
-    if (this.hasFeature(key)) {
-      this.form.features = this.form.features.filter(f => f !== key);
-    } else {
-      this.form.features = [...this.form.features, key];
-    }
+    this.features.update(list =>
+      list.includes(key) ? list.filter(f => f !== key) : [...list, key]
+    );
   }
 
   onImagesInput(event: Event): void {
     const val = (event.target as HTMLTextAreaElement).value;
-    this.form.imageUrls = val.split('\n').map(s => s.trim()).filter(Boolean);
+    this.imageUrls.set(val.split('\n').map(s => s.trim()).filter(Boolean));
   }
 
   typeLabel(type: string): string {

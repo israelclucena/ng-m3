@@ -7,10 +7,10 @@ describe('AddPropertyComponent', () => {
 
   /** Fills the bare minimum required fields so isValid() returns true. */
   function fillRequired(): void {
-    component.form.title = 'Apartamento T2 em Príncipe Real';
-    component.form.type = 'apartment';
-    component.form.location = 'Príncipe Real, Lisboa';
-    component.form.priceMonthly = 1200;
+    component.form.fields.title.setValue('Apartamento T2 em Príncipe Real');
+    component.form.fields.type.setValue('apartment');
+    component.form.fields.location.setValue('Príncipe Real, Lisboa');
+    component.form.fields.priceMonthly.setValue(1200);
   }
 
   beforeEach(async () => {
@@ -29,11 +29,11 @@ describe('AddPropertyComponent', () => {
 
   it('starts on step 0 with default form values', () => {
     expect(component.currentStep()).toBe(0);
-    expect(component.form.title).toBe('');
-    expect(component.form.bedrooms).toBe(1);
-    expect(component.form.bathrooms).toBe(1);
-    expect(component.form.features).toEqual([]);
-    expect(component.form.imageUrls).toEqual([]);
+    expect(component.form.fields.title.value()).toBe('');
+    expect(component.bedrooms()).toBe(1);
+    expect(component.bathrooms()).toBe(1);
+    expect(component.features()).toEqual([]);
+    expect(component.imageUrls()).toEqual([]);
   });
 
   it('declares the 4 expected steps with the correct labels', () => {
@@ -153,12 +153,10 @@ describe('AddPropertyComponent', () => {
   });
 
   it('isValid() returns true once title, type, location and priceMonthly are set', () => {
-    // Mutate form fields before the first isValid() read so the computed
-    // captures the populated state on its initial evaluation.
-    component.form.title = 'X';
-    component.form.type = 'apartment';
-    component.form.location = 'L';
-    component.form.priceMonthly = 1000;
+    component.form.fields.title.setValue('X');
+    component.form.fields.type.setValue('apartment');
+    component.form.fields.location.setValue('L');
+    component.form.fields.priceMonthly.setValue(1000);
     expect(component.isValid()).toBe(true);
   });
 
@@ -182,6 +180,17 @@ describe('AddPropertyComponent', () => {
     expect(fixture.nativeElement.querySelector('.validation-warn')).toBeNull();
   });
 
+  it('shows an inline error on a required field once touched while empty', () => {
+    const titleField = component.form.fields.title;
+    expect(titleField.showError()).toBe(false);
+    titleField.touch();
+    fixture.detectChanges();
+    expect(titleField.showError()).toBe(true);
+    const err = fixture.nativeElement.querySelector('.field-error') as HTMLElement;
+    expect(err).toBeTruthy();
+    expect(err.textContent).toContain('Título obrigatório');
+  });
+
   it('onSubmit() does NOT emit when the form is invalid', () => {
     const emitted: NewPropertyForm[] = [];
     component.submitted.subscribe((p) => emitted.push(p));
@@ -189,16 +198,40 @@ describe('AddPropertyComponent', () => {
     expect(emitted.length).toBe(0);
   });
 
-  it('onSubmit() emits a shallow copy of the form when valid', () => {
+  it('onSubmit() marks required fields touched when invalid', () => {
+    component.onSubmit();
+    expect(component.form.fields.title.touched()).toBe(true);
+    expect(component.form.fields.priceMonthly.touched()).toBe(true);
+  });
+
+  it('onSubmit() emits a fresh snapshot object when valid', () => {
     fillRequired();
     const emitted: NewPropertyForm[] = [];
     component.submitted.subscribe((p) => emitted.push(p));
     component.onSubmit();
-    expect(emitted.length).toBe(1);
-    expect(emitted[0]).not.toBe(component.form);
+    component.onSubmit();
+    expect(emitted.length).toBe(2);
+    // Each emit is a distinct object (snapshot copy), not shared state.
+    expect(emitted[0]).not.toBe(emitted[1]);
     expect(emitted[0].title).toBe('Apartamento T2 em Príncipe Real');
     expect(emitted[0].type).toBe('apartment');
     expect(emitted[0].priceMonthly).toBe(1200);
+  });
+
+  it('snapshot carries the interactive-signal fields (bedrooms/features/toggles)', () => {
+    fillRequired();
+    component.bedrooms.set(3);
+    component.furnished.set(true);
+    component.features.set(['Garagem']);
+    const emitted: NewPropertyForm[] = [];
+    component.submitted.subscribe((p) => emitted.push(p));
+    component.onSubmit();
+    expect(emitted[0].bedrooms).toBe(3);
+    expect(emitted[0].furnished).toBe(true);
+    expect(emitted[0].features).toEqual(['Garagem']);
+    // features is a copy — mutating the emitted payload must not touch state.
+    emitted[0].features.push('Piscina');
+    expect(component.features()).toEqual(['Garagem']);
   });
 
   it('clicking the Publicar button emits submitted when valid', () => {
@@ -222,48 +255,48 @@ describe('AddPropertyComponent', () => {
   });
 
   it('adjust() increments bedrooms within bounds', () => {
-    component.form.bedrooms = 4;
+    component.bedrooms.set(4);
     component.adjust('bedrooms', 1);
-    expect(component.form.bedrooms).toBe(5);
+    expect(component.bedrooms()).toBe(5);
   });
 
   it('adjust() clamps bedrooms at the upper bound of 10', () => {
-    component.form.bedrooms = 10;
+    component.bedrooms.set(10);
     component.adjust('bedrooms', 1);
-    expect(component.form.bedrooms).toBe(10);
+    expect(component.bedrooms()).toBe(10);
   });
 
   it('adjust() clamps bedrooms at the lower bound of 0 (studio)', () => {
-    component.form.bedrooms = 0;
+    component.bedrooms.set(0);
     component.adjust('bedrooms', -1);
-    expect(component.form.bedrooms).toBe(0);
+    expect(component.bedrooms()).toBe(0);
   });
 
   it('adjust() clamps bathrooms at the lower bound of 1', () => {
-    component.form.bathrooms = 1;
+    component.bathrooms.set(1);
     component.adjust('bathrooms', -1);
-    expect(component.form.bathrooms).toBe(1);
+    expect(component.bathrooms()).toBe(1);
   });
 
   it('adjust() clamps bathrooms at the upper bound of 5', () => {
-    component.form.bathrooms = 5;
+    component.bathrooms.set(5);
     component.adjust('bathrooms', 1);
-    expect(component.form.bathrooms).toBe(5);
+    expect(component.bathrooms()).toBe(5);
   });
 
-  it('hasFeature() reflects the features array', () => {
+  it('hasFeature() reflects the features signal', () => {
     expect(component.hasFeature('Varanda')).toBe(false);
-    component.form.features = ['Varanda'];
+    component.features.set(['Varanda']);
     expect(component.hasFeature('Varanda')).toBe(true);
   });
 
   it('toggleFeature() adds a feature when missing and removes it when present', () => {
     component.toggleFeature('Garagem');
-    expect(component.form.features).toEqual(['Garagem']);
+    expect(component.features()).toEqual(['Garagem']);
     component.toggleFeature('Piscina');
-    expect(component.form.features).toEqual(['Garagem', 'Piscina']);
+    expect(component.features()).toEqual(['Garagem', 'Piscina']);
     component.toggleFeature('Garagem');
-    expect(component.form.features).toEqual(['Piscina']);
+    expect(component.features()).toEqual(['Piscina']);
   });
 
   it('onImagesInput() splits a textarea value into trimmed, non-empty URLs', () => {
@@ -271,7 +304,7 @@ describe('AddPropertyComponent', () => {
       target: { value: ' https://a.com \n\nhttps://b.com\n  ' },
     } as unknown as Event;
     component.onImagesInput(event);
-    expect(component.form.imageUrls).toEqual(['https://a.com', 'https://b.com']);
+    expect(component.imageUrls()).toEqual(['https://a.com', 'https://b.com']);
   });
 
   it('typeLabel() maps known types to Portuguese labels', () => {
@@ -289,9 +322,9 @@ describe('AddPropertyComponent', () => {
 
   it('renders the review card values from the form on step 3', () => {
     fillRequired();
-    component.form.bedrooms = 2;
-    component.form.bathrooms = 1;
-    component.form.areaSqm = 75;
+    component.bedrooms.set(2);
+    component.bathrooms.set(1);
+    component.form.fields.areaSqm.setValue(75);
     component.currentStep.set(3);
     fixture.detectChanges();
     const card = fixture.nativeElement.querySelector('.review-card') as HTMLElement;
@@ -314,7 +347,7 @@ describe('AddPropertyComponent', () => {
     expect(firstChip.classList.contains('selected')).toBe(false);
     firstChip.click();
     fixture.detectChanges();
-    expect(component.form.features.length).toBe(1);
+    expect(component.features().length).toBe(1);
     const refreshed = fixture.nativeElement.querySelector('.feat-chip') as HTMLElement;
     expect(refreshed.classList.contains('selected')).toBe(true);
   });
