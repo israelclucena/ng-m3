@@ -27,7 +27,6 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { SignaturePadComponent } from './signature-pad.component';
 import { SignatureStateService, SignerRole } from '../../services/signature-state.service';
 import { LeaseAgreementService } from '../../services/lease-agreement.service';
@@ -47,7 +46,7 @@ import { LeaseAgreementService } from '../../services/lease-agreement.service';
   selector: 'iu-lease-signing-flow',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, SignaturePadComponent],
+  imports: [CommonModule, SignaturePadComponent],
   template: `
     <div class="lsf-container">
       <!-- Header -->
@@ -130,7 +129,9 @@ import { LeaseAgreementService } from '../../services/lease-agreement.service';
             />
 
             <label class="lsf-consent">
-              <input type="checkbox" [(ngModel)]="consentChecked" />
+              <input type="checkbox"
+                [checked]="consentChecked()"
+                (change)="consentChecked.set($any($event.target).checked)" />
               Li e aceito todos os termos e condições do contrato de arrendamento.
             </label>
           </div>
@@ -403,7 +404,8 @@ export class LeaseSigningFlowComponent implements OnInit {
   /** @output Emits lease ID when both parties have signed */
   readonly completed = output<string>();
 
-  consentChecked = false;
+  /** Whether the tenant/landlord has ticked the terms-acceptance box. */
+  readonly consentChecked = signal(false);
 
   readonly lease = computed(() => {
     const id = this.leaseId();
