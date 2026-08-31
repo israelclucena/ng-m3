@@ -180,7 +180,7 @@ import { createSignalForm, required, minLength, maxLength } from '../../utils/si
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .mrf-container {
       background: var(--md-sys-color-surface-container-low, #f3eff4);

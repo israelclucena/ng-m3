@@ -298,7 +298,7 @@ import {
 
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .iu-tenant-dashboard {
       font-family: var(--md-sys-typescale-body-medium-font, Roboto, sans-serif);
