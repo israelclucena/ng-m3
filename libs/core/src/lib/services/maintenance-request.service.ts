@@ -18,7 +18,7 @@
  * svc.requests(); // Signal<MaintenanceRequest[]>
  * ```
  */
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -138,7 +138,7 @@ const MOCK_REQUESTS: MaintenanceRequest[] = [
  *
  * Feature flag: MAINTENANCE_MODULE
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MaintenanceRequestService {
   private readonly _requests = signal<MaintenanceRequest[]>(MOCK_REQUESTS);
   private readonly _loading = signal(false);

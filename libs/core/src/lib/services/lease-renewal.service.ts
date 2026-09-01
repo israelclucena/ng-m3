@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 export type RenewalStatus = 'expiring_soon' | 'offer_sent' | 'accepted' | 'declined' | 'expired';
 
@@ -103,7 +103,7 @@ const MOCK_RENEWALS: LeaseRenewal[] = [
 ];
 
 /** LeaseRenewalService — manages lease renewal workflow for landlords and tenants. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class LeaseRenewalService {
   private _renewals = signal<LeaseRenewal[]>(MOCK_RENEWALS);
   private _filter = signal<RenewalStatus | 'all'>('all');

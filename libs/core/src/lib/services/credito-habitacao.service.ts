@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Indexante used as base rate for variable-rate mortgages. */
 export type MortgageIndexante = 'euribor3m' | 'euribor6m' | 'euribor12m' | 'taxaFixa';
@@ -27,7 +27,7 @@ export interface AmortizationRow {
  * (incl. seguros), total paid, total interest and a partial amortization
  * schedule (first 12 months + last 12 months). Pure signals.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CreditoHabitacaoService {
   /** Property value (EUR). */
   readonly valorImovel = signal<number>(250_000);

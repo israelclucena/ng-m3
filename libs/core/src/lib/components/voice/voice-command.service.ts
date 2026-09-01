@@ -1,4 +1,4 @@
-import { Injectable, signal, NgZone, inject } from '@angular/core';
+import { signal, NgZone, inject, Service } from '@angular/core';
 
 export interface VoiceCommand {
   /** Phrase(s) to match */
@@ -23,7 +23,7 @@ export type VoiceStatus = 'idle' | 'listening' | 'processing' | 'error' | 'unsup
  * voice.start();
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class VoiceCommandService {
   private zone = inject(NgZone);
   private recognition: any = null;

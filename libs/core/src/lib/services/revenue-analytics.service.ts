@@ -7,7 +7,7 @@
  *
  * Feature flag: LANDLORD_REVENUE
  */
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -107,7 +107,7 @@ function buildMockProperties(): PropertyRevenueSummary[] {
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RevenueAnalyticsService {
   private readonly _analytics = signal<LandlordAnalytics | null>(null);
   private readonly _loading = signal(false);

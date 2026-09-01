@@ -18,7 +18,7 @@
  * svc.applications(); // Signal<TenantApplication[]>
  * ```
  */
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ const SEED_APPLICATIONS: TenantApplication[] = [
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class TenantApplicationService {
   private readonly _applications = signal<TenantApplication[]>(SEED_APPLICATIONS);
   private readonly _loading = signal(false);

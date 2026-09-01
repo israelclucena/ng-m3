@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  computed,
-  effect,
-  signal,
-} from '@angular/core';
+import { computed, effect, signal, Service } from '@angular/core';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -57,7 +52,7 @@ function saveToStorage(ids: Set<string>): void {
  * }
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class FavouritesService {
 
   // ─── State ──────────────────────────────────────────────────────────────

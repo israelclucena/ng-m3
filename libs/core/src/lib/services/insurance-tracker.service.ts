@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Type of property insurance — common PT product categories. */
 export type InsuranceType =
@@ -45,7 +45,7 @@ const todayIso = (): string => new Date().toISOString().slice(0, 10);
  *
  * Pure signals — no RxJS.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class InsuranceTrackerService {
   private readonly _policies = signal<InsurancePolicy[]>([]);
 

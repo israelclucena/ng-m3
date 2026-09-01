@@ -6,7 +6,7 @@
  *
  * Feature flag: PAYMENT_RECEIPT
  */
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 import type { BookingConfirmationData } from '../components/payment/payment.types';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ export interface Invoice {
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class InvoiceService {
   private _invoiceCounter = signal(1);
   private _invoices = signal<Invoice[]>([]);

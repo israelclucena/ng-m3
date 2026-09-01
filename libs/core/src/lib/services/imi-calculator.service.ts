@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Subset of PT concelhos with custom IMI rates (urban property). */
 export const PT_IMI_TAXAS_MUNICIPAIS: Readonly<Record<string, number>> = {
@@ -32,7 +32,7 @@ export interface IMIPrestacao {
  *
  * Pure signals — no RxJS.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class IMICalculatorService {
   /** Valor Patrimonial Tributário (EUR). */
   readonly vpt = signal<number>(150_000);

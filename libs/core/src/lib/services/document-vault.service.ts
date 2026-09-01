@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Document category for vault organisation */
 export type VaultDocumentCategory =
@@ -47,7 +47,7 @@ export interface AddDocumentPayload {
  * Documents are categorised (lease, receipt, photo, id, contract, inspection, other)
  * and can be filtered by category. Provides computed storage totals and category counts.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DocumentVaultService {
   readonly documents = signal<VaultDocument[]>(this._seed());
   readonly loading = signal(false);

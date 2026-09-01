@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 export type NotificationChannel = 'email' | 'sms' | 'push' | 'in_app';
 export type NotificationCategory =
@@ -88,7 +88,7 @@ const DEFAULT_PREFS: NotificationPreference[] = [
 ];
 
 /** NotificationPreferencesService — manage per-category, per-channel notification preferences. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class NotificationPreferencesService {
   private _prefs = signal<NotificationPreference[]>(DEFAULT_PREFS);
   private _saved = signal(true);

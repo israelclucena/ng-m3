@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Categoria do item — usada para agrupar e direccionar deduções fiscais/caução. */
 export type InventoryItemCategory =
@@ -137,7 +137,7 @@ export function suggestedDeduction(
  *
  * Sem RxJS — pure signals.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PropertyInventoryService {
   private readonly _items = signal<InventoryItem[]>(
     DEFAULT_ITEMS.map(i => ({ ...i })),

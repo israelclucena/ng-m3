@@ -20,7 +20,7 @@
  * svc.markAllRead();
  * ```
  */
-import { Injectable, inject, computed, signal } from '@angular/core';
+import { inject, computed, signal, Service } from '@angular/core';
 import { NotificationBellService } from '../components/notification-bell/notification-bell.service';
 import { AppNotification, NotificationCategory } from '../components/notification-bell/notification-bell.types';
 
@@ -44,7 +44,7 @@ export interface CategoryFilter {
  *
  * Feature flag: NOTIFICATION_CENTER
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class NotificationCenterService {
   private readonly bellSvc = inject(NotificationBellService);
 

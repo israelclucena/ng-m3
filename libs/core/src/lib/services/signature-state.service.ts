@@ -17,7 +17,7 @@
  * svc.state(); // 'landlord_signed'
  * ```
  */
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { signal, computed, inject, Service } from '@angular/core';
 import { LeaseAgreementService } from './lease-agreement.service';
 import { NotificationBellService } from '../components/notification-bell/notification-bell.service';
 
@@ -62,7 +62,7 @@ export interface SigningFlowState {
  *
  * Feature flag: E_SIGNATURE_MODULE
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SignatureStateService {
   private readonly leaseSvc = inject(LeaseAgreementService);
   private readonly notifSvc = inject(NotificationBellService);

@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** PT energy certificate classes (ADENE). */
 export type EnergyClass = 'A+' | 'A' | 'B' | 'B-' | 'C' | 'D' | 'E' | 'F';
@@ -36,7 +36,7 @@ export const PT_CE_FINE_MAX_EUR = 3740;
  *
  * Pure signals — no RxJS.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class EnergyCertificateService {
   /** ADENE certificate number. */
   readonly numeroCertificado = signal<string>('CE-2024-1234567');

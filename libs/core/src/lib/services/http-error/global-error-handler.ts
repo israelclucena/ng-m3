@@ -12,7 +12,7 @@
  * { provide: ErrorHandler, useClass: GlobalErrorHandler }
  * ```
  */
-import { ErrorHandler, Injectable, signal } from '@angular/core';
+import { ErrorHandler, signal, Service } from '@angular/core';
 
 export interface AppError {
   message: string;
@@ -20,7 +20,7 @@ export interface AppError {
   timestamp: Date;
 }
 
-@Injectable()
+@Service({ autoProvided: false })
 export class GlobalErrorHandler implements ErrorHandler {
   /** Last unhandled application error. */
   readonly lastAppError = signal<AppError | null>(null);

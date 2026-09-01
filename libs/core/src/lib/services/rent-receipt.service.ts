@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /**
  * Inputs the landlord fills in to generate a single rent receipt.
@@ -54,7 +54,7 @@ const round2 = (n: number): number => Math.round(n * 100) / 100;
  * (5–25% for long-term contracts under NRAU recent reforms). Tracks an
  * append-only history of generated receipts in a signal.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RentReceiptService {
   private readonly _receipts = signal<RentReceipt[]>([]);
 

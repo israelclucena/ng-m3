@@ -21,7 +21,7 @@
  * // → MaintenanceRequestService updated + NotificationBellService notified
  * ```
  */
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import {
   MaintenanceRequestService,
   UpdateMaintenanceStatusPayload,
@@ -65,7 +65,7 @@ const TRANSITION_MESSAGES: Partial<Record<MaintenanceStatus, TransitionMessage>>
  *
  * Feature flag: MAINTENANCE_NOTIFICATIONS
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MaintenanceNotificationHandler {
   private readonly maintenanceSvc = inject(MaintenanceRequestService);
   private readonly notifSvc = inject(NotificationBellService);

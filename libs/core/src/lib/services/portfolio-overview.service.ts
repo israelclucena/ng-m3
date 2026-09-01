@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 export type PropertyStatus = 'occupied' | 'vacant' | 'maintenance' | 'listed';
 
@@ -105,7 +105,7 @@ const MOCK_MONTHLY: MonthlySnapshot[] = [
 ];
 
 /** PortfolioOverviewService — high-level landlord portfolio analytics. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PortfolioOverviewService {
   private _properties = signal<PortfolioProperty[]>(MOCK_PROPERTIES);
   private _monthlyData = signal<MonthlySnapshot[]>(MOCK_MONTHLY);

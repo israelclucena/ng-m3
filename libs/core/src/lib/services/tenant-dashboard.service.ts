@@ -10,7 +10,7 @@
  *
  * Feature flag: TENANT_DASHBOARD
  */
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -239,7 +239,7 @@ function buildMockSpending(): TenantSpendingPoint[] {
  *
  * Feature flag: TENANT_DASHBOARD
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class TenantDashboardService {
   // ── State signals ──────────────────────────────────────────────────────────
 

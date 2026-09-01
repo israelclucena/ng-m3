@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /**
  * Damage / withholding categories aligned with NRAU art. 13.º practice.
@@ -32,7 +32,7 @@ const nextId = () => `damage-${++__damageSeq}-${Date.now().toString(36)}`;
  *
  * No RxJS — pure signals.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DepositReturnService {
   /** Original caução handed over at lease start (EUR). */
   readonly caucaoOriginal = signal<number>(0);

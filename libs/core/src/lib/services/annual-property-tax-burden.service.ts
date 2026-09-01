@@ -22,7 +22,7 @@
  *
  * Feature flag: `ANNUAL_TAX_BURDEN_AGGREGATOR`.
  */
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { computed, inject, signal, Service } from '@angular/core';
 import {
   PortfolioMockService,
   type PortfolioProperty,
@@ -113,7 +113,7 @@ export interface AnnualBurdenResult {
  * Output: {@link AnnualBurdenResult} as a `computed` signal, plus a
  * call-style `annualBurden(year, dispositions)` for ad-hoc invocations.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AnnualPropertyTaxBurdenService {
   private readonly portfolio = inject(PortfolioMockService);
 

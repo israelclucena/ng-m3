@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { computed, inject, signal, Service } from '@angular/core';
 import {
   LandlordCommunicationTemplatesService,
   CommunicationVars,
@@ -27,7 +27,7 @@ const nextHistId = () => `comm-${++__histSeq}-${Date.now().toString(36)}`;
  *
  * No RxJS — pure signals.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CommunicationCenterStateService {
   private readonly templates = inject(LandlordCommunicationTemplatesService);
 

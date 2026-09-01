@@ -12,7 +12,7 @@
  * const errorSvc = inject(HttpErrorService);
  * effect(() => { if (errorSvc.lastError()) console.warn(errorSvc.lastError()); });
  */
-import { Injectable, signal, inject } from '@angular/core';
+import { signal, inject, Service } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -23,7 +23,7 @@ export interface HttpErrorInfo {
   timestamp: Date;
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class HttpErrorService {
   private readonly router = inject(Router);
 

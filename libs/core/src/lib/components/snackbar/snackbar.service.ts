@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { signal, Service } from '@angular/core';
 
 export interface SnackbarConfig {
   message: string;
@@ -24,7 +24,7 @@ export interface SnackbarState extends Required<Omit<SnackbarConfig, 'action' | 
  *   this.snackbar.show({ message: 'Item deleted', action: 'Undo' });
  *   this.snackbar.show({ message: 'Saved!' });
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SnackbarService {
   private _state = signal<SnackbarState>({
     message: '',

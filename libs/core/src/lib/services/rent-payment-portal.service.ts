@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Payment status for a rent period */
 export type RentPaymentStatus = 'paid' | 'pending' | 'overdue' | 'partial';
@@ -42,7 +42,7 @@ export interface CreatePaymentPayload {
  * Provides signal-based state for payment schedule, outstanding balances,
  * payment history, and streak tracking.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RentPaymentPortalService {
   readonly payments = signal<RentPayment[]>(this._seed());
   readonly loading = signal(false);

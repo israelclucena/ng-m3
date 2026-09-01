@@ -1,4 +1,4 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, signal, Service } from '@angular/core';
 
 // ─── Models ──────────────────────────────────────────────────────────────────
 
@@ -62,7 +62,7 @@ export interface AuthResult {
  * if (auth.isAuthenticated()) { ... }
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthService {
   // ── Private state ─────────────────────────────────────────────────────────
 

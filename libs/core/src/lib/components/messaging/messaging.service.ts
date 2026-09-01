@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 import { ChatMessage, MessageThread } from './messaging.types';
 
 /** Generates a simple unique id. */
@@ -89,7 +89,7 @@ const SEED_THREADS: MessageThread[] = [
  * Provides reactive state for thread list, active thread, and unread counts.
  * In a real app this would connect to a backend (Firebase, REST, WebSocket).
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MessagingService {
   /** All threads, signals-powered. */
   private readonly _threads = signal<MessageThread[]>(SEED_THREADS);

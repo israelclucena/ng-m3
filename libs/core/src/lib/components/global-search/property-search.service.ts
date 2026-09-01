@@ -1,4 +1,4 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, signal, Service } from '@angular/core';
 import { PropertyData, PropertyType } from '../property-card/property-card.component';
 import { debouncedSignal } from '../../utils/signal-debounce';
 
@@ -86,7 +86,7 @@ const DEFAULT_FILTERS: PropertySearchFilters = {
  * const results = search.results(); // computed signal
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PropertySearchService {
   // ─── Private state ──────────────────────────────────────────────────────────
 

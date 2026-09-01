@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
+import { signal, computed, effect, Service } from '@angular/core';
 import { EXPRESSIVE_TOKENS } from '../tokens/expressive.tokens';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
@@ -70,7 +70,7 @@ const STORAGE_KEY_EXPRESSIVE = 'm3-expressive';
  * effect(() => console.log('Mode:', this.theme.mode()));
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ThemeService {
   private _mode = signal<ThemeMode>(this._loadMode());
   private _paletteKey = signal<string>(this._loadPaletteKey());

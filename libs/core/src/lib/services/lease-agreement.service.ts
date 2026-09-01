@@ -18,7 +18,7 @@
  * svc.leases(); // Signal<LeaseAgreement[]>
  * ```
  */
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -155,7 +155,7 @@ const SEED_LEASES: LeaseAgreement[] = [
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class LeaseAgreementService {
   private readonly _leases = signal<LeaseAgreement[]>(SEED_LEASES);
   private readonly _loading = signal(false);

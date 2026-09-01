@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 export type ArrearsStatus = 'overdue' | 'partial' | 'reminder_sent' | 'payment_plan' | 'legal' | 'resolved';
 
@@ -98,7 +98,7 @@ const MOCK_ARREARS: ArrearsRecord[] = [
 ];
 
 /** RentArrearsService — tracks overdue rent across landlord portfolio. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RentArrearsService {
   private _records = signal<ArrearsRecord[]>(MOCK_ARREARS);
   private _filter = signal<ArrearsStatus | 'all'>('all');

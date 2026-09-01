@@ -23,7 +23,7 @@
  * portfolio.byNeighbourhood('Bairro Alto');
  * ```
  */
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, signal, Service } from '@angular/core';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -335,7 +335,7 @@ const MOCK_PROPERTIES: PortfolioProperty[] = [
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PortfolioMockService {
   readonly properties = signal<PortfolioProperty[]>([...MOCK_PROPERTIES]);
 

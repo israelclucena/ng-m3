@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 export type ViewingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'no_show';
 export type ViewingType = 'in_person' | 'virtual';
@@ -110,7 +110,7 @@ const MOCK_VIEWINGS: ViewingSlot[] = [
 ];
 
 /** ViewingSchedulerService — manages property viewing appointments. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ViewingSchedulerService {
   private _viewings = signal<ViewingSlot[]>(MOCK_VIEWINGS);
   private _filter = signal<ViewingStatus | 'all'>('all');

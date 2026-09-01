@@ -17,7 +17,7 @@
  * effect(() => console.log('LCP:', vitals.lcp()));
  * ```
  */
-import { Injectable, OnDestroy, signal, computed, PLATFORM_ID, inject } from '@angular/core';
+import { OnDestroy, signal, computed, PLATFORM_ID, inject, Service } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -106,7 +106,7 @@ function worstRating(metrics: VitalMetric[]): VitalRating {
  * Provide at root level for singleton access across the app.
  * Feature flag: `WEB_VITALS`
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class WebVitalsService implements OnDestroy {
   private readonly _platformId = inject(PLATFORM_ID);
   private readonly _observers: PerformanceObserver[] = [];

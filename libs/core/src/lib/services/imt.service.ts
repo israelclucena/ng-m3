@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Finalidade do imóvel para efeitos de IMT (determina a tabela aplicável). */
 export type IMTFinalidade =
@@ -79,7 +79,7 @@ export interface IMTBreakdownLinha {
  *
  * Pure signals — no RxJS.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class IMTService {
   /** Valor de aquisição (escritura ou VPT, o maior — CIMT art. 12.º). */
   readonly valorAquisicao = signal<number>(280_000);

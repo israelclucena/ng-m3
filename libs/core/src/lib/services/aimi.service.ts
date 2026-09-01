@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Tipo de titular para efeitos de AIMI. */
 export type AIMITitular = 'singular' | 'conjunto' | 'sociedade';
@@ -69,7 +69,7 @@ export interface AIMIBreakdownLinha {
  *
  * Pure signals — no RxJS.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AIMIService {
   /** Lista de propriedades elegíveis. */
   readonly propriedades = signal<readonly AIMIPropriedade[]>([

@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 import {
   PT_IMT_HPP_2026,
   PT_IMT_OUTROS_2026,
@@ -65,7 +65,7 @@ export interface TransactionBreakdown {
  *
  * Pure signals — no RxJS. Sprint 052.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PropertyTransactionCostService {
   /** Negotiated sale price (EUR) — drives both sides. */
   readonly precoVenda = signal<number>(280_000);

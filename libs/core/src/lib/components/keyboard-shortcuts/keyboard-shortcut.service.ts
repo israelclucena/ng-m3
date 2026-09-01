@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, OnDestroy, NgZone, inject } from '@angular/core';
+import { signal, computed, OnDestroy, NgZone, inject, Service } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 export interface ShortcutBinding {
@@ -33,7 +33,7 @@ export interface ShortcutBinding {
  * });
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class KeyboardShortcutService implements OnDestroy {
   private readonly document = inject(DOCUMENT);
   private readonly ngZone = inject(NgZone);

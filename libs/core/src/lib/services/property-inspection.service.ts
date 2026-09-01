@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** Type of property inspection */
 export type InspectionType = 'move-in' | 'move-out' | 'routine' | 'emergency';
@@ -54,7 +54,7 @@ export interface CreateInspectionPayload {
  * Supports move-in, move-out, routine, and emergency inspections with
  * per-room condition tracking and dual-signature completion flow.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PropertyInspectionService {
   readonly reports = signal<InspectionReport[]>(this._seed());
   readonly loading = signal(false);

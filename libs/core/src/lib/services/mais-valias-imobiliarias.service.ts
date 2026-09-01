@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 import { PT_IRS_ESCALOES_2026, type IRSEscalao } from './irs-categoria-f.service';
 
 /** Estatuto fiscal do alienante (residente fiscal em PT vs não-residente). */
@@ -65,7 +65,7 @@ export interface MVComparacaoLinha {
  *
  * Pure signals — no RxJS.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MaisValiasImobiliariasService {
   /** Valor de realização (preço de venda). */
   readonly valorRealizacao = signal<number>(280_000);

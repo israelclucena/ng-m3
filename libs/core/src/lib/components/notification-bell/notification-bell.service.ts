@@ -1,4 +1,4 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, signal, Service } from '@angular/core';
 import { AppNotification, NotificationCategory } from './notification-bell.types';
 
 function uid(): string {
@@ -47,7 +47,7 @@ const SEED: AppNotification[] = [
 /**
  * NotificationBellService — manages in-app notifications with Angular Signals.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class NotificationBellService {
   private readonly _notifications = signal<AppNotification[]>(SEED);
 

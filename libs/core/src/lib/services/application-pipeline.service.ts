@@ -19,7 +19,7 @@
  * svc.approve('app-001');
  * ```
  */
-import { Injectable, inject, computed, signal } from '@angular/core';
+import { inject, computed, signal, Service } from '@angular/core';
 import {
   TenantApplicationService,
   TenantApplication,
@@ -51,7 +51,7 @@ export interface PipelineColumns {
  * Groups applications into Kanban columns and provides action methods.
  * Feature flag: APPLICATION_PIPELINE
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ApplicationPipelineService {
   private readonly appSvc = inject(TenantApplicationService);
 

@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 
@@ -39,7 +39,7 @@ export interface NotificationItem extends Required<Omit<NotificationConfig, 'onA
  * this.notify.info('New update available', { duration: 8000 });
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class NotificationService {
   private _queue = signal<NotificationItem[]>([]);
   private _current = signal<NotificationItem | null>(null);

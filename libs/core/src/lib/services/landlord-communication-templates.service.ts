@@ -1,4 +1,4 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, signal, Service } from '@angular/core';
 
 /** Bucket grouping templates by intent. */
 export type TemplateCategory =
@@ -153,7 +153,7 @@ const PLACEHOLDER_RE = /{{\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*}}/g;
  * Designed to be consumed by other UI surfaces (NotificationCenter,
  * MessagingModule, future CommunicationCenter). Service-only — no component.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class LandlordCommunicationTemplatesService {
   private readonly _templates = signal<ReadonlyArray<CommunicationTemplate>>(TEMPLATES);
 

@@ -4,7 +4,7 @@
  * No RxJS. Loads locale JSON, interpolates {{key}} placeholders.
  * Sprint 021 — Night Shift 2026-03-15
  */
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 export type SupportedLocale = 'pt-PT' | 'en-GB';
 
@@ -24,7 +24,7 @@ type TranslationMap = Record<string, string>;
  * i18n.setLocale('pt-PT');
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class I18nService {
   private readonly _locale = signal<SupportedLocale>('pt-PT');
   private readonly _translations = signal<TranslationMap>({});

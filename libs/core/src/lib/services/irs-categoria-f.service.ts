@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /** PT IRS regime selection for Categoria F (rendimentos prediais). */
 export type IRSCatFRegime = 'taxaAutonoma28' | 'englobamento';
@@ -34,7 +34,7 @@ export const PT_IRS_TAXA_AUTONOMA_CAT_F = 0.28;
  *
  * Pure signals — no RxJS.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class IRSCategoriaFService {
   /** Renda bruta anual (EUR). */
   readonly rendimentoBrutoAnual = signal<number>(12_000);

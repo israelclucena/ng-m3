@@ -1,4 +1,4 @@
-import { Injectable, resource, signal } from '@angular/core';
+import { resource, signal, Service } from '@angular/core';
 import { PropertyData } from '../components/property-card/property-card.component';
 
 // ─── Mock data store ──────────────────────────────────────────────────────────
@@ -146,7 +146,7 @@ function fetchPropertyById(id: string | number): Promise<PropertyData | null> {
  * }
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PropertyResourceService {
 
   /** Currently selected property id (drives detail resource) */

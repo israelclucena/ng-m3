@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /**
  * Categories of move-in tasks. Each maps to an icon + heading in the UI.
@@ -66,7 +66,7 @@ const DEFAULT_TASKS: ReadonlyArray<MoveInTask> = [
  * Provides the seed list, a writable mutable copy, and computed progress
  * counters by category. Pure signals — no RxJS.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MoveInChecklistService {
   private readonly _tasks = signal<MoveInTask[]>(
     DEFAULT_TASKS.map(t => ({ ...t })),

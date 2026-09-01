@@ -35,14 +35,7 @@
  * ```
  */
 
-import {
-  Injectable,
-  signal,
-  computed,
-  effect,
-  Signal,
-  WritableSignal,
-} from '@angular/core';
+import { signal, computed, effect, Signal, WritableSignal, Service } from '@angular/core';
 import {
   createHttpResource,
   ResourceState,
@@ -93,7 +86,7 @@ export interface AvailabilityState {
  *
  * Feature flags: AVAILABILITY_REALTIME, RESOURCE_SNAPSHOT
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AvailabilityResourceService {
 
   // ── Internal writeable signals ────────────────────────────────────────────

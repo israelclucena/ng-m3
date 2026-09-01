@@ -7,7 +7,7 @@
  *
  * Feature flag: PAYMENT_GATEWAY
  */
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 import { PaymentFormData, PaymentMethodType, BookingConfirmationData } from '../components/payment/payment.types';
 
 export type PaymentStatus = 'idle' | 'processing' | 'success' | 'failed' | 'cancelled';
@@ -41,7 +41,7 @@ export interface ProcessPaymentOptions {
   formData: PaymentFormData;
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PaymentService {
   /** Current payment processing status */
   readonly status = signal<PaymentStatus>('idle');

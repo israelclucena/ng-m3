@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { signal, Service } from '@angular/core';
 
 export type ExportFormat = 'pdf' | 'json' | 'csv' | 'png';
 
@@ -24,7 +24,7 @@ export interface ExportOptions {
  * exportService.export({ format: 'json', data: myData, filename: 'report' });
  * ```
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ExportService {
   /** Whether an export is in progress */
   readonly exporting = signal(false);

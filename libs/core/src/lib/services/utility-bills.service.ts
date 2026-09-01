@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 export type UtilityType = 'electricity' | 'water' | 'gas' | 'internet' | 'waste' | 'other';
 export type BillStatus = 'pending' | 'paid' | 'overdue' | 'disputed';
@@ -132,7 +132,7 @@ const MOCK_BILLS: UtilityBill[] = [
 ];
 
 /** UtilityBillsService — manage and track utility bills across a property portfolio. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class UtilityBillsService {
   private _bills = signal<UtilityBill[]>(MOCK_BILLS);
   private _filterStatus = signal<BillStatus | 'all'>('all');

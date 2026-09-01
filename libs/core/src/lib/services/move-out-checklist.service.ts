@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /**
  * Categories of move-out tasks. Each maps to an icon + heading in the UI.
@@ -77,7 +77,7 @@ const DEFAULT_TASKS: ReadonlyArray<MoveOutTask> = [
  * categories, but task list reflects exit obligations: termination notices,
  * utility cancellation, walk-through, deposit reclaim. Pure signals.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MoveOutChecklistService {
   private readonly _tasks = signal<MoveOutTask[]>(
     DEFAULT_TASKS.map(t => ({ ...t })),

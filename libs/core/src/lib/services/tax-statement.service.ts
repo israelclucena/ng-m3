@@ -1,4 +1,4 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, signal, Service } from '@angular/core';
 import type { RentReceipt } from './rent-receipt.service';
 
 /** Buckets for deductible expenses on Categoria F (IRS rendimentos prediais). */
@@ -43,7 +43,7 @@ const round2 = (n: number) => Math.round(n * 100) / 100;
  * Pure signals, no RxJS. Service-only — see `TaxStatementGeneratorComponent`
  * for the UI surface.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class TaxStatementService {
   /** Tax year (e.g. 2025). */
   readonly year = signal<number>(new Date().getFullYear() - 1);

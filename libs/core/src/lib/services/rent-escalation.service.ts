@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { signal, computed, Service } from '@angular/core';
 
 /**
  * Annual update coefficients for residential rent contracts in Portugal,
@@ -41,7 +41,7 @@ export interface EscalationRow {
  *
  * Pure signals — no RxJS. Aligned with NRAU art. 24.º (annual rent update).
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RentEscalationService {
   /** Current monthly rent (EUR). */
   readonly rendaActual = signal<number>(800);
