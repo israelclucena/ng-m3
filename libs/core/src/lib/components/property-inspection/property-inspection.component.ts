@@ -2,7 +2,6 @@ import {
   Component, ChangeDetectionStrategy, Input, OnInit, inject, signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import {
   PropertyInspectionService,
 } from '../../services/property-inspection.service';
@@ -22,7 +21,7 @@ import type { InspectionReport, RoomCondition } from '../../services/property-in
   selector: 'iu-property-inspection',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   template: `
     <div class="pi-root">
 
@@ -75,8 +74,8 @@ import type { InspectionReport, RoomCondition } from '../../services/property-in
                       <select
                         class="pi-select"
                         [attr.aria-label]="'Estado — ' + room.name"
-                        [ngModel]="room.condition"
-                        (ngModelChange)="onConditionChange(report.id, room.id, $event)"
+                        [value]="room.condition"
+                        (change)="onConditionChange(report.id, room.id, $any($event.target).value)"
                       >
                         <option value="excellent">Excellent</option>
                         <option value="good">Good</option>
@@ -89,8 +88,8 @@ import type { InspectionReport, RoomCondition } from '../../services/property-in
                         type="text"
                         placeholder="Notes…"
                         [attr.aria-label]="'Notas — ' + room.name"
-                        [ngModel]="room.notes"
-                        (ngModelChange)="onNotesChange(report.id, room.id, $event)"
+                        [value]="room.notes"
+                        (input)="onNotesChange(report.id, room.id, $any($event.target).value)"
                       />
                     </div>
                   } @else if (room.notes) {
@@ -120,7 +119,8 @@ import type { InspectionReport, RoomCondition } from '../../services/property-in
                   class="pi-inspector-textarea"
                   placeholder="Inspector summary notes…"
                   rows="3"
-                  [(ngModel)]="notesBuffers[report.id]"
+                  [value]="notesBuffers[report.id]"
+                  (input)="notesBuffers[report.id] = $any($event.target).value"
                 ></textarea>
                 <button
                   class="pi-complete-btn"
