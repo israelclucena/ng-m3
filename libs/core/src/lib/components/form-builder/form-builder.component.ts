@@ -8,7 +8,6 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import {
   FormField,
   FormFieldValidation,
@@ -33,7 +32,7 @@ import {
 @Component({
   selector: 'iu-form-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   template: `
     <form class="iu-form" (ngSubmit)="submit()" novalidate>
 
@@ -208,7 +207,7 @@ import {
 
     </form>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host { display: block; }
 
