@@ -424,7 +424,7 @@ export interface TenantApplicationModel {
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .taf-container {
       background: var(--md-sys-color-surface);
