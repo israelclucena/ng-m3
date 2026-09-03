@@ -124,7 +124,7 @@ import { InsuranceTrackerWidgetComponent } from '../widgets/insurance-tracker-wi
       </div>
     }
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host { display: block; }
   `],

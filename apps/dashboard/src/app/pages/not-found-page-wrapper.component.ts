@@ -14,7 +14,7 @@ import { NotFoundPageComponent } from '@israel-ui/core';
   selector: 'app-not-found-page-wrapper',
   standalone: true,
   imports: [NotFoundPageComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<iu-not-found-page />`,
 })
 export class NotFoundPageWrapperComponent {}

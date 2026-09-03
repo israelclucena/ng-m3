@@ -37,7 +37,7 @@ import { CardComponent } from '@israel-ui/core';
       </div>
     </iu-card>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host { display: block; }
     .widget { padding: 4px 0; }

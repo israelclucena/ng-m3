@@ -18,7 +18,7 @@ import { map } from 'rxjs';
   selector: 'app-error-page-wrapper',
   standalone: true,
   imports: [ErrorPageComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <iu-error-page
       [errorCode]="errorCode()"

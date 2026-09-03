@@ -46,7 +46,7 @@ import { CardComponent, SwitchComponent, DividerComponent } from '@israel-ui/cor
       </iu-card>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .settings-page {
       display: flex;
