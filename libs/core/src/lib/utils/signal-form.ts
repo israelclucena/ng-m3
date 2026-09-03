@@ -116,7 +116,13 @@ export type SignalFormConfig = { [K: string]: SignalFieldConfig<any> };
  * `InferFormValues<{ name: { value: '' }, age: { value: 0 } }>` → `{ name: string; age: number }`
  */
 export type InferFormValues<C extends SignalFormConfig> = {
-  [K in keyof C as string extends K ? never : K]: C[K] extends SignalFieldConfig<infer V> ? V : never;
+  // Infer each field's value type from the `value` property ONLY. Inferring via
+  // `SignalFieldConfig<infer V>` unifies V across `value: T` AND `validators:
+  // SignalValidator<T>[]`; since `SignalValidator` is contravariant on its parameter,
+  // a validator typed `SignalValidator<unknown>` (e.g. `required()`) dragged V to
+  // `unknown` for every field using it under TS 6.0 — collapsing `v.title` etc. to
+  // `unknown` and breaking the federation build. Reading `value` alone is immune.
+  [K in keyof C as string extends K ? never : K]: C[K] extends { value: infer V } ? V : never;
 };
 
 /**
