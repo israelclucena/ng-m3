@@ -91,6 +91,9 @@ importers:
       '@analogjs/vite-plugin-angular':
         specifier: ^2.7.1
         version: 2.7.1(@angular-devkit/build-angular@21.2.13(859ca19652d58ffbff56cc369612cddf))(@angular/build@22.1.6(abd36d211c53a9a639ff8985afc66a46))(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(vite@8.2.1(@types/node@20.19.9)(esbuild@0.28.2)(jiti@2.7.0)(less@4.4.2)(sass-embedded@1.99.0)(sass@1.101.0)(terser@5.46.0)(yaml@2.9.0))
+      '@angular-devkit/architect':
+        specifier: 0.2201.6
+        version: 0.2201.6(chokidar@5.0.0)
       '@angular-devkit/core':
         specifier: 22.1.6
         version: 22.1.6(chokidar@5.0.0)
