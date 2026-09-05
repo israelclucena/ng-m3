@@ -27,6 +27,15 @@ const meta: Meta<CardComponent> = {
     clickable: { control: 'boolean' },
     disabled:  { control: 'boolean' },
     fullWidth: { control: 'boolean' },
+    kind: {
+      control: 'select',
+      options: ['plain', 'action', 'profile', 'stat'],
+      description: 'Forma semântica do card (Onda 9 / CARD_V2)',
+    },
+    loading:    { control: 'boolean', description: 'Skeleton + aria-busy' },
+    empty:      { control: 'boolean', description: 'Mostra o slot [slot="empty"]' },
+    selectable: { control: 'boolean', description: 'Toggle button com aria-pressed' },
+    selected:   { control: 'boolean' },
   },
 };
 
@@ -178,6 +187,73 @@ export const Playground: Story = {
       >
         Conteúdo do card. Substitui por texto ou componentes filhos.
       </iu-card>
+    `,
+  }),
+};
+
+// ==========================================
+// Onda 9 — CARD_V2: estados reais
+// ==========================================
+
+// --- Loading (skeleton) ---
+export const Loading: Story = {
+  args: { variant: 'elevated', loading: true, title: 'Apartamento T2 — Alfama' },
+  render: (args) => ({
+    props: args,
+    template: `
+      <iu-card [variant]="variant" [title]="title" [loading]="loading" style="width:320px">
+        Este conteúdo só aparece quando o loading termina.
+      </iu-card>
+    `,
+  }),
+};
+
+// --- Empty ---
+export const Empty: Story = {
+  args: { variant: 'outlined', empty: true, title: 'Portfolio' },
+  render: (args) => ({
+    props: args,
+    template: `
+      <iu-card [variant]="variant" [title]="title" [empty]="empty" style="width:320px">
+        <div slot="empty">
+          <span class="material-symbols-outlined" aria-hidden="true">home_work</span>
+          <span>Ainda não adicionaste imóveis.</span>
+        </div>
+        Conteúdo escondido enquanto o card está vazio.
+      </iu-card>
+    `,
+  }),
+};
+
+// --- Selectable (toggle com aria-pressed) ---
+export const Selectable: Story = {
+  args: { variant: 'filled', selectable: true, selected: false, title: 'Moradia T3 — Cascais', subtitle: 'Clica ou usa Enter/Space' },
+  render: (args) => ({
+    props: args,
+    template: `
+      <iu-card [variant]="variant" [title]="title" [subtitle]="subtitle"
+               [selectable]="selectable" [(selected)]="selected" style="width:320px">
+        Cartão selecionável — o estado sai em selectedChange.
+      </iu-card>
+    `,
+  }),
+};
+
+// --- Kinds (plain | action | profile | stat) ---
+export const Kinds: Story = {
+  render: () => ({
+    template: `
+      <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start">
+        <iu-card kind="plain" variant="outlined" title="Plain" style="width:220px">Card comum.</iu-card>
+        <iu-card kind="action" variant="elevated" title="Action" subtitle="Com footer" style="width:220px">
+          Confirma a renovação do contrato.
+          <div slot="footer"><iu-button variant="text" label="Adiar" /><iu-button variant="filled" label="Renovar" /></div>
+        </iu-card>
+        <iu-card kind="profile" variant="filled" avatar="person" title="Israel" subtitle="Landlord" style="width:220px">
+          12 imóveis geridos.
+        </iu-card>
+        <iu-card kind="stat" variant="outlined" title="Yield bruto" style="width:220px">6,4%</iu-card>
+      </div>
     `,
   }),
 };
