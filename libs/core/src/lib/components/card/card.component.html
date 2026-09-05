@@ -1,34 +1,57 @@
-<article [class]="hostClass()" (click)="onClick($event)" (keydown.enter)="onClick($event)" (keydown.space)="onClick($event)" [attr.role]="clickable() ? 'button' : null" [attr.tabindex]="clickable() && !disabled() ? 0 : null">
+<article [class]="hostClass()"
+         (click)="onActivate($event)"
+         (keydown.enter)="onActivate($event)"
+         (keydown.space)="onActivate($event)"
+         [attr.role]="hostRole()"
+         [attr.tabindex]="hostTabIndex()"
+         [attr.aria-busy]="ariaBusy()"
+         [attr.aria-pressed]="ariaPressed()"
+         [attr.aria-disabled]="ariaDisabled()">
 
-  <!-- Custom header slot (overrides title/subtitle) -->
-  <ng-content select="[slot='header']" />
-
-  <!-- Default header from inputs -->
-  @if (hasHeader()) {
-    <div class="iu-card__header">
-      @if (hasAvatar()) {
-        <span class="iu-card__avatar material-symbols-outlined" aria-hidden="true">{{ avatar() }}</span>
-      }
-      <div class="iu-card__header-text">
-        @if (hasTitle()) {
-          <h3 class="iu-card__title">{{ title() }}</h3>
-        }
-        @if (hasSubtitle()) {
-          <p class="iu-card__subtitle">{{ subtitle() }}</p>
-        }
-      </div>
+  @if (showSkeleton()) {
+    <!-- Loading: the whole content is replaced by a skeleton. -->
+    <div class="iu-card__skeleton" data-testid="card-skeleton" aria-hidden="true">
+      <div class="iu-card__skeleton-block iu-card__skeleton-block--title"></div>
+      <div class="iu-card__skeleton-block"></div>
+      <div class="iu-card__skeleton-block iu-card__skeleton-block--short"></div>
     </div>
+  } @else if (showEmpty()) {
+    <!-- Empty: the caller's [slot='empty'] content stands in for the body. -->
+    <div class="iu-card__empty-state" data-testid="card-empty">
+      <ng-content select="[slot='empty']" />
+    </div>
+  } @else {
+
+    <!-- Custom header slot (overrides title/subtitle) -->
+    <ng-content select="[slot='header']" />
+
+    <!-- Default header from inputs -->
+    @if (hasHeader()) {
+      <div class="iu-card__header">
+        @if (hasAvatar()) {
+          <span class="iu-card__avatar material-symbols-outlined" aria-hidden="true">{{ avatar() }}</span>
+        }
+        <div class="iu-card__header-text">
+          @if (hasTitle()) {
+            <h3 class="iu-card__title">{{ title() }}</h3>
+          }
+          @if (hasSubtitle()) {
+            <p class="iu-card__subtitle">{{ subtitle() }}</p>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Media slot (image, map, etc.) -->
+    <ng-content select="[slot='media']" />
+
+    <!-- Body content -->
+    <div class="iu-card__body">
+      <ng-content />
+    </div>
+
+    <!-- Footer / actions slot -->
+    <ng-content select="[slot='footer']" />
   }
-
-  <!-- Media slot (image, map, etc.) -->
-  <ng-content select="[slot='media']" />
-
-  <!-- Body content -->
-  <div class="iu-card__body">
-    <ng-content />
-  </div>
-
-  <!-- Footer / actions slot -->
-  <ng-content select="[slot='footer']" />
 
 </article>

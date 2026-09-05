@@ -225,3 +225,109 @@ $transition: 200ms cubic-bezier(0.2, 0, 0, 1);
   padding: 0 16px 16px;
   flex-wrap: wrap;
 }
+
+// ==========================================
+// Onda 9 — CARD_V2: kinds + real states
+// ==========================================
+
+// --- Kinds (host layout only; no new components) ---
+.iu-card--kind-action {
+  // Actions sit at the bottom, body takes the slack.
+  .iu-card__body { flex: 1 1 auto; }
+
+  ::ng-deep [slot='footer'] {
+    justify-content: flex-end;
+    padding-top: 8px;
+  }
+}
+
+.iu-card--kind-profile {
+  text-align: center;
+
+  .iu-card__header {
+    flex-direction: column;
+    gap: 8px;
+    padding: 24px 16px 0;
+  }
+
+  .iu-card__avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 40px;
+  }
+
+  .iu-card__title,
+  .iu-card__subtitle { white-space: normal; }
+}
+
+.iu-card--kind-stat {
+  .iu-card__header { padding-bottom: 0; }
+
+  // The number is the message: body carries display-small emphasis.
+  .iu-card__body {
+    font-family: var(--md-sys-typescale-display-small-font, var(--md-ref-typeface-brand, 'Roboto', sans-serif));
+    font-size: var(--md-sys-typescale-display-small-size, 36px);
+    font-weight: var(--md-sys-typescale-display-small-weight, 400);
+    line-height: var(--md-sys-typescale-display-small-line-height, 44px);
+    letter-spacing: var(--md-sys-typescale-display-small-tracking, 0);
+    color: var(--md-sys-color-on-surface, #1D1B20);
+  }
+}
+
+// --- State: selectable / selected ---
+.iu-card--selectable {
+  cursor: pointer;
+  user-select: none;
+
+  &:focus-visible {
+    outline: 3px solid var(--md-sys-color-primary, #6750A4);
+    outline-offset: 2px;
+  }
+}
+
+.iu-card--selected {
+  border: 1px solid var(--md-sys-color-primary, #6750A4);
+  background-color: color-mix(in srgb, var(--md-sys-color-primary, #6750A4) 8%, var(--md-sys-color-surface-container-low, #F7F2FA));
+}
+
+// --- State: loading (skeleton) ---
+.iu-card__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.iu-card__skeleton-block {
+  height: 16px;
+  border-radius: var(--md-sys-shape-corner-extra-small, 4px);
+  background-color: var(--md-sys-color-surface-container-highest, #E6E0E9);
+  animation: iu-card-skeleton-pulse 1.4s ease-in-out infinite;
+
+  &--title { height: 24px; width: 60%; }
+  &--short { width: 40%; }
+}
+
+@keyframes iu-card-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iu-card__skeleton-block { animation: none; }
+}
+
+// --- State: empty ---
+.iu-card__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 16px;
+  text-align: center;
+  font-family: var(--md-sys-typescale-body-medium-font, var(--md-ref-typeface-plain, 'Roboto', sans-serif));
+  font-size: var(--md-sys-typescale-body-medium-size, 14px);
+  line-height: var(--md-sys-typescale-body-medium-line-height, 20px);
+  color: var(--md-sys-color-on-surface-variant, #49454F);
+}
