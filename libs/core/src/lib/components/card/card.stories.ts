@@ -33,9 +33,18 @@ const meta: Meta<CardComponent> = {
       description: 'Forma semântica do card (Onda 9 / CARD_V2)',
     },
     loading:    { control: 'boolean', description: 'Skeleton + aria-busy' },
+    error:      { control: 'boolean', description: 'Estado de erro (role=alert) + botão retry' },
     empty:      { control: 'boolean', description: 'Mostra o slot [slot="empty"]' },
     selectable: { control: 'boolean', description: 'Toggle button com aria-pressed' },
     selected:   { control: 'boolean' },
+    density: {
+      control: 'select',
+      options: ['default', 'comfortable', 'compact'],
+      description: 'Ritmo de padding (não mexe no layout)',
+    },
+    mediaSrc:         { control: 'text', description: 'URL da imagem de media (com fallback)' },
+    mediaAlt:         { control: 'text', description: 'Alt da imagem; vazio = decorativa' },
+    mediaAspectRatio: { control: 'text', description: 'aspect-ratio CSS da media (ex.: 16 / 9)' },
   },
 };
 
@@ -235,6 +244,60 @@ export const Selectable: Story = {
                [selectable]="selectable" [(selected)]="selected" style="width:320px">
         Cartão selecionável — o estado sai em selectedChange.
       </iu-card>
+    `,
+  }),
+};
+
+// --- Error (role=alert + retry) ---
+export const ErrorState: Story = {
+  args: { variant: 'outlined', error: true, title: 'Portfolio' },
+  render: (args) => ({
+    props: args,
+    template: `
+      <iu-card [variant]="variant" [title]="title" [error]="error"
+               (retry)="onRetry()" style="width:320px">
+        <div slot="error">Não foi possível carregar os imóveis.</div>
+        Conteúdo escondido enquanto o card está em erro.
+      </iu-card>
+    `,
+  }),
+};
+
+// --- Density (default | comfortable | compact) ---
+export const Density: Story = {
+  render: () => ({
+    template: `
+      <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start">
+        <iu-card density="compact" variant="outlined" title="Compact" subtitle="12px" style="width:220px">
+          Padding apertado para listas densas.
+        </iu-card>
+        <iu-card density="default" variant="outlined" title="Default" subtitle="16px" style="width:220px">
+          Padding padrão M3.
+        </iu-card>
+        <iu-card density="comfortable" variant="outlined" title="Comfortable" subtitle="20px" style="width:220px">
+          Padding folgado para destaque.
+        </iu-card>
+      </div>
+    `,
+  }),
+};
+
+// --- Media (imagem com aspect-ratio + fallback de imagem partida) ---
+export const Media: Story = {
+  render: () => ({
+    template: `
+      <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start">
+        <iu-card variant="elevated" title="Com imagem" subtitle="16 / 9"
+                 mediaSrc="https://picsum.photos/seed/lisboa/640/360" mediaAlt="Fachada do imóvel"
+                 style="width:280px">
+          A media renderiza um &lt;img&gt; num box com aspect-ratio.
+        </iu-card>
+        <iu-card variant="outlined" title="Imagem partida" subtitle="Fallback"
+                 mediaSrc="https://example.invalid/broken.jpg" mediaAlt="Não carrega"
+                 style="width:280px">
+          Quando a imagem falha, entra o ícone broken_image.
+        </iu-card>
+      </div>
     `,
   }),
 };

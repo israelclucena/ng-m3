@@ -141,6 +141,127 @@ describe('CardComponent', () => {
   });
 
   // ------------------------------------------------------------------
+  // error
+  // ------------------------------------------------------------------
+  describe('error', () => {
+    it('should render the error state with a retry button and role=alert', () => {
+      fixture.componentRef.setInput('error', true);
+      fixture.detectChanges();
+      const region = fixture.nativeElement.querySelector('[data-testid="card-error"]');
+      expect(region).toBeTruthy();
+      expect(region.getAttribute('role')).toBe('alert');
+      expect(fixture.nativeElement.querySelector('[data-testid="card-retry"]')).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('.iu-card__body')).toBeNull();
+      expect(card().classList).toContain('iu-card--error');
+    });
+
+    it('should emit retry when the retry button is clicked', () => {
+      fixture.componentRef.setInput('error', true);
+      fixture.detectChanges();
+      let retried = 0;
+      component.retry.subscribe(() => retried++);
+      fixture.nativeElement.querySelector('[data-testid="card-retry"]').click();
+      expect(retried).toBe(1);
+    });
+
+    it('should let loading win over error', () => {
+      fixture.componentRef.setInput('error', true);
+      fixture.componentRef.setInput('loading', true);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('[data-testid="card-skeleton"]')).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('[data-testid="card-error"]')).toBeNull();
+    });
+
+    it('should let error win over empty', () => {
+      fixture.componentRef.setInput('error', true);
+      fixture.componentRef.setInput('empty', true);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('[data-testid="card-error"]')).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('[data-testid="card-empty"]')).toBeNull();
+    });
+
+    it('should not toggle selection nor emit cardClick while in error', () => {
+      fixture.componentRef.setInput('error', true);
+      fixture.componentRef.setInput('selectable', true);
+      fixture.componentRef.setInput('clickable', true);
+      fixture.detectChanges();
+      let clicked = false;
+      component.cardClick.subscribe(() => (clicked = true));
+      card().click();
+      expect(clicked).toBe(false);
+      expect(component.selected()).toBe(false);
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // density
+  // ------------------------------------------------------------------
+  describe('density', () => {
+    it('should default to the default density class', () => {
+      expect(card().classList).toContain('iu-card--density-default');
+    });
+
+    it('should apply the host class for comfortable and compact', () => {
+      for (const density of ['comfortable', 'compact'] as const) {
+        fixture.componentRef.setInput('density', density);
+        fixture.detectChanges();
+        expect(card().classList).toContain(`iu-card--density-${density}`);
+        expect(card().classList).not.toContain('iu-card--density-default');
+      }
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // media (first-class <img> + broken-image fallback)
+  // ------------------------------------------------------------------
+  describe('media', () => {
+    const img = () =>
+      fixture.nativeElement.querySelector('.iu-card__media-img') as HTMLImageElement | null;
+
+    it('should render an <img> with the aspect-ratio box when mediaSrc is set', () => {
+      fixture.componentRef.setInput('mediaSrc', '/x.jpg');
+      fixture.componentRef.setInput('mediaAlt', 'Fachada do T2');
+      fixture.componentRef.setInput('mediaAspectRatio', '4 / 3');
+      fixture.detectChanges();
+      expect(img()).toBeTruthy();
+      expect(img()!.getAttribute('alt')).toBe('Fachada do T2');
+      const box = fixture.nativeElement.querySelector('.iu-card__media') as HTMLElement;
+      expect(box.style.aspectRatio.replace(/\s/g, '')).toBe('4/3');
+    });
+
+    it('should mark a media image with empty alt as decorative', () => {
+      fixture.componentRef.setInput('mediaSrc', '/x.jpg');
+      fixture.detectChanges();
+      expect(img()!.getAttribute('aria-hidden')).toBe('true');
+    });
+
+    it('should swap in the broken-image fallback when the source fails', () => {
+      fixture.componentRef.setInput('mediaSrc', '/broken.jpg');
+      fixture.detectChanges();
+      img()!.dispatchEvent(new Event('error'));
+      fixture.detectChanges();
+      expect(img()).toBeNull();
+      expect(fixture.nativeElement.querySelector('[data-testid="card-media-fallback"]')).toBeTruthy();
+    });
+
+    it('should reset the broken state when mediaSrc changes', () => {
+      fixture.componentRef.setInput('mediaSrc', '/broken.jpg');
+      fixture.detectChanges();
+      img()!.dispatchEvent(new Event('error'));
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('[data-testid="card-media-fallback"]')).toBeTruthy();
+      fixture.componentRef.setInput('mediaSrc', '/other.jpg');
+      fixture.detectChanges();
+      expect(img()).toBeTruthy();
+      expect(fixture.nativeElement.querySelector('[data-testid="card-media-fallback"]')).toBeNull();
+    });
+
+    it('should not render any media box without a mediaSrc', () => {
+      expect(fixture.nativeElement.querySelector('.iu-card__media')).toBeNull();
+    });
+  });
+
+  // ------------------------------------------------------------------
   // selectable / selected
   // ------------------------------------------------------------------
   describe('selectable', () => {
@@ -253,11 +374,22 @@ describe('CardComponent', () => {
       // Decorative skeleton must be hidden from the a11y tree.
       const skeleton = el.querySelector('.iu-card__skeleton');
       if (skeleton) expect(skeleton.getAttribute('aria-hidden')).toBe('true');
+      // The error region announces itself (role=alert) and offers a retry.
+      const errorRegion = el.querySelector('[data-testid="card-error"]');
+      if (errorRegion) {
+        expect(errorRegion.getAttribute('role')).toBe('alert');
+        expect(errorRegion.querySelector('[data-testid="card-retry"]')).toBeTruthy();
+      }
+      // Broken-media fallback is decorative — never in the a11y tree.
+      const brokenMedia = el.querySelector('[data-testid="card-media-fallback"]');
+      if (brokenMedia) expect(brokenMedia.getAttribute('aria-hidden')).toBe('true');
     };
 
     const states: Array<Record<string, unknown>> = [
       {},
       { loading: true },
+      { error: true },
+      { error: true, kind: 'action' },
       { empty: true },
       { clickable: true },
       { clickable: true, disabled: true },
@@ -265,6 +397,7 @@ describe('CardComponent', () => {
       { selectable: true, selected: true },
       { selectable: true, disabled: true },
       { kind: 'stat', loading: true },
+      { density: 'compact', selectable: true },
     ];
 
     it.each(states)('should hold the ARIA contract for %j', (state) => {

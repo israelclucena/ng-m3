@@ -15,6 +15,22 @@
       <div class="iu-card__skeleton-block"></div>
       <div class="iu-card__skeleton-block iu-card__skeleton-block--short"></div>
     </div>
+  } @else if (showError()) {
+    <!-- Error: caller's [slot='error'] copy + a retry button. role=alert so
+         assistive tech announces the failure the moment it renders. -->
+    <div class="iu-card__error-state" data-testid="card-error" role="alert">
+      <span class="iu-card__error-icon material-symbols-outlined" aria-hidden="true">error</span>
+      <div class="iu-card__error-copy">
+        <ng-content select="[slot='error']" />
+      </div>
+      <button type="button"
+              class="iu-card__retry"
+              data-testid="card-retry"
+              (click)="onRetry($event)">
+        <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+        Tentar de novo
+      </button>
+    </div>
   } @else if (showEmpty()) {
     <!-- Empty: the caller's [slot='empty'] content stands in for the body. -->
     <div class="iu-card__empty-state" data-testid="card-empty">
@@ -39,6 +55,26 @@
             <p class="iu-card__subtitle">{{ subtitle() }}</p>
           }
         </div>
+      </div>
+    }
+
+    <!-- First-class media: an <img> with an aspect-ratio box and a
+         broken-image fallback. Falls back to the [slot='media'] projection
+         below for custom media (maps, video, …). -->
+    @if (showMediaImg()) {
+      <div class="iu-card__media" [style.aspect-ratio]="mediaAspectRatio()">
+        <img class="iu-card__media-img"
+             [src]="mediaSrc()"
+             [alt]="mediaAlt()"
+             [attr.aria-hidden]="mediaAlt() ? null : 'true'"
+             (error)="onMediaError()" />
+      </div>
+    } @else if (showMediaFallback()) {
+      <div class="iu-card__media iu-card__media--broken"
+           [style.aspect-ratio]="mediaAspectRatio()"
+           data-testid="card-media-fallback"
+           aria-hidden="true">
+        <span class="material-symbols-outlined">broken_image</span>
       </div>
     }
 

@@ -331,3 +331,89 @@ $transition: 200ms cubic-bezier(0.2, 0, 0, 1);
   line-height: var(--md-sys-typescale-body-medium-line-height, 20px);
   color: var(--md-sys-color-on-surface-variant, #49454F);
 }
+
+// --- State: error ---
+.iu-card__error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 16px;
+  text-align: center;
+  font-family: var(--md-sys-typescale-body-medium-font, var(--md-ref-typeface-plain, 'Roboto', sans-serif));
+  font-size: var(--md-sys-typescale-body-medium-size, 14px);
+  line-height: var(--md-sys-typescale-body-medium-line-height, 20px);
+  color: var(--md-sys-color-on-surface-variant, #49454F);
+}
+
+.iu-card__error-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--md-sys-color-error, #B3261E);
+}
+
+// M3 text button — retry action inside the error state.
+.iu-card__retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-full, 9999px);
+  background: transparent;
+  color: var(--md-sys-color-primary, #6750A4);
+  font: inherit;
+  font-weight: var(--md-sys-typescale-label-large-weight, 500);
+  cursor: pointer;
+  transition: background-color $transition;
+
+  .material-symbols-outlined { font-size: 18px; }
+
+  &:hover   { background-color: color-mix(in srgb, var(--md-sys-color-primary, #6750A4) 8%, transparent); }
+  &:active  { background-color: color-mix(in srgb, var(--md-sys-color-primary, #6750A4) 12%, transparent); }
+  &:focus-visible {
+    outline: 2px solid var(--md-sys-color-primary, #6750A4);
+    outline-offset: 2px;
+  }
+}
+
+// --- Media: first-class <img> box with aspect-ratio + broken fallback ---
+.iu-card__media {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--md-sys-color-surface-container-highest, #E6E0E9);
+}
+
+.iu-card__media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.iu-card__media--broken {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-sys-color-on-surface-variant, #49454F);
+
+  .material-symbols-outlined { font-size: 48px; opacity: 0.6; }
+}
+
+// --- State: density (padding rhythm only) ---
+.iu-card--density-comfortable {
+  .iu-card__header { padding: 20px 20px 0; }
+  .iu-card__body   { padding: 20px; }
+  ::ng-deep [slot='footer'] { padding: 0 20px 20px; }
+}
+
+.iu-card--density-compact {
+  .iu-card__header { padding: 12px 12px 0; gap: 12px; }
+  .iu-card__body   { padding: 12px; }
+  ::ng-deep [slot='footer'] { padding: 0 12px 12px; }
+  .iu-card__empty-state,
+  .iu-card__error-state { padding: 20px 12px; }
+}
