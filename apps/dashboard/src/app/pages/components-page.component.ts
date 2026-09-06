@@ -19,6 +19,7 @@ import {
   SwitchComponent,
   TabsComponent,
 } from '@israel-ui/core';
+import { FeatureFlags } from '../feature-flags';
 
 @Component({
   selector: 'app-components-page',
@@ -261,6 +262,46 @@ import {
             </iu-card>
           </div>
         </div>
+
+        @if (flags.CARD_V2) {
+          <!-- Onda 9 / CARD_V2 — one component, four semantic kinds + real states. -->
+          <div class="group" data-testid="card-v2-showcase">
+            <h3>CARD_V2 — kinds &amp; states</h3>
+            <div class="row">
+              <iu-card kind="plain" variant="outlined" title="Plain" subtitle="Card comum"
+                       data-testid="card-kind-plain" style="width:220px">
+                <p>Conteúdo simples.</p>
+              </iu-card>
+              <iu-card kind="action" variant="elevated" title="Action" subtitle="Com footer"
+                       data-testid="card-kind-action" style="width:220px">
+                <p>Confirma a renovação do contrato.</p>
+                <div slot="footer">
+                  <iu-button variant="text" label="Adiar"></iu-button>
+                  <iu-button variant="filled" label="Renovar"></iu-button>
+                </div>
+              </iu-card>
+              <iu-card kind="profile" variant="filled" avatar="person" title="Israel" subtitle="Landlord"
+                       data-testid="card-kind-profile" style="width:220px">
+                <p>12 imóveis geridos.</p>
+              </iu-card>
+              <iu-card kind="stat" variant="outlined" title="Yield bruto"
+                       data-testid="card-kind-stat" style="width:220px">6,4%</iu-card>
+            </div>
+            <div class="row">
+              <iu-card variant="elevated" title="Loading" [loading]="true"
+                       data-testid="card-state-loading" style="width:220px">…</iu-card>
+              <iu-card variant="outlined" title="Error" [error]="true"
+                       data-testid="card-state-error" style="width:220px">
+                <div slot="error">Não foi possível carregar.</div>
+              </iu-card>
+              <iu-card variant="filled" title="Com media" mediaSrc="https://picsum.photos/seed/lx/440/248"
+                       mediaAlt="Fachada" density="compact"
+                       data-testid="card-state-media" style="width:220px">
+                <p>Media com aspect-ratio.</p>
+              </iu-card>
+            </div>
+          </div>
+        }
       </section>
 
       <iu-divider></iu-divider>
@@ -439,4 +480,6 @@ import {
 })
 export class ComponentsPageComponent {
   showDialog = false;
+  /** Exposed for the CARD_V2 showcase gate (Onda 9). */
+  protected readonly flags = FeatureFlags;
 }
