@@ -7,7 +7,7 @@ export const FeatureFlags = {
   NOTIFICATION_SYSTEM: true,
   FORM_BUILDER: true,
   SEARCH_AUTOCOMPLETE: true,
-  CARD_VARIANTS: true,
+  CARD_VARIANTS: true,  // RETIRED (Onda 9 / NG-03): card-variants/ wrappers removed; stat card now renders via iu-card kind="stat" gated by CARD_V2. Kept only to avoid a breaking flag removal.
   EMPTY_STATES: true,
   AI_DASHBOARD: true,
   VOICE_COMMANDS: true,
@@ -253,5 +253,5 @@ export const FeatureFlags = {
   BOOKING_CHECKOUT_SIGNAL_FORM: true,  // BookingCheckoutSignalFormComponent — SEVENTH and FINAL migration of a REAL product form (multi-step booking checkout) off the bespoke createSignalForm util onto Angular 22's official @angular/forms/signals form() (Sprint 066). Closes the Signal Forms line: booking-checkout was the last product form on the bespoke util. Faithful twin of BookingCheckoutComponent: identical review→payment→confirmation state machine, summary breakdown, method selector, confirmation screen, styles, inputs and checkoutComplete/cancelled outputs — only the Payment step's form engine differs. The card-number/expiry inputs keep explicit [value]/(input) bindings (NOT [formField]) because they run formatCardNumber/formatExpiry on every keystroke; this also keeps the native maxlength attrs off any [formField] node (no NG8022). Method-scoped submit validation preserved: card path validates the 4 card fields, mbway path validates only mbwayPhone, so the unused method's required validators never block. Validator messages mirror the bespoke byte-for-byte (required + pattern per field). A parity spec asserts both twins hand checkoutComplete a byte-identical PaymentFormData. Bespoke stays the shipped default; this replaces nothing. Additive.
 
   // Onda 9 — card módulo profundo (Night Shift 2026-09-05)
-  CARD_V2: false,  // CardComponent com `kind` (plain|action|profile|stat) + estados reais de comportamento: loading (skeleton + aria-busy), empty (slot [slot='empty']) e selectable/selected (role=button + aria-pressed, Enter/Space alterna, selectedChange). Aditivo: os defaults mantêm o card exactamente como estava, e os componentes de `card-variants/` continuam intactos. OFF até NG-03 migrar os 17 usos das apps para a API nova.
+  CARD_V2: true,  // CardComponent com `kind` (plain|action|profile|stat) + estados reais de comportamento: loading (skeleton + aria-busy), empty (slot [slot='empty']) e selectable/selected (role=button + aria-pressed, Enter/Space alterna, selectedChange). ON desde NG-03 (2026-09-06): dashboard-page migrado para `<iu-card kind="stat">` (apresentação inlinada), wrappers `card-variants/` + exports removidos, `index.ts` encolheu.
 } as const;

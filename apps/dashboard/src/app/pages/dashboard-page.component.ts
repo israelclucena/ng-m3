@@ -9,7 +9,7 @@
  */
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StatCardComponent } from '@israel-ui/core';
+import { CardComponent } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 import { SprintWidgetComponent } from '../widgets/sprint-widget.component';
 import { InvestmentWidgetComponent } from '../widgets/investment-widget.component';
@@ -33,7 +33,7 @@ import { InsuranceTrackerWidgetComponent } from '../widgets/insurance-tracker-wi
   standalone: true,
   imports: [
     CommonModule,
-    StatCardComponent,
+    CardComponent,
     SprintWidgetComponent,
     InvestmentWidgetComponent,
     WeatherWidgetComponent,
@@ -53,33 +53,26 @@ import { InsuranceTrackerWidgetComponent } from '../widgets/insurance-tracker-wi
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
-    <!-- Stat Cards -->
-    @if (flags.CARD_VARIANTS) {
+    <!-- Stat Cards — Onda 9 / CARD_V2: iu-card kind="stat" with the stat
+         presentation inlined here (the sole consumer). The old iu-stat-card
+         wrapper + card-variants/ were removed in NG-03. -->
+    @if (flags.CARD_V2) {
       <div class="stat-cards-row">
-        <iu-stat-card
-          label="Components"
-          value="73"
-          change="73 ready"
-          trend="up"
-          icon="widgets"
-          class="widget--animate"
-        ></iu-stat-card>
-        <iu-stat-card
-          label="Sprint Progress"
-          value="85%"
-          change="+12%"
-          trend="up"
-          icon="sprint"
-          class="widget--animate"
-        ></iu-stat-card>
-        <iu-stat-card
-          label="Days to Brazil"
-          value="14"
-          change="14 Mar"
-          trend="neutral"
-          icon="flight"
-          class="widget--animate"
-        ></iu-stat-card>
+        @for (stat of stats; track stat.label) {
+          <iu-card kind="stat" [fullWidth]="true" class="widget--animate">
+            <div class="stat">
+              <span class="stat__icon material-symbols-outlined">{{ stat.icon }}</span>
+              <div class="stat__content">
+                <span class="stat__label">{{ stat.label }}</span>
+                <span class="stat__value">{{ stat.value }}</span>
+                <span class="stat__change" [class]="'stat__change--' + stat.trend">
+                  <span class="material-symbols-outlined stat__trend-icon">{{ trendIcon(stat.trend) }}</span>
+                  {{ stat.change }}
+                </span>
+              </div>
+            </div>
+          </iu-card>
+        }
       </div>
     }
 
@@ -127,8 +120,79 @@ import { InsuranceTrackerWidgetComponent } from '../widgets/insurance-tracker-wi
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host { display: block; }
+
+    /* Stat presentation inlined from the retired iu-stat-card wrapper (NG-03). */
+    .stat {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .stat__icon {
+      font-size: 32px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--md-sys-shape-corner-medium, 12px);
+      background-color: color-mix(in srgb, var(--md-sys-color-primary, #6750A4) 10%, transparent);
+      color: var(--md-sys-color-primary, #6750A4);
+      flex-shrink: 0;
+    }
+    .stat__content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .stat__label {
+      font-size: var(--md-sys-typescale-label-medium-size, 12px);
+      font-weight: 500;
+      color: var(--md-sys-color-on-surface-variant, #49454F);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stat__value {
+      font-size: var(--md-sys-typescale-headline-small-size, 24px);
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface, #1D1B20);
+      line-height: 1.2;
+    }
+    .stat__change {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--md-sys-typescale-body-small-size, 12px);
+      font-weight: 500;
+    }
+    .stat__change--up { color: #2E7D32; }
+    .stat__change--down { color: var(--md-sys-color-error, #B3261E); }
+    .stat__change--neutral { color: var(--md-sys-color-on-surface-variant, #49454F); }
+    .stat__trend-icon { font-size: 16px; }
   `],
 })
 export class DashboardPageComponent {
   readonly flags = FeatureFlags;
+
+  /** Dashboard KPI stat cards (rendered via iu-card kind="stat"). */
+  readonly stats: ReadonlyArray<{
+    label: string;
+    value: string;
+    change: string;
+    trend: 'up' | 'down' | 'neutral';
+    icon: string;
+  }> = [
+    { label: 'Components', value: '73', change: '73 ready', trend: 'up', icon: 'widgets' },
+    { label: 'Sprint Progress', value: '85%', change: '+12%', trend: 'up', icon: 'sprint' },
+    { label: 'Days to Brazil', value: '14', change: '14 Mar', trend: 'neutral', icon: 'flight' },
+  ];
+
+  /** Maps a trend direction to its Material trend icon. */
+  trendIcon(trend: 'up' | 'down' | 'neutral'): string {
+    switch (trend) {
+      case 'up': return 'trending_up';
+      case 'down': return 'trending_down';
+      default: return 'trending_flat';
+    }
+  }
 }
