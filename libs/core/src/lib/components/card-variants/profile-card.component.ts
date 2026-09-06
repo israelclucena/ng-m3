@@ -21,13 +21,16 @@ import { CardComponent } from '../card/card.component';
  *   [stats]="[{label: 'Projects', value: '12'}, {label: 'Commits', value: '847'}]"
  * />
  * ```
+ *
+ * @deprecated Onda 9 / CARD_V2 — use `<iu-card kind="profile">` directly. This
+ * wrapper now delegates to it (kind="profile") and is removed in NG-03.
  */
 @Component({
   selector: 'iu-profile-card',
   standalone: true,
   imports: [CommonModule, CardComponent],
   template: `
-    <iu-card [variant]="cardVariant()" [fullWidth]="true">
+    <iu-card kind="profile" [variant]="cardVariant()" [fullWidth]="true">
       <div class="iu-profile-card">
         <div class="iu-profile-card__avatar">
           @if (avatarUrl()) {

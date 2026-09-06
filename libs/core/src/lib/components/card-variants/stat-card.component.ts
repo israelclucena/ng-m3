@@ -25,13 +25,16 @@ export type StatTrend = 'up' | 'down' | 'neutral';
  *   icon="trending_up"
  * />
  * ```
+ *
+ * @deprecated Onda 9 / CARD_V2 — use `<iu-card kind="stat">` directly. This
+ * wrapper now delegates to it (kind="stat") and is removed in NG-03.
  */
 @Component({
   selector: 'iu-stat-card',
   standalone: true,
   imports: [CommonModule, CardComponent],
   template: `
-    <iu-card [variant]="cardVariant()" [fullWidth]="true">
+    <iu-card kind="stat" [variant]="cardVariant()" [fullWidth]="true">
       <div class="iu-stat-card">
         @if (icon()) {
           <span class="iu-stat-card__icon material-symbols-outlined" [style.color]="iconColor()">

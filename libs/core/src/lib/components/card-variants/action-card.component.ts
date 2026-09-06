@@ -21,13 +21,16 @@ import { CardComponent } from '../card/card.component';
  *   (actionClick)="onCreate()"
  * />
  * ```
+ *
+ * @deprecated Onda 9 / CARD_V2 — use `<iu-card kind="action">` directly. This
+ * wrapper now delegates to it (kind="action") and is removed in NG-03.
  */
 @Component({
   selector: 'iu-action-card',
   standalone: true,
   imports: [CommonModule, CardComponent],
   template: `
-    <iu-card [variant]="cardVariant()" [fullWidth]="true" [clickable]="true" (cardClick)="actionClick.emit()">
+    <iu-card kind="action" [variant]="cardVariant()" [fullWidth]="true" [clickable]="true" (cardClick)="actionClick.emit()">
       <div class="iu-action-card">
         @if (icon()) {
           <span class="iu-action-card__icon material-symbols-outlined">{{ icon() }}</span>
