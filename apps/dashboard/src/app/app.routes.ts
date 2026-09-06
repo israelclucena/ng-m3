@@ -66,6 +66,15 @@ export const appRoutes: Routes = [
     title: 'Features — Israel UI',
   },
 
+  // ── Card showcase (Onda 9 / NG-03 — deep-module proof surface) ───────────────
+  // Additive lazy route; nav link + CARD_V2 flip land with the app migration.
+  {
+    path: 'card-showcase',
+    loadComponent: () =>
+      import('./pages/card-showcase-page.component').then(m => m.CardShowcasePageComponent),
+    title: 'Card Showcase — Israel UI',
+  },
+
   // ── Settings page ──────────────────────────────────────────────────────────
   {
     path: 'settings',
