@@ -60,9 +60,9 @@ import type { CardKind, CardVariant } from '@israel-ui/core';
                     }
                     @case ('action') {
                       <p>Confirma a renovação do contrato antes do prazo.</p>
-                      <div slot="footer">
+                      <div slot="footer" class="card-actions">
                         <iu-button variant="text" label="Adiar"></iu-button>
-                        <iu-button variant="filled" label="Renovar"></iu-button>
+                        <iu-button variant="primary" label="Renovar"></iu-button>
                       </div>
                     }
                     @default {
@@ -231,6 +231,13 @@ import type { CardKind, CardVariant } from '@israel-ui/core';
       font-size: 2rem;
       font-weight: 700;
       color: var(--md-sys-color-primary, #6750a4);
+    }
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
     }
     .hint {
       align-self: center;
