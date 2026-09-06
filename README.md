@@ -25,6 +25,25 @@
 
 **@israel-ui/core** is a professional Angular design system built on top of [Material Design 3](https://m3.material.io/) and Google's [`@material/web`](https://github.com/nickmccurdy/material-web) web components. It provides 20+ production-ready components with full Signal-based APIs, Storybook documentation, and M3 token theming.
 
+## 🏆 Portfolio — deep-module `card`
+
+The design system's headline case study: **one component, four kinds, real behaviour.**
+Instead of four sibling components (`card`, `action-card`, `profile-card`, `stat-card`), the
+system exposes a single `<iu-card>` whose public interface *shrinks* while its behaviour *grows* —
+`variant` (elevated · filled · outlined) × `kind` (plain · action · profile · stat), plus real
+states carried by the component itself: loading (skeleton + `aria-busy`), error (retry, `role=alert`),
+empty, selectable (`aria-pressed`, keyboard), media (aspect-ratio + broken-image fallback) and density.
+
+A dedicated showcase route — **`/card-showcase`** in the dashboard app — renders the full matrix and
+every state on one screen:
+
+| Desktop | Mobile |
+|---|---|
+| ![card showcase — desktop](docs/portfolio/card-showcase-desktop.png) | <img src="docs/portfolio/card-showcase-mobile.png" alt="card showcase — mobile" width="220"> |
+
+> Interface encolhe, comportamento cresce — medido, não afirmado. See the module measurements in
+> `tools/ng-m3-medir-modulo.mjs` (exports, inputs/outputs, branches, `it()` count, e2e scenarios).
+
 ## 📦 Components
 
 ### 🎯 Actions
