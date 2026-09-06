@@ -1,8 +1,11 @@
 export * from './lib/core/core';
 
-// NOTE: Material Web side-effect imports moved to individual component files
-// for proper tree-shaking. Each component imports only what it needs.
-// See: libs/core/src/lib/material/material-web.ts (kept for reference / Storybook)
+// Register every Material Web custom element used by the library. This must be
+// a real import (not just per-component bare imports): the production esbuild
+// optimizer tree-shakes @material/web's decorator-based `customElements.define`
+// when it is only reached via unused bare imports, leaving <md-*> elements
+// un-upgraded app-wide. See material-web.ts for the mechanism.
+import './lib/material/material-web';
 
 // ── israel-ui utilities ──
 
