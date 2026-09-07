@@ -1,5 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaymentComponent, PaymentState } from './payment.component';
+import {
+  IU_PAYMENT_GATEWAY,
+  PaymentAuthResult,
+  PaymentComponent,
+  PaymentGateway,
+  PaymentGatewayRequest,
+  PaymentState,
+} from './payment.component';
 
 describe('PaymentComponent (iu-payment) — NG-05 fatia 1', () => {
   let fixture: ComponentFixture<PaymentComponent>;
@@ -433,5 +440,255 @@ describe('PaymentComponent (iu-payment) — NG-05 fatia 3: a11y invariants', () 
       expect(component.ariaBusy()).toBeNull();
       expect(host().getAttribute('aria-busy')).toBeNull();
     }
+  });
+});
+
+// --------------------------------------------------------------------------
+// NG-05 fatia 4: the money-move seam (ready → processing → success | error).
+// Driven through a *fake* gateway provided over IU_PAYMENT_GATEWAY — no real
+// Stripe, no network, no keys. A deferred fake lets us pin the `processing`
+// resting state (which the public API could not reach before this slice).
+// --------------------------------------------------------------------------
+describe('PaymentComponent (iu-payment) — NG-05 fatia 4: gateway submit', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  /** Requests the component handed the gateway, in call order. */
+  let requests: PaymentGatewayRequest[];
+  /** Resolve/reject the pending authorize from the test. */
+  let settle: {
+    resolve: (r: PaymentAuthResult) => void;
+    reject: (e: unknown) => void;
+  } | null;
+  /** When true the gateway promise never settles (drives the timeout path). */
+  let hang: boolean;
+
+  const gateway: PaymentGateway = {
+    authorize: (req) => {
+      requests.push(req);
+      return new Promise<PaymentAuthResult>((resolve, reject) => {
+        if (hang) return;
+        settle = { resolve, reject };
+      });
+    },
+  };
+
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+  const successEl = () =>
+    fixture.nativeElement.querySelector(
+      '.iu-payment__success',
+    ) as HTMLElement | null;
+
+  /** Take the machine to `ready` with a valid amount/currency. */
+  const toReady = () => {
+    fixture.componentRef.setInput('amount', 100);
+    fixture.componentRef.setInput('currency', 'EUR');
+    fixture.detectChanges();
+    component.validate();
+    expect(component.state()).toBe('ready');
+  };
+
+  beforeEach(() => {
+    requests = [];
+    settle = null;
+    hang = false;
+    TestBed.configureTestingModule({
+      imports: [PaymentComponent],
+      providers: [{ provide: IU_PAYMENT_GATEWAY, useValue: gateway }],
+    });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('submit() enters processing synchronously and is busy', () => {
+    toReady();
+    const pending = component.submit();
+    expect(component.state()).toBe('processing');
+    expect(component.isBusy()).toBe(true);
+    // Settle so no promise dangles past the test.
+    settle?.resolve({ outcome: 'succeeded' });
+    return pending;
+  });
+
+  it('drives ready → processing → success on approval', async () => {
+    toReady();
+    const pending = component.submit();
+    settle?.resolve({ outcome: 'succeeded' });
+    expect(await pending).toBe(true);
+    expect(component.state()).toBe('success');
+    expect(component.error()).toBeNull();
+  });
+
+  it('renders a polite success confirmation with a restart button', async () => {
+    toReady();
+    const pending = component.submit();
+    settle?.resolve({ outcome: 'succeeded' });
+    await pending;
+    fixture.detectChanges();
+    const el = successEl();
+    expect(el).toBeTruthy();
+    expect(el?.getAttribute('role')).toBe('status');
+    const restart = el?.querySelector('.iu-payment__restart') as HTMLButtonElement;
+    expect(restart?.tagName).toBe('BUTTON');
+    restart.click();
+    fixture.detectChanges();
+    expect(component.state()).toBe('idle');
+  });
+
+  it('falls into error with gateway_declined when the gateway refuses', async () => {
+    toReady();
+    const pending = component.submit();
+    settle?.resolve({ outcome: 'declined', message: 'Cartão recusado.' });
+    expect(await pending).toBe(false);
+    expect(component.state()).toBe('error');
+    expect(component.error()?.code).toBe('gateway_declined');
+    expect(component.error()?.message).toBe('Cartão recusado.');
+  });
+
+  it('maps a rejected authorize to gateway_declined', async () => {
+    toReady();
+    const pending = component.submit();
+    settle?.reject(new Error('network'));
+    expect(await pending).toBe(false);
+    expect(component.error()?.code).toBe('gateway_declined');
+  });
+
+  it('times out into gateway_timeout when the gateway hangs', async () => {
+    jest.useFakeTimers();
+    try {
+      toReady();
+      hang = true;
+      const pending = component.submit();
+      expect(component.state()).toBe('processing');
+      jest.advanceTimersByTime(20_000);
+      expect(await pending).toBe(false);
+      expect(component.state()).toBe('error');
+      expect(component.error()?.code).toBe('gateway_timeout');
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('passes the validated amount/currency/intent to the gateway', async () => {
+    fixture.componentRef.setInput('intent', 'deposit');
+    toReady();
+    const pending = component.submit();
+    settle?.resolve({ outcome: 'succeeded' });
+    await pending;
+    expect(requests).toHaveLength(1);
+    expect(requests[0]).toMatchObject({
+      amount: 100,
+      currency: 'EUR',
+      intent: 'deposit',
+    });
+    expect(typeof requests[0].idempotencyKey).toBe('string');
+    expect(requests[0].idempotencyKey.length).toBeGreaterThan(0);
+  });
+
+  it('reuses the idempotency key across a retry of the same attempt', async () => {
+    toReady();
+    const first = component.submit();
+    settle?.resolve({ outcome: 'declined' });
+    await first;
+    expect(component.state()).toBe('error');
+
+    expect(component.retry()).toBe(true);
+    expect(component.state()).toBe('ready');
+    const second = component.submit();
+    settle?.resolve({ outcome: 'succeeded' });
+    await second;
+
+    expect(requests).toHaveLength(2);
+    expect(requests[0].idempotencyKey).toBe(requests[1].idempotencyKey);
+    expect(component.state()).toBe('success');
+  });
+
+  it('mints a fresh key for a new attempt after reset()', async () => {
+    toReady();
+    const first = component.submit();
+    settle?.resolve({ outcome: 'succeeded' });
+    await first;
+    component.reset();
+    expect(component.idempotencyKey()).toBeNull();
+
+    toReady();
+    const second = component.submit();
+    settle?.resolve({ outcome: 'succeeded' });
+    await second;
+    expect(requests[0].idempotencyKey).not.toBe(requests[1].idempotencyKey);
+  });
+
+  it('ignores a gateway resolution that lands after the user cancelled', async () => {
+    toReady();
+    const pending = component.submit();
+    expect(component.state()).toBe('processing');
+    // User bails while the gateway is in flight — the terminal state must win.
+    expect(component.cancel()).toBe(true);
+    expect(component.state()).toBe('cancelled');
+    settle?.resolve({ outcome: 'succeeded' });
+    expect(await pending).toBe(false);
+    expect(component.state()).toBe('cancelled');
+  });
+
+  it('ignores a gateway resolution that lands after the session expired', async () => {
+    toReady();
+    const pending = component.submit();
+    expect(component.expire()).toBe(true);
+    settle?.resolve({ outcome: 'succeeded' });
+    expect(await pending).toBe(false);
+    expect(component.state()).toBe('expired');
+  });
+
+  it('submit() is a no-op unless the flow is ready', async () => {
+    expect(await component.submit()).toBe(false);
+    expect(component.state()).toBe('idle');
+    expect(requests).toHaveLength(0);
+  });
+
+  it('submit() is inert while disabled', async () => {
+    toReady();
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+    expect(await component.submit()).toBe(false);
+    expect(component.state()).toBe('ready');
+    expect(requests).toHaveLength(0);
+  });
+
+  it('marks the host aria-busy while processing and announces it', () => {
+    toReady();
+    const pending = component.submit();
+    fixture.detectChanges();
+    expect(host().getAttribute('aria-busy')).toBe('true');
+    expect(component.statusText()).toBe('A processar o pagamento…');
+    settle?.resolve({ outcome: 'succeeded' });
+    return pending;
+  });
+
+  it('emits processing then success through stateChange', async () => {
+    toReady();
+    const seen: PaymentState[] = [];
+    component.stateChange.subscribe((s) => seen.push(s));
+    const pending = component.submit();
+    settle?.resolve({ outcome: 'succeeded' });
+    await pending;
+    expect(seen).toEqual(['processing', 'success']);
+  });
+
+  it('uses the root test-mode stub when no gateway is provided', async () => {
+    // Second injector without our fake: the default (root) stub must approve
+    // without touching anything — proves the seam is inert by default.
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+    const f = TestBed.createComponent(PaymentComponent);
+    const c = f.componentInstance;
+    f.detectChanges();
+    f.componentRef.setInput('amount', 50);
+    f.componentRef.setInput('currency', 'USD');
+    f.detectChanges();
+    c.validate();
+    expect(await c.submit()).toBe(true);
+    expect(c.state()).toBe('success');
   });
 });

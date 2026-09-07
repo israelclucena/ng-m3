@@ -37,6 +37,17 @@
     </div>
   }
 
+  @if (state() === 'success') {
+    <div class="iu-payment__success" role="status">
+      <span class="iu-payment__success-text">{{ statusText() }}</span>
+      <button
+        type="button"
+        class="iu-payment__restart"
+        (click)="reset()"
+      >Recomeçar</button>
+    </div>
+  }
+
   <footer class="iu-payment__actions">
     <ng-content select="[slot=actions]"></ng-content>
   </footer>

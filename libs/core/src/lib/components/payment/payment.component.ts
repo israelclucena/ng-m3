@@ -1,8 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  InjectionToken,
   ViewEncapsulation,
   computed,
+  inject,
   input,
   output,
   signal,
@@ -30,8 +32,9 @@ export type PaymentIntentKind = 'checkout' | 'deposit' | 'refund';
  * `reset()`.
  *
  * Slices so far: fatia 1 wired `idle → validating → ready | error`; fatia 2
- * adds the terminal `expired`/`cancelled` transitions. `processing`/`success`
- * are part of the stable API shape but are driven by the Stripe slice.
+ * added the terminal `expired`/`cancelled` transitions; fatia 4 wires
+ * `ready → processing → success | error` through the {@link IU_PAYMENT_GATEWAY}
+ * seam (test-mode stub by default — the real Stripe adapter lands later).
  */
 export type PaymentState =
   | 'idle'
@@ -43,13 +46,67 @@ export type PaymentState =
   | 'expired'
   | 'cancelled';
 
-/** A rejected pre-condition surfaced to the UI (never a live Stripe error). */
+/**
+ * A failure surfaced to the UI in the `error` state — either a rejected
+ * pre-condition (`invalid_amount`/`invalid_currency`) or a settlement failure
+ * from the gateway seam (`gateway_declined`/`gateway_timeout`). Never carries a
+ * live Stripe secret: the gateway runs in test mode only.
+ */
 export interface PaymentValidationError {
   /** Machine-readable reason — stable for tests and copy lookup. */
-  code: 'invalid_amount' | 'invalid_currency';
+  code:
+    | 'invalid_amount'
+    | 'invalid_currency'
+    | 'gateway_declined'
+    | 'gateway_timeout';
   /** Human copy shown in the error region (PT-first, matches the app). */
   message: string;
 }
+
+/** What the gateway seam is asked to authorize. Test-mode data only. */
+export interface PaymentGatewayRequest {
+  /** Amount in major currency units, already validated (> 0, finite). */
+  amount: number;
+  /** Validated ISO-4217 currency code. */
+  currency: string;
+  /** The surface's intent — lets a real adapter branch on checkout/deposit/refund. */
+  intent: PaymentIntentKind;
+  /** Stable across retries of the *same* attempt — dedupes double-submits. */
+  idempotencyKey: string;
+}
+
+/** The gateway's verdict for an authorize call. Never exposes raw Stripe payloads. */
+export type PaymentAuthResult =
+  | { outcome: 'succeeded' }
+  | { outcome: 'declined'; message?: string };
+
+/** The money-move seam behind `<iu-payment>`. Implementations must stay test-mode. */
+export interface PaymentGateway {
+  authorize(req: PaymentGatewayRequest): Promise<PaymentAuthResult>;
+}
+
+/**
+ * Injection seam for the money move. The default (root) implementation is an
+ * inert test-mode stub that approves without touching any API — it NEVER moves
+ * real money. The real Stripe adapter (test-mode `sk_test_*`, provided over
+ * this token) is wired in the Stripe slice. Deliberately NOT re-exported from
+ * the package index — the public surface stays ≤5 symbols per the Onda 9b
+ * mandate; tests provide a fake by importing this token from the component file.
+ */
+export const IU_PAYMENT_GATEWAY = new InjectionToken<PaymentGateway>(
+  'IU_PAYMENT_GATEWAY',
+  {
+    providedIn: 'root',
+    factory: () => ({
+      async authorize(): Promise<PaymentAuthResult> {
+        return { outcome: 'succeeded' };
+      },
+    }),
+  },
+);
+
+/** Internal marker for a gateway call that overran its budget. Not exported. */
+class PaymentTimeoutError extends Error {}
 
 /**
  * IU Payment Component (`<iu-payment>`) — Onda 9b, gated by `PAYMENT_V2`.
@@ -94,14 +151,28 @@ export class PaymentComponent {
   /** Fires on every state transition with the new state. */
   stateChange = output<PaymentState>();
 
+  // --- Injected seam ---
+  /** Test-mode money-move seam; the root default never touches a live API. */
+  private readonly gateway = inject(IU_PAYMENT_GATEWAY);
+
+  /** Wall-clock budget for a single gateway authorize before we give up. */
+  private static readonly SUBMIT_TIMEOUT_MS = 20_000;
+
   // --- Internal state ---
   private _state = signal<PaymentState>('idle');
   private _error = signal<PaymentValidationError | null>(null);
+  private _idempotencyKey = signal<string | null>(null);
 
   /** Current lifecycle state (read-only to the outside world). */
   readonly state = this._state.asReadonly();
   /** The validation error when `state === 'error'`, else `null`. */
   readonly error = this._error.asReadonly();
+  /**
+   * Idempotency key for the in-flight attempt — stable across `retry()`+`submit()`
+   * of the same logical payment, cleared by `reset()`. Lets the gateway dedupe a
+   * re-submit after a decline. `null` until the first `submit()`.
+   */
+  readonly idempotencyKey = this._idempotencyKey.asReadonly();
 
   // --- Computed validation ---
   /** Amount is a real, positive number. */
@@ -184,6 +255,67 @@ export class PaymentComponent {
   }
 
   /**
+   * Move the (validated) attempt through the gateway. `ready → processing`, then
+   * resolves to `success` or `error` (`gateway_declined`/`gateway_timeout`).
+   * Reuses the attempt's {@link idempotencyKey} across retries so a re-submit
+   * after a decline is deduped. No-op unless the state is `ready`. Resolves to
+   * whether the payment succeeded.
+   *
+   * Never moves real money: the call goes through {@link IU_PAYMENT_GATEWAY},
+   * whose default is a test-mode stub. A `cancel()`/`expire()` that lands while
+   * the gateway is in flight wins — a late resolution is ignored.
+   */
+  async submit(): Promise<boolean> {
+    if (this.disabled() || this.isBusy() || this.isTerminal()) return false;
+    if (this._state() !== 'ready') return false;
+
+    // One key per logical attempt: minted on first submit, kept across retries.
+    if (!this._idempotencyKey()) this._idempotencyKey.set(this.newIdempotencyKey());
+    const key = this._idempotencyKey()!;
+
+    this._error.set(null);
+    this.setState('processing');
+
+    try {
+      const result = await this.withTimeout(
+        this.gateway.authorize({
+          amount: this.amount(),
+          currency: this.currency(),
+          intent: this.intent(),
+          idempotencyKey: key,
+        }),
+        PaymentComponent.SUBMIT_TIMEOUT_MS,
+      );
+
+      // A cancel()/expire() (or a fresh attempt) may have landed mid-flight —
+      // if we're no longer processing this same attempt, drop the stale result.
+      if (this._state() !== 'processing' || this._idempotencyKey() !== key) {
+        return false;
+      }
+
+      if (result.outcome === 'succeeded') {
+        this.setState('success');
+        return true;
+      }
+      this.fail({
+        code: 'gateway_declined',
+        message: result.message ?? 'Pagamento recusado.',
+      });
+      return false;
+    } catch (err) {
+      if (this._state() !== 'processing' || this._idempotencyKey() !== key) {
+        return false;
+      }
+      this.fail(
+        err instanceof PaymentTimeoutError
+          ? { code: 'gateway_timeout', message: 'O pagamento excedeu o tempo limite.' }
+          : { code: 'gateway_declined', message: 'Não foi possível processar o pagamento.' },
+      );
+      return false;
+    }
+  }
+
+  /**
    * Abort the attempt (user-initiated). Moves to the terminal `cancelled`
    * state from any active state, clearing any pending error. No-op once the
    * attempt has settled (`success`/`expired`/`cancelled`). Returns whether the
@@ -208,9 +340,10 @@ export class PaymentComponent {
     return true;
   }
 
-  /** Return the machine to `idle` and clear any error. */
+  /** Return the machine to `idle`, clearing any error and the attempt's key. */
   reset(): void {
     this._error.set(null);
+    this._idempotencyKey.set(null);
     this.setState('idle');
   }
 
@@ -222,5 +355,23 @@ export class PaymentComponent {
   private setState(next: PaymentState): void {
     this._state.set(next);
     this.stateChange.emit(next);
+  }
+
+  /** Race a gateway call against the submit budget; reject on overrun. */
+  private withTimeout<T>(work: Promise<T>, ms: number): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new PaymentTimeoutError()), ms);
+      work.then(
+        (value) => { clearTimeout(timer); resolve(value); },
+        (error) => { clearTimeout(timer); reject(error); },
+      );
+    });
+  }
+
+  /** Mint a fresh idempotency key (crypto UUID when available). */
+  private newIdempotencyKey(): string {
+    const c = globalThis.crypto;
+    if (c && typeof c.randomUUID === 'function') return c.randomUUID();
+    return `pay_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
   }
 }
