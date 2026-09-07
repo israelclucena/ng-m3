@@ -692,3 +692,119 @@ describe('PaymentComponent (iu-payment) — NG-05 fatia 4: gateway submit', () =
     expect(c.state()).toBe('success');
   });
 });
+
+// --------------------------------------------------------------------------
+// NG-05 fatia 5: extend the fatia-3 a11y invariant contract to the two states
+// that could NOT rest through the public API before the gateway seam landed —
+// `processing` (rests while a fake gateway hangs) and `success` (rests after a
+// fake approval). Same manual axe stand-in as fatia 3 (no new deps): the
+// invariants (status region wired + copy == statusText(); boolean aria-busy;
+// error/terminal regions absent) must hold here too, and `success` adds its
+// own polite confirmation + restart affordance. Closes the fatia-3 checkpoint
+// item "estender o it.each da fatia 3 com o gateway falso".
+// --------------------------------------------------------------------------
+describe('PaymentComponent (iu-payment) — NG-05 fatia 5: a11y invariants for busy/settled states', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  /** When true the gateway promise never settles (holds `processing` at rest). */
+  let hang: boolean;
+  /** Resolve the pending authorize from the test (for the `success` case). */
+  let settle: ((r: PaymentAuthResult) => void) | null;
+
+  const gateway: PaymentGateway = {
+    authorize: () =>
+      new Promise<PaymentAuthResult>((resolve) => {
+        if (hang) return;
+        settle = resolve;
+      }),
+  };
+
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+
+  beforeEach(() => {
+    hang = false;
+    settle = null;
+    TestBed.configureTestingModule({
+      imports: [PaymentComponent],
+      providers: [{ provide: IU_PAYMENT_GATEWAY, useValue: gateway }],
+    });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  /** Take the machine to `ready` with a valid amount/currency. */
+  const toReady = () => {
+    fixture.componentRef.setInput('amount', 100);
+    fixture.componentRef.setInput('currency', 'EUR');
+    fixture.detectChanges();
+    component.validate();
+    expect(component.state()).toBe('ready');
+  };
+
+  /**
+   * The same invariants asserted in fatia 3, applicable to every rendered
+   * state: the live status region is always wired and reads back exactly what
+   * the machine announces; aria-busy is boolean (present iff busy, never
+   * 'false'); the error and terminal regions are absent outside their states.
+   */
+  const assertInvariants = (el: HTMLElement) => {
+    const state = component.state();
+
+    const status = el.querySelector('.iu-payment__status');
+    expect(status).toBeTruthy();
+    expect(status?.getAttribute('role')).toBe('status');
+    expect(status?.getAttribute('aria-live')).toBe('polite');
+    expect(status?.textContent?.trim()).toBe(component.statusText());
+
+    const busy = el.getAttribute('aria-busy');
+    if (component.isBusy()) expect(busy).toBe('true');
+    else expect(busy).toBeNull();
+    if (busy !== null) expect(busy).toBe('true');
+
+    // Neither the error nor the terminal region belongs to processing/success.
+    expect(el.querySelector('.iu-payment__error')).toBeNull();
+    expect(el.querySelector('.iu-payment__terminal')).toBeNull();
+    void state;
+  };
+
+  it('holds the ARIA contract while processing (busy, at rest on a hanging gateway)', () => {
+    hang = true;
+    toReady();
+    const pending = component.submit();
+    fixture.detectChanges();
+
+    expect(component.state()).toBe('processing');
+    expect(component.isBusy()).toBe(true);
+    expect(host().getAttribute('aria-busy')).toBe('true');
+    assertInvariants(host());
+    // No dangling assertion: the promise stays pending by design (hang), and
+    // nothing resolves it — the component is GC'd with the fixture.
+    void pending;
+  });
+
+  it('holds the ARIA contract in the success state, with a polite confirmation', async () => {
+    toReady();
+    const pending = component.submit();
+    settle?.({ outcome: 'succeeded' });
+    await pending;
+    fixture.detectChanges();
+
+    expect(component.state()).toBe('success');
+    expect(component.isBusy()).toBe(false);
+    expect(host().getAttribute('aria-busy')).toBeNull();
+    assertInvariants(host());
+
+    // Success adds its own region: polite (role=status) with a restart button.
+    const success = host().querySelector('.iu-payment__success');
+    expect(success).toBeTruthy();
+    expect(success?.getAttribute('role')).toBe('status');
+    const restart = success?.querySelector(
+      '.iu-payment__restart',
+    ) as HTMLButtonElement | null;
+    expect(restart?.tagName).toBe('BUTTON');
+    expect(restart?.getAttribute('type')).toBe('button');
+  });
+});
