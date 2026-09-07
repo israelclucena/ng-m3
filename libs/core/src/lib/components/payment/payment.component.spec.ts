@@ -299,3 +299,139 @@ describe('PaymentComponent (iu-payment) — NG-05 fatia 2: terminal states', () 
     expect(host().classList).toContain('iu-payment--state-cancelled');
   });
 });
+
+// --------------------------------------------------------------------------
+// NG-05 fatia 3: a11y invariants — the manual stand-in for an axe run.
+// `@axe-core/playwright` is Playwright-only and `axe-core` is not a direct
+// dependency, so no new package is installed for this (same call as NG-02,
+// see the card spec / NG-02 report). We drive `<iu-payment>` through each
+// state reachable at rest via the public API and assert its ARIA contract.
+// `validating`/`processing`/`success` do not rest through the public API
+// (validating is synchronous, the other two land with the Stripe slice), so
+// their DOM is covered by the Stripe slice + Playwright e2e; here we assert
+// the busy-state ARIA mapping through the computed that drives the template.
+// --------------------------------------------------------------------------
+describe('PaymentComponent (iu-payment) — NG-05 fatia 3: a11y invariants', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  /** Assert the invariants that must hold in every rendered state. */
+  const assertInvariants = (el: HTMLElement) => {
+    const state = component.state();
+
+    // The live status region is always present and correctly wired, and what
+    // AT reads back always matches the machine's announced copy.
+    const status = el.querySelector('.iu-payment__status');
+    expect(status).toBeTruthy();
+    expect(status?.getAttribute('role')).toBe('status');
+    expect(status?.getAttribute('aria-live')).toBe('polite');
+    expect(status?.textContent?.trim()).toBe(component.statusText());
+
+    // aria-busy is boolean-valued: present only while busy, and never 'false'.
+    const busy = el.getAttribute('aria-busy');
+    if (component.isBusy()) expect(busy).toBe('true');
+    else expect(busy).toBeNull();
+    if (busy !== null) expect(busy).toBe('true');
+
+    // The error region appears iff we're in `error`, announces itself with
+    // role=alert, and offers a natively keyboard-reachable retry button.
+    const error = el.querySelector('.iu-payment__error');
+    if (state === 'error') {
+      expect(error).toBeTruthy();
+      expect(error?.getAttribute('role')).toBe('alert');
+      const retry = error?.querySelector(
+        '.iu-payment__retry',
+      ) as HTMLButtonElement | null;
+      expect(retry?.tagName).toBe('BUTTON');
+      expect(retry?.getAttribute('type')).toBe('button');
+    } else {
+      expect(error).toBeNull();
+    }
+
+    // The terminal region appears iff we've settled into expired/cancelled,
+    // with the right politeness (assertive for expired, polite for cancelled)
+    // and a restart affordance.
+    const terminal = el.querySelector('.iu-payment__terminal');
+    if (state === 'expired' || state === 'cancelled') {
+      expect(terminal).toBeTruthy();
+      expect(terminal?.getAttribute('role')).toBe(
+        state === 'expired' ? 'alert' : 'status',
+      );
+      const restart = terminal?.querySelector(
+        '.iu-payment__restart',
+      ) as HTMLButtonElement | null;
+      expect(restart?.tagName).toBe('BUTTON');
+      expect(restart?.getAttribute('type')).toBe('button');
+    } else {
+      expect(terminal).toBeNull();
+    }
+  };
+
+  type Scenario = {
+    name: PaymentState;
+    drive: (c: PaymentComponent, f: ComponentFixture<PaymentComponent>) => void;
+  };
+
+  const scenarios: Scenario[] = [
+    { name: 'idle', drive: () => {} },
+    {
+      name: 'ready',
+      drive: (c, f) => {
+        f.componentRef.setInput('amount', 250);
+        f.componentRef.setInput('currency', 'EUR');
+        f.detectChanges();
+        c.validate();
+      },
+    },
+    {
+      name: 'error',
+      drive: (c, f) => {
+        f.componentRef.setInput('amount', 0);
+        f.detectChanges();
+        c.validate();
+      },
+    },
+    { name: 'cancelled', drive: (c) => c.cancel() },
+    { name: 'expired', drive: (c) => c.expire() },
+  ];
+
+  it.each(scenarios)(
+    'holds the ARIA contract in the $name state',
+    ({ name, drive }) => {
+      drive(component, fixture);
+      fixture.detectChanges();
+      expect(component.state()).toBe(name);
+      assertInvariants(host());
+    },
+  );
+
+  it('never advertises aria-busy in a non-busy state', () => {
+    // `validating`/`processing` do not rest through the public API, so their
+    // busy DOM is left to the Stripe slice + e2e. What we *can* pin here is the
+    // dual invariant that guards the a11y tree the rest of the time: whenever
+    // the machine is not busy, `ariaBusy()` (the sole source of the template's
+    // `[attr.aria-busy]`) is null — never the string 'false'.
+    for (const drive of [
+      () => {},
+      (c: PaymentComponent) => c.cancel(),
+      (c: PaymentComponent) => c.expire(),
+    ]) {
+      component.reset();
+      drive(component);
+      fixture.detectChanges();
+      expect(component.isBusy()).toBe(false);
+      expect(component.ariaBusy()).toBeNull();
+      expect(host().getAttribute('aria-busy')).toBeNull();
+    }
+  });
+});
