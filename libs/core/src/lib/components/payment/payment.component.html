@@ -1,0 +1,33 @@
+<div [class]="hostClass()" [attr.aria-busy]="ariaBusy()">
+  <header class="iu-payment__header">
+    <ng-content select="[slot=header]"></ng-content>
+  </header>
+
+  <section class="iu-payment__summary">
+    <ng-content select="[slot=summary]"></ng-content>
+  </section>
+
+  <div class="iu-payment__body">
+    <ng-content></ng-content>
+  </div>
+
+  @if (state() === 'error') {
+    <div class="iu-payment__error" role="alert">
+      <span class="iu-payment__error-text">{{ statusText() }}</span>
+      <button
+        type="button"
+        class="iu-payment__retry"
+        (click)="retry()"
+      >Tentar de novo</button>
+    </div>
+  }
+
+  <footer class="iu-payment__actions">
+    <ng-content select="[slot=actions]"></ng-content>
+  </footer>
+
+  <!-- Announced on every transition; visually hidden but read by AT. -->
+  <p class="iu-payment__status" role="status" aria-live="polite">
+    {{ statusText() }}
+  </p>
+</div>

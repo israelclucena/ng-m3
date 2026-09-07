@@ -173,6 +173,15 @@ export * from './lib/components/reviews/property-reviews.component';
 export * from './lib/components/payment/payment.types';
 export * from './lib/components/payment/payment-summary-card.component';
 export * from './lib/components/payment/booking-confirmation.component';
+// Onda 9b — payment módulo profundo (NG-05, gated by PAYMENT_V2). Additive:
+// the new unified <iu-payment> lands alongside the siblings; the interface
+// shrinks (wrappers removed) only in NG-06.
+export {
+  PaymentComponent,
+  type PaymentIntentKind,
+  type PaymentState,
+  type PaymentValidationError,
+} from './lib/components/payment/payment.component';
 export * from './lib/components/landlord-analytics/landlord-analytics.types';
 export * from './lib/components/landlord-analytics/occupancy-chart.component';
 export * from './lib/components/landlord-analytics/revenue-widget.component';

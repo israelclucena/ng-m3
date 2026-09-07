@@ -254,4 +254,7 @@ export const FeatureFlags = {
 
   // Onda 9 — card módulo profundo (Night Shift 2026-09-05)
   CARD_V2: true,  // CardComponent com `kind` (plain|action|profile|stat) + estados reais de comportamento: loading (skeleton + aria-busy), empty (slot [slot='empty']) e selectable/selected (role=button + aria-pressed, Enter/Space alterna, selectedChange). ON desde NG-03 (2026-09-06): dashboard-page migrado para `<iu-card kind="stat">` (apresentação inlinada), wrappers `card-variants/` + exports removidos, `index.ts` encolheu.
+
+  // Onda 9b — payment módulo profundo (NG-05, 2026-09-07) — OFF até o Israel validar o marco 9b.
+  PAYMENT_V2: false,  // <iu-payment intent="checkout|deposit|refund"> — máquina de estados por Signals (idle→validating→ready|error, com processing/success/expired/cancelled na API) + validação de montante/moeda + região aria-live. NUNCA move dinheiro real: Stripe só em modo teste (sk_test_*), wire numa fatia posterior. Additivo — o novo componente unificado nasce ao lado dos 4 irmãos; a interface encolhe (wrappers removidos) só em NG-06. Fatia 1 = idle→validating→ready|error.
 } as const;
