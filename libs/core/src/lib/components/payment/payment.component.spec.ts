@@ -162,3 +162,140 @@ describe('PaymentComponent (iu-payment) — NG-05 fatia 1', () => {
     expect(component.isBusy()).toBe(false);
   });
 });
+
+describe('PaymentComponent (iu-payment) — NG-05 fatia 2: terminal states', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+  const statusEl = () =>
+    fixture.nativeElement.querySelector('.iu-payment__status') as HTMLElement;
+  const terminalEl = () =>
+    fixture.nativeElement.querySelector(
+      '.iu-payment__terminal',
+    ) as HTMLElement | null;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('cancel() moves an active flow to the terminal cancelled state', () => {
+    expect(component.cancel()).toBe(true);
+    expect(component.state()).toBe('cancelled');
+    expect(component.isTerminal()).toBe(true);
+  });
+
+  it('expire() moves an active flow to the terminal expired state', () => {
+    expect(component.expire()).toBe(true);
+    expect(component.state()).toBe('expired');
+    expect(component.isTerminal()).toBe(true);
+  });
+
+  it('cancel() can abort mid-flow from the ready state', () => {
+    fixture.componentRef.setInput('amount', 100);
+    fixture.detectChanges();
+    component.validate();
+    expect(component.state()).toBe('ready');
+    expect(component.cancel()).toBe(true);
+    expect(component.state()).toBe('cancelled');
+  });
+
+  it('cancel() clears a pending validation error', () => {
+    fixture.componentRef.setInput('amount', 0);
+    fixture.detectChanges();
+    component.validate();
+    expect(component.error()).not.toBeNull();
+    component.cancel();
+    expect(component.error()).toBeNull();
+  });
+
+  it('expire() clears a pending validation error', () => {
+    fixture.componentRef.setInput('amount', 0);
+    fixture.detectChanges();
+    component.validate();
+    expect(component.error()).not.toBeNull();
+    component.expire();
+    expect(component.error()).toBeNull();
+  });
+
+  it('cancel() is a no-op once the flow has settled', () => {
+    component.expire();
+    expect(component.cancel()).toBe(false);
+    expect(component.state()).toBe('expired');
+  });
+
+  it('expire() is a no-op once the flow has settled', () => {
+    component.cancel();
+    expect(component.expire()).toBe(false);
+    expect(component.state()).toBe('cancelled');
+  });
+
+  it('validate() is inert from a terminal state (only reset() leaves it)', () => {
+    fixture.componentRef.setInput('amount', 100);
+    fixture.detectChanges();
+    component.cancel();
+    expect(component.validate()).toBe(false);
+    expect(component.state()).toBe('cancelled');
+  });
+
+  it('reset() recovers from a terminal state back to idle', () => {
+    component.expire();
+    expect(component.state()).toBe('expired');
+    component.reset();
+    expect(component.state()).toBe('idle');
+    expect(component.isTerminal()).toBe(false);
+  });
+
+  it('emits the terminal transition through stateChange', () => {
+    const seen: PaymentState[] = [];
+    component.stateChange.subscribe((s) => seen.push(s));
+    component.cancel();
+    expect(seen).toEqual(['cancelled']);
+  });
+
+  it('renders an assertive alert for the expired state', () => {
+    component.expire();
+    fixture.detectChanges();
+    const el = terminalEl();
+    expect(el).toBeTruthy();
+    expect(el?.getAttribute('role')).toBe('alert');
+    expect(el?.classList).toContain('iu-payment__terminal--expired');
+  });
+
+  it('renders a polite status notice for the cancelled state', () => {
+    component.cancel();
+    fixture.detectChanges();
+    const el = terminalEl();
+    expect(el).toBeTruthy();
+    expect(el?.getAttribute('role')).toBe('status');
+    expect(el?.classList).not.toContain('iu-payment__terminal--expired');
+  });
+
+  it('offers a restart button that resets to idle', () => {
+    component.cancel();
+    fixture.detectChanges();
+    const restart = terminalEl()?.querySelector(
+      '.iu-payment__restart',
+    ) as HTMLButtonElement;
+    expect(restart).toBeTruthy();
+    restart.click();
+    fixture.detectChanges();
+    expect(component.state()).toBe('idle');
+  });
+
+  it('announces the terminal state in the live status region', () => {
+    component.expire();
+    fixture.detectChanges();
+    expect(statusEl().textContent?.trim()).toBe('A sessão de pagamento expirou.');
+  });
+
+  it('reflects the terminal state on the host class', () => {
+    component.cancel();
+    fixture.detectChanges();
+    expect(host().classList).toContain('iu-payment--state-cancelled');
+  });
+});

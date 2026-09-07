@@ -22,6 +22,21 @@
     </div>
   }
 
+  @if (state() === 'expired' || state() === 'cancelled') {
+    <div
+      class="iu-payment__terminal"
+      [class.iu-payment__terminal--expired]="state() === 'expired'"
+      [attr.role]="state() === 'expired' ? 'alert' : 'status'"
+    >
+      <span class="iu-payment__terminal-text">{{ statusText() }}</span>
+      <button
+        type="button"
+        class="iu-payment__restart"
+        (click)="reset()"
+      >Recomeçar</button>
+    </div>
+  }
+
   <footer class="iu-payment__actions">
     <ng-content select="[slot=actions]"></ng-content>
   </footer>

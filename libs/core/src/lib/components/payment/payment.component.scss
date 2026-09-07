@@ -54,6 +54,39 @@
     }
   }
 
+  &__terminal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--md-sys-shape-corner-medium, 12px);
+    background: var(--md-sys-color-surface-container-high, #e8e8ec);
+    color: var(--md-sys-color-on-surface-variant, #46464f);
+    font: var(--md-sys-typescale-body-medium, 400 14px/20px sans-serif);
+
+    &--expired {
+      background: var(--md-sys-color-tertiary-container, #ffdcc2);
+      color: var(--md-sys-color-on-tertiary-container, #2e1500);
+    }
+  }
+
+  &__restart {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border: 1px solid var(--md-sys-color-outline, #79747e);
+    border-radius: var(--md-sys-shape-corner-full, 999px);
+    background: transparent;
+    color: var(--md-sys-color-primary, #4a4459);
+    font: var(--md-sys-typescale-label-large, 500 14px/20px sans-serif);
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--md-sys-color-primary, #4a4459);
+      outline-offset: 2px;
+    }
+  }
+
   // Visually-hidden live region (state is mirrored inside .iu-payment__error
   // for sighted users; this exists purely so AT announces every transition).
   &__status {

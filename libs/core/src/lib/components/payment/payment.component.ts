@@ -23,11 +23,15 @@ export type PaymentIntentKind = 'checkout' | 'deposit' | 'refund';
  *
  * idle → validating → ready → processing → success
  *                       ↘ error (retry → validating)
- *                                 ↘ expired | cancelled (terminal)
  *
- * This slice (NG-05 · fatia 1) wires `idle → validating → ready | error`.
- * `processing`/`success`/`expired`/`cancelled` are part of the stable API
- * shape but are driven in the following slices.
+ * From any *active* (non-terminal) state the session may drop into a terminal
+ * state: `cancelled` (user aborts) or `expired` (session times out). The three
+ * terminal states — `success`, `expired`, `cancelled` — are only left via
+ * `reset()`.
+ *
+ * Slices so far: fatia 1 wired `idle → validating → ready | error`; fatia 2
+ * adds the terminal `expired`/`cancelled` transitions. `processing`/`success`
+ * are part of the stable API shape but are driven by the Stripe slice.
  */
 export type PaymentState =
   | 'idle'
@@ -113,6 +117,15 @@ export class PaymentComponent {
     this._state() === 'validating' || this._state() === 'processing',
   );
 
+  /**
+   * True once the attempt has settled and only `reset()` can leave it —
+   * `success`, `expired` or `cancelled`. Guards re-entrant transitions.
+   */
+  isTerminal = computed(() => {
+    const s = this._state();
+    return s === 'success' || s === 'expired' || s === 'cancelled';
+  });
+
   /** Live-region copy — announced on every state change. */
   statusText = computed(() => {
     switch (this._state()) {
@@ -147,7 +160,7 @@ export class PaymentComponent {
    * the flow may advance. No-op while disabled or already busy.
    */
   validate(): boolean {
-    if (this.disabled() || this.isBusy()) return false;
+    if (this.disabled() || this.isBusy() || this.isTerminal()) return false;
     this.setState('validating');
 
     if (!this.amountValid()) {
@@ -168,6 +181,31 @@ export class PaymentComponent {
   retry(): boolean {
     if (this._state() !== 'error') return false;
     return this.validate();
+  }
+
+  /**
+   * Abort the attempt (user-initiated). Moves to the terminal `cancelled`
+   * state from any active state, clearing any pending error. No-op once the
+   * attempt has settled (`success`/`expired`/`cancelled`). Returns whether the
+   * transition happened.
+   */
+  cancel(): boolean {
+    if (this.isTerminal()) return false;
+    this._error.set(null);
+    this.setState('cancelled');
+    return true;
+  }
+
+  /**
+   * Mark the payment session as timed-out (system-driven). Moves to the
+   * terminal `expired` state from any active state, clearing any pending error.
+   * No-op once the attempt has settled. Returns whether the transition happened.
+   */
+  expire(): boolean {
+    if (this.isTerminal()) return false;
+    this._error.set(null);
+    this.setState('expired');
+    return true;
   }
 
   /** Return the machine to `idle` and clear any error. */
