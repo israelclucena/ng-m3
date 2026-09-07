@@ -12,6 +12,7 @@ import {
   InputComponent,
   ListComponent,
   ListItemComponent,
+  PaymentComponent,
   ProgressComponent,
   RadioComponent,
   SelectComponent,
@@ -37,6 +38,7 @@ import { FeatureFlags } from '../feature-flags';
     InputComponent,
     ListComponent,
     ListItemComponent,
+    PaymentComponent,
     ProgressComponent,
     RadioComponent,
     SelectComponent,
@@ -299,6 +301,69 @@ import { FeatureFlags } from '../feature-flags';
                        data-testid="card-state-media" style="width:220px">
                 <p>Media com aspect-ratio.</p>
               </iu-card>
+            </div>
+          </div>
+        }
+
+        @if (flags.PAYMENT_V2) {
+          <!-- Onda 9b / PAYMENT_V2 — one <iu-payment> drives the whole lifecycle
+               (idle→validating→ready→processing→success, error+retry, terminal
+               cancelled/expired). The default (root) gateway seam is an inert
+               test-mode stub that approves instantly: NO keys, NO network, NO
+               money moves. Gated OFF until the Stripe test-mode adapter + the
+               interface collapse land (NG-06). -->
+          <div class="group" data-testid="payment-v2-showcase">
+            <h3>PAYMENT_V2 — máquina de estados &amp; intents</h3>
+
+            <!-- Drivable full flow (checkout). The buttons call the component's
+                 public state-machine methods; the live label mirrors state(). -->
+            <div class="row">
+              <iu-payment #pay intent="checkout" [amount]="1200" currency="EUR"
+                          data-testid="payment-flow" style="width:380px">
+                <h4 slot="header" style="margin:0 0 4px">Pagamento — checkout</h4>
+                <div slot="summary">Total: <strong>1200 EUR</strong></div>
+                <p slot="summary" style="margin:8px 0 0;font:600 12px/1.4 system-ui;opacity:.7">
+                  state: <code data-testid="payment-state">{{ pay.state() }}</code>
+                </p>
+                <div slot="actions" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+                  <iu-button variant="filled" label="Validar" data-testid="pay-validate"
+                             (clicked)="pay.validate()"></iu-button>
+                  <iu-button variant="filled" label="Pagar" data-testid="pay-submit"
+                             (clicked)="pay.submit()"></iu-button>
+                  <iu-button variant="text" label="Cancelar" data-testid="pay-cancel"
+                             (clicked)="pay.cancel()"></iu-button>
+                  <iu-button variant="text" label="Expirar" data-testid="pay-expire"
+                             (clicked)="pay.expire()"></iu-button>
+                  <iu-button variant="text" label="Recomeçar" data-testid="pay-reset"
+                             (clicked)="pay.reset()"></iu-button>
+                </div>
+              </iu-payment>
+
+              <!-- Invalid amount → error state on Validar (proves the error region + retry). -->
+              <iu-payment #payBad intent="refund" [amount]="0" currency="EUR"
+                          data-testid="payment-invalid" style="width:280px">
+                <h4 slot="header" style="margin:0 0 4px">Montante inválido</h4>
+                <div slot="actions" style="margin-top:8px">
+                  <iu-button variant="filled" label="Validar" data-testid="pay-bad-validate"
+                             (clicked)="payBad.validate()"></iu-button>
+                </div>
+              </iu-payment>
+            </div>
+
+            <!-- The three intents, static — proves the intent modifier per surface. -->
+            <div class="row">
+              <iu-payment intent="checkout" [amount]="800" currency="EUR"
+                          data-testid="payment-intent-checkout" style="width:220px">
+                <h4 slot="header" style="margin:0">checkout</h4>
+              </iu-payment>
+              <iu-payment intent="deposit" [amount]="500" currency="EUR"
+                          data-testid="payment-intent-deposit" style="width:220px">
+                <h4 slot="header" style="margin:0">deposit</h4>
+              </iu-payment>
+              <iu-payment intent="refund" [amount]="300" currency="EUR"
+                          data-testid="payment-intent-refund" style="width:220px">
+                <h4 slot="header" style="margin:0">refund</h4>
+              </iu-payment>
             </div>
           </div>
         }
