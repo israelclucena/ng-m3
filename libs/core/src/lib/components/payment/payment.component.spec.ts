@@ -808,3 +808,95 @@ describe('PaymentComponent (iu-payment) — NG-05 fatia 5: a11y invariants for b
     expect(restart?.getAttribute('type')).toBe('button');
   });
 });
+
+describe('PaymentComponent (iu-payment) — NG-05 fatia 8: presentational seed', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+  const statusEl = () =>
+    fixture.nativeElement.querySelector('.iu-payment__status') as HTMLElement;
+
+  // Seed inputs must be set BEFORE the first detectChanges so ngOnInit reads
+  // the bound value — mirrors how a wrapper binds `[initialState]` up front.
+  const seed = (
+    inputs: Partial<{ initialState: PaymentState; presentational: boolean }>,
+  ) => {
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    for (const [k, v] of Object.entries(inputs)) {
+      fixture.componentRef.setInput(k, v);
+    }
+    fixture.detectChanges();
+  };
+
+  it('seeds a terminal state at init without running the machine', () => {
+    seed({ initialState: 'success' });
+    expect(component.state()).toBe('success');
+    expect(component.isTerminal()).toBe(true);
+    expect(host().classList).toContain('iu-payment--state-success');
+    // Seed is not a transition — the live region still reflects the state.
+    expect(statusEl().textContent?.trim()).toBe('Pagamento concluído.');
+  });
+
+  it('the seed does not emit a stateChange (it is not a transition)', () => {
+    const seen: PaymentState[] = [];
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    component.stateChange.subscribe((s) => seen.push(s));
+    fixture.componentRef.setInput('initialState', 'success');
+    fixture.detectChanges();
+    expect(component.state()).toBe('success');
+    expect(seen).toEqual([]);
+  });
+
+  it('ignores the default idle seed (no-op)', () => {
+    seed({ initialState: 'idle' });
+    expect(component.state()).toBe('idle');
+    expect(host().classList).toContain('iu-payment--state-idle');
+  });
+
+  it('a later initialState change is ignored — the seed is one-shot', () => {
+    seed({ initialState: 'success' });
+    fixture.componentRef.setInput('initialState', 'error');
+    fixture.detectChanges();
+    expect(component.state()).toBe('success');
+  });
+
+  it('presentational=true suppresses the built-in success affordance', () => {
+    seed({ initialState: 'success', presentational: true });
+    expect(component.state()).toBe('success');
+    expect(host().querySelector('.iu-payment__success')).toBeNull();
+    // The aria-live status region is kept for accessibility.
+    expect(statusEl()).toBeTruthy();
+    expect(statusEl().getAttribute('aria-live')).toBe('polite');
+  });
+
+  it('presentational=true suppresses the error affordance (retry button)', () => {
+    seed({ initialState: 'error', presentational: true });
+    expect(component.state()).toBe('error');
+    expect(host().querySelector('.iu-payment__error')).toBeNull();
+  });
+
+  it('presentational=true suppresses the expired/cancelled affordance', () => {
+    seed({ initialState: 'expired', presentational: true });
+    expect(component.state()).toBe('expired');
+    expect(host().querySelector('.iu-payment__terminal')).toBeNull();
+  });
+
+  it('without presentational the built-in affordance still renders for a seed', () => {
+    seed({ initialState: 'success' });
+    const success = host().querySelector('.iu-payment__success');
+    expect(success).toBeTruthy();
+    expect(success?.querySelector('.iu-payment__restart')).toBeTruthy();
+  });
+
+  it('presentational is off by default (fallback preserves current behavior)', () => {
+    seed({});
+    expect(component.presentational()).toBe(false);
+    expect(component.state()).toBe('idle');
+  });
+});

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   InjectionToken,
+  type OnInit,
   ViewEncapsulation,
   computed,
   inject,
@@ -136,7 +137,7 @@ class PaymentTimeoutError extends Error {}
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaymentComponent {
+export class PaymentComponent implements OnInit {
   // --- Inputs ---
   /** What the surface is for — checkout | deposit | refund. */
   intent   = input<PaymentIntentKind>('checkout');
@@ -146,6 +147,24 @@ export class PaymentComponent {
   currency = input<string>('EUR');
   /** Inert while true — `validate()`/`retry()` become no-ops. */
   disabled = input<boolean>(false);
+  /**
+   * Seed the surface in a given lifecycle state **once**, at init, *without*
+   * running the machine — lets a presentational wrapper (e.g. a post-payment
+   * confirmation) show a terminal state (`success`/`error`/`expired`/
+   * `cancelled`) it already knows about. Applied in `ngOnInit`; later changes
+   * are ignored (the machine owns the state after that). Defaults to `idle`
+   * (no seed). Pair with {@link presentational} to suppress the built-in
+   * terminal affordances and own the presentation via the slots.
+   */
+  initialState = input<PaymentState>('idle');
+  /**
+   * When true, the built-in terminal affordance blocks (the fixed status copy
+   * + retry/restart button for `error`/`expired`/`cancelled`/`success`) are
+   * **not** rendered, so a wrapper can own the terminal presentation entirely
+   * through the `header`/`summary`/default/`actions` slots. The `aria-live`
+   * status region is kept. Defaults to `false` (built-in affordances shown).
+   */
+  presentational = input<boolean>(false);
 
   // --- Outputs ---
   /** Fires on every state transition with the new state. */
@@ -223,6 +242,18 @@ export class PaymentComponent {
     if (this.isBusy())   c.push('iu-payment--busy');
     return c.join(' ');
   });
+
+  /**
+   * One-shot presentational seed. Applied here (not in the constructor, where
+   * bound inputs aren't yet available) and set directly on the state signal so
+   * it does **not** emit `stateChange` — a seed is not a transition. Ignored
+   * when the seed is `idle` (the default). The state machine owns the state
+   * from this point on.
+   */
+  ngOnInit(): void {
+    const seed = this.initialState();
+    if (seed !== 'idle') this._state.set(seed);
+  }
 
   // --- Handlers ---
   /**

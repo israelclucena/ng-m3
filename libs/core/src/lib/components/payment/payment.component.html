@@ -11,7 +11,7 @@
     <ng-content></ng-content>
   </div>
 
-  @if (state() === 'error') {
+  @if (state() === 'error' && !presentational()) {
     <div class="iu-payment__error" role="alert">
       <span class="iu-payment__error-text">{{ statusText() }}</span>
       <button
@@ -22,7 +22,7 @@
     </div>
   }
 
-  @if (state() === 'expired' || state() === 'cancelled') {
+  @if ((state() === 'expired' || state() === 'cancelled') && !presentational()) {
     <div
       class="iu-payment__terminal"
       [class.iu-payment__terminal--expired]="state() === 'expired'"
@@ -37,7 +37,7 @@
     </div>
   }
 
-  @if (state() === 'success') {
+  @if (state() === 'success' && !presentational()) {
     <div class="iu-payment__success" role="status">
       <span class="iu-payment__success-text">{{ statusText() }}</span>
       <button
