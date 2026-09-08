@@ -108,6 +108,50 @@ for (const rel of [...reExportedFiles].sort()) {
 }
 publicSymbols.sort();
 
+// --- INTERFACE (barrel): símbolos REALMENTE re-exportados pelo index.ts ---
+// `publicSymbols` (acima) conta todo `export` a nível de ficheiro do módulo, o
+// que SOBRE-CONTA quando o index.ts só re-exporta um subconjunto via
+// `export { A, B } from '<mod>/…'`. Esta métrica ADITIVA conta a superfície
+// pública real: os nomes listados em `export { … } from '<mod>/…'` + a expansão
+// de `export * from '<mod>/…'`. Não altera `publicSymbolCount` (preserva
+// comparabilidade com o baseline NG-01/NG-04 já gravado).
+const barrelSymbols = new Set();
+
+// (a) re-exports nomeados: export { A, type B, C as D } from './…/<mod>/…'
+// `[^{}]*` (não `[\s\S]*?`) impede que a captura atravesse fronteiras de
+// statement e engula `export { … }` vizinhos até achar um `from '<mod>/…'`.
+const namedReExportRe = new RegExp(
+  `export\\s*\\{([^{}]*)\\}\\s*from\\s*['"]\\./lib/components/${mod}/[^'"]+['"]`,
+  'g',
+);
+let nm;
+while ((nm = namedReExportRe.exec(indexSrc))) {
+  for (const raw of nm[1].split(',')) {
+    const entry = raw.trim();
+    if (!entry) continue;
+    // `X as Y` expõe Y; `type X` expõe X — ficar com o nome exportado.
+    const name = entry.replace(/^type\s+/, '').split(/\s+as\s+/).pop().trim();
+    if (name) barrelSymbols.add(name);
+  }
+}
+
+// (b) star re-exports: export * from './…/<mod>/file' → expandir o ficheiro
+const starReExportRe = new RegExp(
+  `export\\s*\\*\\s*from\\s*['"]\\./lib/components/${mod}/([^'"]+)['"]`,
+  'g',
+);
+let sr;
+while ((sr = starReExportRe.exec(indexSrc))) {
+  const rel = sr[1];
+  const candidate = join(modDir, rel.endsWith('.ts') ? rel : `${rel}.ts`);
+  if (!existsSync(candidate)) continue;
+  const src = read(candidate);
+  const starRe = /export\s+(?:abstract\s+)?(?:class|interface|type|enum|const|function)\s+([A-Za-z0-9_]+)/g;
+  let ssm;
+  while ((ssm = starRe.exec(src))) barrelSymbols.add(ssm[1]);
+}
+const publicSymbolsBarrel = [...barrelSymbols].sort();
+
 // --- INTERFACE: inputs/outputs (input()/output()/@Input/@Output) ---
 let inputs = 0;
 let outputs = 0;
@@ -203,6 +247,8 @@ const result = {
     indexExportLines: reExportedFiles.size,
     publicSymbols,
     publicSymbolCount: publicSymbols.length,
+    publicSymbolsBarrel,
+    publicSymbolBarrelCount: publicSymbolsBarrel.length,
     inputs,
     outputs,
     inputsOutputs: inputs + outputs,
