@@ -326,4 +326,69 @@ describe('BookingConfirmationComponent', () => {
     expect(btn).toBeTruthy();
     expect(btn.textContent).toContain('Ver mais imóveis');
   });
+
+  // ── Onda 9b collapse (NG-05): delegation to <iu-payment> ──────────────────────
+  // The screen keeps its own chrome but delegates the canonical payment-lifecycle
+  // state + aria-live announcement to a bare, presentational <iu-payment>.
+
+  it('renders its chrome inside a delegated <iu-payment> host', async () => {
+    await setup(confirmedData);
+    const host = fixture.nativeElement.querySelector('iu-payment') as HTMLElement;
+    expect(host).toBeTruthy();
+    // The booking chrome is projected into the delegate (no double card).
+    expect(host.querySelector('.iu-booking-conf')).toBeTruthy();
+  });
+
+  it('delegates in bare mode so the delegate box does not double the card', async () => {
+    await setup(confirmedData);
+    const host = fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+    expect(host.classList.contains('iu-payment--bare')).toBe(true);
+  });
+
+  it('presentational: suppresses the built-in success restart affordance (confirmed)', async () => {
+    // confirmed → success would show a "Recomeçar" restart button if not presentational.
+    await setup(confirmedData);
+    expect(fixture.nativeElement.querySelector('.iu-payment__success')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.iu-payment__restart')).toBeNull();
+  });
+
+  it('presentational: suppresses the built-in error retry affordance (failed)', async () => {
+    // failed → error would show a "Tentar de novo" retry button if not presentational.
+    await setup(failedData);
+    expect(fixture.nativeElement.querySelector('.iu-payment__error')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.iu-payment__retry')).toBeNull();
+  });
+
+  it('keeps the delegate aria-live status region for AT announcements', async () => {
+    await setup(confirmedData);
+    const status = fixture.nativeElement.querySelector('.iu-payment__status') as HTMLElement;
+    expect(status).toBeTruthy();
+    expect(status.getAttribute('aria-live')).toBe('polite');
+  });
+
+  // paymentState() mapping — booking status → canonical PaymentState the delegate owns.
+
+  const stateMap: ReadonlyArray<{
+    status: BookingStatus;
+    data: BookingConfirmationData;
+    state: string;
+  }> = [
+    { status: 'confirmed', data: confirmedData, state: 'success' },
+    { status: 'failed', data: failedData, state: 'error' },
+    { status: 'cancelled', data: cancelledData, state: 'cancelled' },
+    { status: 'pending', data: pendingData, state: 'idle' },
+  ];
+
+  for (const tc of stateMap) {
+    it(`paymentState() maps ${tc.status} → ${tc.state}`, async () => {
+      await setup(tc.data);
+      expect(component.paymentState()).toBe(tc.state);
+    });
+
+    it(`seeds the delegate with iu-payment--state-${tc.state} for ${tc.status}`, async () => {
+      await setup(tc.data);
+      const host = fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+      expect(host.classList.contains(`iu-payment--state-${tc.state}`)).toBe(true);
+    });
+  }
 });

@@ -7,6 +7,7 @@ import {
   output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PaymentComponent, type PaymentState } from './payment.component';
 import { BookingConfirmationData, BookingStatus } from './payment.types';
 
 /**
@@ -15,7 +16,23 @@ import { BookingConfirmationData, BookingStatus } from './payment.types';
  * Shows booking status (confirmed / pending / failed), reference number,
  * property summary, and next steps.
  *
+ * Onda 9b collapse (NG-05): as the payment module becomes a *deep* module the
+ * four sibling components collapse onto the single `<iu-payment>`. This screen
+ * is a *presentational terminal surface* over a payment attempt, so it now
+ * **delegates the payment lifecycle state + its accessible live announcement**
+ * to `<iu-payment>` (seeded with {@link paymentState} via `initialState`, in
+ * `bare` + `presentational` mode so `<iu-payment>` owns the canonical state /
+ * `aria-live` while this wrapper keeps its own booking-specific chrome and copy).
+ * Its public contract — selector, `data` input, the three outputs — is
+ * unchanged, so app wiring (Features page, booking-checkout) keeps working
+ * until NG-06 removes the wrappers and shrinks the barrel.
+ *
  * Feature flag: `PAYMENT_MODULE`
+ *
+ * @deprecated Prefer `<iu-payment>` directly for new payment surfaces. This
+ * component is kept as a thin `@deprecated` wrapper for backwards compatibility
+ * until NG-06 removes the payment wrappers and the barrel shrinks to ≤5 public
+ * symbols.
  *
  * @example
  * ```html
@@ -29,114 +46,124 @@ import { BookingConfirmationData, BookingStatus } from './payment.types';
 @Component({
   selector: 'iu-booking-confirmation',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PaymentComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   template: `
-    <div class="iu-booking-conf" [class]="'iu-booking-conf--' + data().status">
+    <iu-payment
+      class="iu-booking-conf-host"
+      [bare]="true"
+      [presentational]="true"
+      [initialState]="paymentState()"
+    >
+      <div class="iu-booking-conf" [class]="'iu-booking-conf--' + data().status">
 
-      <!-- ── Status Header ── -->
-      <div class="iu-booking-conf__header">
-        <div class="iu-booking-conf__status-icon">
-          <span class="material-symbols-outlined">{{ statusIcon() }}</span>
+        <!-- ── Status Header ── -->
+        <div class="iu-booking-conf__header">
+          <div class="iu-booking-conf__status-icon">
+            <span class="material-symbols-outlined">{{ statusIcon() }}</span>
+          </div>
+          <h2 class="iu-booking-conf__title">{{ statusTitle() }}</h2>
+          <p class="iu-booking-conf__subtitle">{{ statusSubtitle() }}</p>
         </div>
-        <h2 class="iu-booking-conf__title">{{ statusTitle() }}</h2>
-        <p class="iu-booking-conf__subtitle">{{ statusSubtitle() }}</p>
-      </div>
 
-      <!-- ── Booking Reference ── -->
-      @if (data().status !== 'failed') {
-        <div class="iu-booking-conf__ref-box">
-          <span class="iu-booking-conf__ref-label">Referência da reserva</span>
-          <span class="iu-booking-conf__ref-code">{{ data().bookingRef }}</span>
-        </div>
-      }
+        <!-- ── Booking Reference ── -->
+        @if (data().status !== 'failed') {
+          <div class="iu-booking-conf__ref-box">
+            <span class="iu-booking-conf__ref-label">Referência da reserva</span>
+            <span class="iu-booking-conf__ref-code">{{ data().bookingRef }}</span>
+          </div>
+        }
 
-      <!-- ── Property Summary ── -->
-      @if (data().status !== 'failed') {
-        <div class="iu-booking-conf__property">
-          <div class="iu-booking-conf__property-row">
-            <span class="material-symbols-outlined" aria-hidden="true">apartment</span>
-            <div>
-              <strong>{{ data().propertyTitle }}</strong>
-              <p class="iu-booking-conf__property-address">{{ data().propertyAddress }}</p>
+        <!-- ── Property Summary ── -->
+        @if (data().status !== 'failed') {
+          <div class="iu-booking-conf__property">
+            <div class="iu-booking-conf__property-row">
+              <span class="material-symbols-outlined" aria-hidden="true">apartment</span>
+              <div>
+                <strong>{{ data().propertyTitle }}</strong>
+                <p class="iu-booking-conf__property-address">{{ data().propertyAddress }}</p>
+              </div>
+            </div>
+            <div class="iu-booking-conf__property-row">
+              <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+              <div>
+                <strong>Entrada prevista</strong>
+                <p>{{ data().checkIn | date:'EEEE, d MMMM yyyy' }}</p>
+              </div>
+            </div>
+            <div class="iu-booking-conf__property-row">
+              <span class="material-symbols-outlined" aria-hidden="true">person</span>
+              <div>
+                <strong>Senhorio</strong>
+                <p>{{ data().landlordName }}</p>
+                @if (data().landlordPhone) {
+                  <p class="iu-booking-conf__phone">{{ data().landlordPhone }}</p>
+                }
+              </div>
+            </div>
+            <div class="iu-booking-conf__total-row">
+              <span>Total pago</span>
+              <span class="iu-booking-conf__total-amount">
+                {{ data().total | currency:data().currency:'symbol':'1.0-0' }}
+              </span>
             </div>
           </div>
-          <div class="iu-booking-conf__property-row">
-            <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
-            <div>
-              <strong>Entrada prevista</strong>
-              <p>{{ data().checkIn | date:'EEEE, d MMMM yyyy' }}</p>
-            </div>
-          </div>
-          <div class="iu-booking-conf__property-row">
-            <span class="material-symbols-outlined" aria-hidden="true">person</span>
-            <div>
-              <strong>Senhorio</strong>
-              <p>{{ data().landlordName }}</p>
-              @if (data().landlordPhone) {
-                <p class="iu-booking-conf__phone">{{ data().landlordPhone }}</p>
-              }
-            </div>
-          </div>
-          <div class="iu-booking-conf__total-row">
-            <span>Total pago</span>
-            <span class="iu-booking-conf__total-amount">
-              {{ data().total | currency:data().currency:'symbol':'1.0-0' }}
-            </span>
-          </div>
-        </div>
-      }
+        }
 
-      <!-- ── Message ── -->
-      @if (data().message) {
-        <div class="iu-booking-conf__message">
-          <span class="material-symbols-outlined" aria-hidden="true">info</span>
-          <p>{{ data().message }}</p>
-        </div>
-      }
+        <!-- ── Message ── -->
+        @if (data().message) {
+          <div class="iu-booking-conf__message">
+            <span class="material-symbols-outlined" aria-hidden="true">info</span>
+            <p>{{ data().message }}</p>
+          </div>
+        }
 
-      <!-- ── Next Steps ── -->
-      @if (data().status === 'confirmed' || data().status === 'pending') {
-        <div class="iu-booking-conf__steps">
-          <h4 class="iu-booking-conf__steps-title">Próximos passos</h4>
-          <ol class="iu-booking-conf__step-list">
-            @if (data().status === 'confirmed') {
-              <li>Receberá um email de confirmação em breve.</li>
-              <li>O senhorio irá entrar em contacto para coordenar a entrada.</li>
-              <li>Certifique-se de ter os documentos necessários (BI/passaporte, NIF).</li>
-            } @else {
-              <li>A reserva está a aguardar confirmação do pagamento.</li>
-              <li>Será notificado assim que a transferência for recebida (1–2 dias úteis).</li>
-              <li>Em caso de dúvida, contacte o suporte LisboaRent.</li>
-            }
-          </ol>
-        </div>
-      }
-
-      <!-- ── Actions ── -->
-      <div class="iu-booking-conf__actions">
+        <!-- ── Next Steps ── -->
         @if (data().status === 'confirmed' || data().status === 'pending') {
-          <button class="iu-booking-conf__btn iu-booking-conf__btn--primary" (click)="contactLandlord.emit()">
-            <span class="material-symbols-outlined">chat</span>
-            Contactar Senhorio
-          </button>
+          <div class="iu-booking-conf__steps">
+            <h4 class="iu-booking-conf__steps-title">Próximos passos</h4>
+            <ol class="iu-booking-conf__step-list">
+              @if (data().status === 'confirmed') {
+                <li>Receberá um email de confirmação em breve.</li>
+                <li>O senhorio irá entrar em contacto para coordenar a entrada.</li>
+                <li>Certifique-se de ter os documentos necessários (BI/passaporte, NIF).</li>
+              } @else {
+                <li>A reserva está a aguardar confirmação do pagamento.</li>
+                <li>Será notificado assim que a transferência for recebida (1–2 dias úteis).</li>
+                <li>Em caso de dúvida, contacte o suporte LisboaRent.</li>
+              }
+            </ol>
+          </div>
         }
-        @if (data().status === 'failed') {
-          <button class="iu-booking-conf__btn iu-booking-conf__btn--primary" (click)="retryPayment.emit()">
-            <span class="material-symbols-outlined">refresh</span>
-            Tentar novamente
-          </button>
-        }
-        <button class="iu-booking-conf__btn iu-booking-conf__btn--secondary" (click)="backToSearch.emit()">
-          <span class="material-symbols-outlined">search</span>
-          Ver mais imóveis
-        </button>
-      </div>
 
-    </div>
+        <!-- ── Actions ── -->
+        <div class="iu-booking-conf__actions">
+          @if (data().status === 'confirmed' || data().status === 'pending') {
+            <button class="iu-booking-conf__btn iu-booking-conf__btn--primary" (click)="contactLandlord.emit()">
+              <span class="material-symbols-outlined">chat</span>
+              Contactar Senhorio
+            </button>
+          }
+          @if (data().status === 'failed') {
+            <button class="iu-booking-conf__btn iu-booking-conf__btn--primary" (click)="retryPayment.emit()">
+              <span class="material-symbols-outlined">refresh</span>
+              Tentar novamente
+            </button>
+          }
+          <button class="iu-booking-conf__btn iu-booking-conf__btn--secondary" (click)="backToSearch.emit()">
+            <span class="material-symbols-outlined">search</span>
+            Ver mais imóveis
+          </button>
+        </div>
+
+      </div>
+    </iu-payment>
   `,
   styles: [`
+    /* Chromeless delegate — the wrapper owns all visual chrome. */
+    .iu-booking-conf-host { display: block; }
+
     .iu-booking-conf {
       display: flex;
       flex-direction: column;
@@ -309,6 +336,27 @@ export class BookingConfirmationComponent {
 
   /** Emitted when the user retries a failed payment. */
   readonly retryPayment = output<void>();
+
+  /**
+   * Map the booking status onto the canonical {@link PaymentState} owned and
+   * announced (via `aria-live`) by the delegated `<iu-payment>`:
+   * `confirmed → success`, `failed → error`, `cancelled → cancelled`. A booking
+   * `pending` has no terminal payment-machine equivalent (the machine's states
+   * are idle|validating|ready|processing|success|error|expired|cancelled), so
+   * it seeds `idle` — non-visual under `bare`+`presentational`; this wrapper
+   * renders its own pending UI and `--pending` chrome. Seeded once at
+   * `<iu-payment>` init; the wrapper's visual presentation stays driven live by
+   * {@link data}.
+   */
+  readonly paymentState = computed<PaymentState>(() => {
+    const map: Record<BookingStatus, PaymentState> = {
+      confirmed: 'success',
+      failed: 'error',
+      cancelled: 'cancelled',
+      pending: 'idle',
+    };
+    return map[this.data().status];
+  });
 
   /** Computed icon for the current status. */
   readonly statusIcon = computed(() => {
