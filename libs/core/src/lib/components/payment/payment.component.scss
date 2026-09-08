@@ -16,6 +16,16 @@
     pointer-events: none;
   }
 
+  // Chromeless: a wrapper owns the card/box, so drop the shell's own surface
+  // (padding, background, radius). The layout/slot scaffolding stays. Prevents
+  // a double-card when a styled wrapper (e.g. booking confirmation) delegates
+  // its presentation to `<iu-payment>`.
+  &--bare {
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+
   &__header:empty,
   &__summary:empty,
   &__body:empty,

@@ -900,3 +900,40 @@ describe('PaymentComponent (iu-payment) — NG-05 fatia 8: presentational seed',
     expect(component.state()).toBe('idle');
   });
 });
+
+describe('PaymentComponent (iu-payment) — NG-05 fatia 9: chromeless (bare)', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+
+  const make = (inputs: Partial<{ bare: boolean; presentational: boolean }> = {}) => {
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    for (const [k, v] of Object.entries(inputs)) {
+      fixture.componentRef.setInput(k, v);
+    }
+    fixture.detectChanges();
+  };
+
+  it('bare is off by default (shell keeps its own surface)', () => {
+    make();
+    expect(component.bare()).toBe(false);
+    expect(host().classList).not.toContain('iu-payment--bare');
+  });
+
+  it('bare=true adds the chromeless modifier so a wrapper owns the box', () => {
+    make({ bare: true });
+    expect(component.bare()).toBe(true);
+    expect(host().classList).toContain('iu-payment--bare');
+  });
+
+  it('bare is orthogonal to presentational (both compose)', () => {
+    make({ bare: true, presentational: true });
+    expect(host().classList).toContain('iu-payment--bare');
+    // The base surface class is always present regardless of modifiers.
+    expect(host().classList).toContain('iu-payment');
+  });
+});

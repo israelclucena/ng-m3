@@ -165,6 +165,17 @@ export class PaymentComponent implements OnInit {
    * status region is kept. Defaults to `false` (built-in affordances shown).
    */
   presentational = input<boolean>(false);
+  /**
+   * Chromeless mode: strips the shell's own box (padding, surface background,
+   * corner radius) so a wrapper can own the container entirely — its own
+   * card/padding wraps the projected content without nesting inside a second
+   * `<iu-payment>` box (which would double the card). Only the layout/slot
+   * scaffolding remains. Pair with {@link presentational} when a wrapper (e.g.
+   * a post-payment confirmation that is itself a styled card) delegates to
+   * `<iu-payment>` for state + a11y but keeps its own visual chrome. Defaults
+   * to `false` (the shell renders its full M3 surface).
+   */
+  bare = input<boolean>(false);
 
   // --- Outputs ---
   /** Fires on every state transition with the new state. */
@@ -240,6 +251,7 @@ export class PaymentComponent implements OnInit {
     ];
     if (this.disabled()) c.push('iu-payment--disabled');
     if (this.isBusy())   c.push('iu-payment--busy');
+    if (this.bare())     c.push('iu-payment--bare');
     return c.join(' ');
   });
 
