@@ -202,4 +202,46 @@ describe('PaymentReceiptComponent', () => {
     expect(printSpy).toHaveBeenCalledTimes(1);
     printSpy.mockRestore();
   });
+
+  // ── Onda 9b collapse — delegates lifecycle state + a11y to <iu-payment> ──────
+  it('renders an <iu-payment> delegate host when an invoice is present', () => {
+    expect(
+      fixture.nativeElement.querySelector('iu-payment'),
+    ).toBeTruthy();
+    // the wrapper still owns its own receipt chrome
+    expect(fixture.nativeElement.querySelector('.receipt')).toBeTruthy();
+  });
+
+  it('delegates in bare (chromeless) mode so the receipt owns the box', () => {
+    expect(
+      fixture.nativeElement.querySelector('.iu-payment--bare'),
+    ).toBeTruthy();
+  });
+
+  it('seeds the delegate to the terminal success state', () => {
+    expect(
+      fixture.nativeElement.querySelector('.iu-payment--state-success'),
+    ).toBeTruthy();
+  });
+
+  it('suppresses the delegate built-in success affordance (presentational)', () => {
+    // the wrapper renders its own header/actions — no built-in restart block
+    expect(
+      fixture.nativeElement.querySelector('.iu-payment__success'),
+    ).toBeFalsy();
+  });
+
+  it('keeps the accessible live region announcing the payment result', () => {
+    const status = fixture.nativeElement.querySelector(
+      '.iu-payment__status',
+    ) as HTMLElement;
+    expect(status).toBeTruthy();
+    expect(status.getAttribute('aria-live')).toBe('polite');
+    expect(status.textContent).toContain('Pagamento concluído');
+  });
+
+  it('does not render the delegate in the empty state', async () => {
+    await setup(null);
+    expect(fixture.nativeElement.querySelector('iu-payment')).toBeFalsy();
+  });
 });

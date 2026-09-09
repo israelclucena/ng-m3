@@ -4,7 +4,24 @@
  * Post-payment receipt screen. Displays invoice details after a successful
  * PaymentService.processPayment() call. Printable layout with M3 design tokens.
  *
+ * Onda 9b collapse (NG-05): as the payment module becomes a *deep* module the
+ * four sibling components collapse onto the single `<iu-payment>`. A receipt is
+ * a *presentational terminal surface* over a settled (successful) payment, so it
+ * now **delegates the payment lifecycle state + its accessible live
+ * announcement** to `<iu-payment>` — seeded to `success` via `initialState`, in
+ * `bare` + `presentational` mode so `<iu-payment>` owns the canonical state /
+ * `aria-live` while this wrapper keeps its own receipt chrome and copy. Its
+ * public contract — selector, `invoice` input, the two outputs, and the
+ * `statusClass`/`formattedDate`/`fmtAmount` helpers — is unchanged, so app
+ * wiring (Features page) keeps working until NG-06 removes the wrappers and
+ * shrinks the barrel.
+ *
  * Feature flag: PAYMENT_RECEIPT
+ *
+ * @deprecated Prefer `<iu-payment>` directly for new payment surfaces. This
+ * component is kept as a thin `@deprecated` wrapper for backwards compatibility
+ * until NG-06 removes the payment wrappers and the barrel shrinks to ≤5 public
+ * symbols.
  *
  * @example
  * ```html
@@ -20,19 +37,23 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PaymentComponent } from './payment.component';
 import { InvoiceService, type Invoice } from '../../services/invoice.service';
 
 @Component({
   selector: 'iu-payment-receipt',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [CommonModule, PaymentComponent],
   styles: [`
     :host {
       display: block;
       font-family: var(--md-sys-typescale-body-large-font, system-ui);
       color: var(--md-sys-color-on-surface, #1c1b1f);
     }
+
+    /* Chromeless delegate — the wrapper owns all visual chrome. */
+    .iu-payment-receipt-host { display: block; }
 
     .receipt {
       max-width: 640px;
@@ -250,6 +271,12 @@ import { InvoiceService, type Invoice } from '../../services/invoice.service';
   `],
   template: `
     @if (invoice()) {
+      <iu-payment
+        class="iu-payment-receipt-host"
+        [bare]="true"
+        [presentational]="true"
+        [initialState]="'success'"
+      >
       <article class="receipt" [attr.aria-label]="'Receipt ' + invoice()!.invoiceRef">
 
         <!-- Header -->
@@ -368,6 +395,7 @@ import { InvoiceService, type Invoice } from '../../services/invoice.service';
         </footer>
 
       </article>
+      </iu-payment>
     } @else {
       <div style="padding: 32px; text-align: center; color: var(--md-sys-color-on-surface-variant, #49454f);">
         Nenhum recibo disponível.
