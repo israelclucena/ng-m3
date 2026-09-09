@@ -6,8 +6,10 @@ import {
   input,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PaymentComponent } from './payment.component';
 import {
   BookingPaymentSummary,
   PaymentFormData,
@@ -17,9 +19,28 @@ import {
 } from './payment.types';
 
 /**
- * `iu-payment-summary-card` — Checkout card showing booking breakdown and payment method selection.
+ * `iu-payment-summary-card` — Checkout card showing booking breakdown and payment
+ * method selection.
+ *
+ * Onda 9b collapse (NG-05): as the payment module becomes a *deep* module the
+ * four sibling components collapse onto the single `<iu-payment>`. This card is
+ * the checkout **collection form** — exactly what `<iu-payment>`'s default slot
+ * was designed to host — so it now **delegates the payment lifecycle state
+ * machine + its accessible live announcements** to a `bare` `<iu-payment>`
+ * (`idle → validating → ready → processing → success | error`), which the card
+ * drives through its test-mode gateway seam on submit. The card keeps its own
+ * rich checkout chrome and its public contract (`summary` input, `paymentSubmit`
+ * output, `onSubmit()`/`canSubmit()`/`selectMethod()` helpers), so app wiring
+ * (Features page) keeps working until NG-06 removes the wrappers and shrinks the
+ * barrel. Unlike the presentational wrappers (receipt / booking-confirmation),
+ * this one is the *flow*: it is not presentational — it runs the machine.
  *
  * Feature flag: `PAYMENT_MODULE`
+ *
+ * @deprecated Prefer `<iu-payment>` directly for new payment surfaces. This
+ * component is kept as a thin `@deprecated` wrapper for backwards compatibility
+ * until NG-06 removes the payment wrappers and the barrel shrinks to ≤5 public
+ * symbols.
  *
  * @example
  * ```html
@@ -32,10 +53,18 @@ import {
 @Component({
   selector: 'iu-payment-summary-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PaymentComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   template: `
+    <iu-payment
+      #p
+      class="iu-payment-summary-host"
+      [bare]="true"
+      intent="checkout"
+      [amount]="summary().total"
+      [currency]="summary().currency"
+    >
     <div class="iu-payment-card">
 
       <!-- ── Property Summary ── -->
@@ -206,7 +235,7 @@ import {
       <!-- ── Submit ── -->
       <button
         class="iu-payment-card__submit"
-        [disabled]="!canSubmit()"
+        [disabled]="!canSubmit() || p.isBusy() || p.isTerminal()"
         (click)="onSubmit()"
         type="button"
       >
@@ -220,8 +249,12 @@ import {
       </p>
 
     </div>
+    </iu-payment>
   `,
   styles: [`
+    /* Chromeless delegate — this card owns all visual chrome. */
+    .iu-payment-summary-host { display: block; }
+
     .iu-payment-card {
       display: flex;
       flex-direction: column;
@@ -427,6 +460,14 @@ import {
 })
 export class PaymentSummaryCardComponent {
 
+  /**
+   * The delegated unified surface. Onda 9b collapse: this card owns the checkout
+   * form chrome and drives the `<iu-payment>` state machine (validation +
+   * test-mode gateway) on submit, so the lifecycle + `aria-live` announcements
+   * live in one place.
+   */
+  readonly pay = viewChild.required(PaymentComponent);
+
   /** The full booking + payment breakdown to display. */
   readonly summary = input.required<BookingPaymentSummary>();
 
@@ -466,9 +507,20 @@ export class PaymentSummaryCardComponent {
     this.selectedMethod.set(method);
   }
 
-  /** Builds and emits the payment submit event. */
-  onSubmit(): void {
+  /**
+   * Builds and emits the payment submit event, then drives the delegated
+   * `<iu-payment>` lifecycle machine (validate → submit) through its test-mode
+   * gateway seam. The `paymentSubmit` event is emitted **synchronously** first
+   * so the existing app contract is unchanged; the machine then advances
+   * `idle → validating → ready → processing → success | error`, owning the
+   * status announcements. No-op while the form is invalid or a run is already
+   * in flight / settled. Never moves real money — the gateway runs test-mode.
+   */
+  async onSubmit(): Promise<void> {
     if (!this.canSubmit()) return;
+    const p = this.pay();
+    if (p.isBusy() || p.isTerminal()) return;
+
     const form: PaymentFormData = {
       method: this.selectedMethod(),
       cardHolder: this.cardHolder() || undefined,
@@ -482,5 +534,9 @@ export class PaymentSummaryCardComponent {
       form,
       timestamp: new Date().toISOString(),
     });
+
+    // Advance the delegated lifecycle machine (test-mode only, no real money).
+    p.reset();
+    if (p.validate()) await p.submit();
   }
 }

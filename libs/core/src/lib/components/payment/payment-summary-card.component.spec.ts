@@ -375,4 +375,47 @@ describe('PaymentSummaryCardComponent', () => {
     btn.click();
     expect(spy).toHaveBeenCalledTimes(1);
   });
+
+  // ── Onda 9b collapse — delegates the lifecycle machine to <iu-payment> ───────
+  it('renders a bare <iu-payment> delegate hosting the checkout form', () => {
+    expect(fixture.nativeElement.querySelector('iu-payment')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.iu-payment--bare')).toBeTruthy();
+    // the card chrome is still owned by this wrapper
+    expect(fixture.nativeElement.querySelector('.iu-payment-card')).toBeTruthy();
+  });
+
+  it('seeds the delegate amount and currency from the summary', () => {
+    const p = component.pay();
+    expect(p.amount()).toBe(1180);
+    expect(p.currency()).toBe('EUR');
+    expect(p.intent()).toBe('checkout');
+  });
+
+  it('starts the delegate in the idle state', () => {
+    expect(component.pay().state()).toBe('idle');
+  });
+
+  it('drives the delegate machine through to success on a valid submit', async () => {
+    component.termsAccepted.set(true);
+    component.cardHolder.set('Maria João');
+    component.cardNumber.set('4111111111111111');
+    fixture.detectChanges();
+
+    await component.onSubmit();
+    expect(component.pay().state()).toBe('success');
+  });
+
+  it('does not advance the delegate machine when the form is invalid', async () => {
+    expect(component.canSubmit()).toBe(false);
+    await component.onSubmit();
+    expect(component.pay().state()).toBe('idle');
+  });
+
+  it('keeps the accessible live region from the delegate', () => {
+    const status = fixture.nativeElement.querySelector(
+      '.iu-payment__status',
+    ) as HTMLElement;
+    expect(status).toBeTruthy();
+    expect(status.getAttribute('aria-live')).toBe('polite');
+  });
 });
