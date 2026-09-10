@@ -75,6 +75,16 @@ export const appRoutes: Routes = [
     title: 'Card Showcase — Israel UI',
   },
 
+  // ── Payment showcase (Onda 9b / NG-06 — deep-module proof surface) ───────────
+  // Additive lazy route, gated by PAYMENT_SHOWCASE. Test-mode only: no keys, no
+  // network, no real charge. Nav link + README link land with the marco close.
+  {
+    path: 'payment-showcase',
+    loadComponent: () =>
+      import('./pages/payment-showcase-page.component').then(m => m.PaymentShowcasePageComponent),
+    title: 'Payment Showcase — Israel UI',
+  },
+
   // ── Settings page ──────────────────────────────────────────────────────────
   {
     path: 'settings',
