@@ -44,6 +44,25 @@ every state on one screen:
 > Interface encolhe, comportamento cresce — medido, não afirmado. See the module measurements in
 > `tools/ng-m3-medir-modulo.mjs` (exports, inputs/outputs, branches, `it()` count, e2e scenarios).
 
+## 🏆 Portfolio — deep-module `payment`
+
+The same recipe applied to a **more sensitive** surface: one `<iu-payment>` that owns the whole
+payment lifecycle as an explicit state machine — `intent` (checkout · deposit · refund) × the real
+states no sibling ever modelled: idle, validating, ready, processing, success, error (retry,
+`role=alert`), and the terminal drops (cancelled, expired) — all with `aria-live` announcements,
+amount/currency validation, idempotency keys and timeouts. Signals only, M3 tokens.
+
+A dedicated showcase route — **`/payment-showcase`** in the dashboard app — drives the live machine,
+lines up the three intents and seeds every lifecycle state on one screen:
+
+| Desktop | Mobile |
+|---|---|
+| ![payment showcase — desktop](docs/portfolio/payment-showcase-desktop.png) | <img src="docs/portfolio/payment-showcase-mobile.png" alt="payment showcase — mobile" width="220"> |
+
+> 🔒 **Test-mode only.** The money-move seam is an inert stub — no keys, no network, no real charge.
+> Production adoption is gated behind the `PAYMENT_V2` flag (OFF); the showcase rides its own
+> `PAYMENT_SHOWCASE` flag so the proof is visible without touching real payments.
+
 ## 📦 Components
 
 ### 🎯 Actions
