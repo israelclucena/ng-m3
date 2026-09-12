@@ -94,6 +94,7 @@ import {
   // Sprint 020
   PaymentSummaryCardComponent,
   BookingConfirmationComponent,
+  PaymentComponent,
   BookingPaymentSummary,
   BookingConfirmationData,
   PaymentSubmitEvent,
@@ -130,7 +131,6 @@ import {
   PaymentService,
   PaymentGatewayDemoComponent,
   // Sprint 030
-  PaymentReceiptComponent,
   LandlordRevenueComponent,
   InvoiceService,
   // Sprint 033
@@ -322,8 +322,8 @@ const SEARCH_DATA: SearchResult[] = [
     BookingCheckoutComponent,
     // Sprint 029
     PaymentGatewayDemoComponent,
+    PaymentComponent,
     // Sprint 030
-    PaymentReceiptComponent,
     LandlordRevenueComponent,
     // Sprint 033
     TenantDashboardComponent,
@@ -1585,13 +1585,16 @@ const SEARCH_DATA: SearchResult[] = [
         <section class="feature-section" id="payment-receipt">
           <h2>🧾 Payment Receipt</h2>
           <p class="desc">
-            <strong>PaymentReceiptComponent</strong> + <strong>InvoiceService</strong> —
+            <strong>&lt;iu-payment kind="receipt"&gt;</strong> + <strong>InvoiceService</strong> —
             Post-payment receipt with printable M3 layout, IVA breakdown, PDF download link,
-            and status badge (paid/pending). InvoiceService generates INV-YYYY-NNNN references
+            and status badge (paid/pending). Onda 9b (NG-06): the former
+            <code>PaymentReceiptComponent</code> wrapper is folded into the unified
+            <code>&lt;iu-payment&gt;</code> as its <code>receipt</code> kind — one deep
+            component, narrower barrel. InvoiceService generates INV-YYYY-NNNN references
             and tracks all session invoices via signals.
             Feature flag: <code>PAYMENT_RECEIPT</code>.
           </p>
-          <iu-payment-receipt [invoice]="sampleInvoice()" />
+          <iu-payment kind="receipt" [invoice]="sampleInvoice()" />
         </section>
       }
 

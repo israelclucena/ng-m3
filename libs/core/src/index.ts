@@ -222,7 +222,8 @@ export { PaymentGatewayDemoComponent } from './lib/components/payment/payment-ga
 // Sprint 030 — Night Shift 2026-03-25
 export { InvoiceService } from './lib/services/invoice.service';
 export type { Invoice, InvoiceLineItem } from './lib/services/invoice.service';
-export { PaymentReceiptComponent } from './lib/components/payment/payment-receipt.component';
+// Onda 9b (NG-06): `PaymentReceiptComponent` was folded into `<iu-payment>` as
+// its `receipt` kind (see PaymentComponent / PaymentKind) — the barrel shrinks.
 export { RevenueAnalyticsService } from './lib/services/revenue-analytics.service';
 export type { MonthlyRevenue, PropertyRevenueSummary, RevenueKPIs, LandlordAnalytics } from './lib/services/revenue-analytics.service';
 export { LandlordRevenueComponent } from './lib/components/landlord-analytics/landlord-revenue.component';

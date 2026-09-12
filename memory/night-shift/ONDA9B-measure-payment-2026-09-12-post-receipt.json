@@ -1,0 +1,85 @@
+{
+  "module": "payment",
+  "selectors": [
+    "iu-booking-confirmation",
+    "iu-payment",
+    "iu-payment-gateway-demo",
+    "iu-payment-summary-card"
+  ],
+  "interface": {
+    "indexExportLines": 5,
+    "publicSymbols": [
+      "BookingConfirmationComponent",
+      "BookingConfirmationData",
+      "BookingPaymentSummary",
+      "BookingStatus",
+      "IU_PAYMENT_GATEWAY",
+      "PaymentAuthResult",
+      "PaymentComponent",
+      "PaymentFormData",
+      "PaymentGateway",
+      "PaymentGatewayDemoComponent",
+      "PaymentGatewayRequest",
+      "PaymentIntentKind",
+      "PaymentKind",
+      "PaymentLineItem",
+      "PaymentMethod",
+      "PaymentMethodType",
+      "PaymentState",
+      "PaymentSubmitEvent",
+      "PaymentSummaryCardComponent",
+      "PaymentValidationError"
+    ],
+    "publicSymbolCount": 20,
+    "publicSymbolsBarrel": [
+      "BookingConfirmationComponent",
+      "BookingConfirmationData",
+      "BookingPaymentSummary",
+      "BookingStatus",
+      "PaymentComponent",
+      "PaymentFormData",
+      "PaymentGatewayDemoComponent",
+      "PaymentIntentKind",
+      "PaymentLineItem",
+      "PaymentMethod",
+      "PaymentMethodType",
+      "PaymentState",
+      "PaymentSubmitEvent",
+      "PaymentSummaryCardComponent",
+      "PaymentValidationError"
+    ],
+    "publicSymbolBarrelCount": 15,
+    "inputs": 11,
+    "outputs": 7,
+    "inputsOutputs": 18
+  },
+  "size": {
+    "componentCount": 4,
+    "locSrcTs": 1517,
+    "locHtml": 164,
+    "locScss": 326,
+    "locTotalNoTestsNoStories": 2007,
+    "specFileCount": 4,
+    "storyFileCount": 3
+  },
+  "tests": {
+    "itCount": 152,
+    "e2eScenarios": 6
+  },
+  "behavior": {
+    "templateControlFlow": 24,
+    "templateTernaries": 4,
+    "tsBranches": 49,
+    "tsTernaries": 16,
+    "totalBranches": 93
+  },
+  "usage": {
+    "appFileCount": 4,
+    "appFiles": [
+      "apps/dashboard/src/app/feature-flags.ts",
+      "apps/dashboard/src/app/pages/components-page.component.ts",
+      "apps/dashboard/src/app/pages/features-page.component.ts",
+      "apps/dashboard/src/app/pages/payment-showcase-page.component.ts"
+    ]
+  }
+}

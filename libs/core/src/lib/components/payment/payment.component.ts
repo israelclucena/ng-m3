@@ -11,6 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import type { Invoice } from '../../services/invoice.service';
 
 /**
  * What the payment surface is *for*. Drives copy/emphasis and (later slices)
@@ -19,6 +20,20 @@ import { CommonModule } from '@angular/common';
  * `payment-receipt`, `booking-confirmation`) as the Onda 9b marco lands.
  */
 export type PaymentIntentKind = 'checkout' | 'deposit' | 'refund';
+
+/**
+ * Which *presentation* the surface renders — the Onda 9b collapse (NG-06)
+ * absorbs the four sibling components as `kind`s of this one component (the
+ * same move the `card` module made in NG-02):
+ *
+ *   - `flow`    → the interactive lifecycle machine + slots (the default).
+ *   - `receipt` → a settled, printable post-payment receipt over an
+ *                 {@link Invoice} (seeds `success`; presentational — no flow
+ *                 affordances). Replaces the former `<iu-payment-receipt>`.
+ *
+ * More kinds (`confirmation`, `summary`) land in later NG-06 slices.
+ */
+export type PaymentKind = 'flow' | 'receipt';
 
 /**
  * The full lifecycle of a payment attempt. Resolved as an explicit state
@@ -176,10 +191,26 @@ export class PaymentComponent implements OnInit {
    * to `false` (the shell renders its full M3 surface).
    */
   bare = input<boolean>(false);
+  /**
+   * Which presentation to render — `flow` (the interactive machine, default) or
+   * `receipt` (a settled post-payment receipt over {@link invoice}). See
+   * {@link PaymentKind}. `receipt` is presentational: it seeds `success` and
+   * suppresses the flow affordances, rendering its own printable chrome.
+   */
+  kind = input<PaymentKind>('flow');
+  /**
+   * The settled invoice to render when {@link kind} is `receipt`. Ignored by the
+   * `flow` kind. `null` renders the receipt's empty state.
+   */
+  invoice = input<Invoice | null>(null);
 
   // --- Outputs ---
   /** Fires on every state transition with the new state. */
   stateChange = output<PaymentState>();
+  /** `receipt` kind: fires with the invoice's `pdfUrl` when the user downloads. */
+  receiptDownload = output<string>();
+  /** `receipt` kind: fires when the user dismisses the receipt (Fechar). */
+  receiptClose = output<void>();
 
   // --- Injected seam ---
   /** Test-mode money-move seam; the root default never touches a live API. */
@@ -247,6 +278,7 @@ export class PaymentComponent implements OnInit {
     const c = [
       'iu-payment',
       `iu-payment--${this.intent()}`,
+      `iu-payment--kind-${this.kind()}`,
       `iu-payment--state-${this._state()}`,
     ];
     if (this.disabled()) c.push('iu-payment--disabled');
@@ -254,6 +286,50 @@ export class PaymentComponent implements OnInit {
     if (this.bare())     c.push('iu-payment--bare');
     return c.join(' ');
   });
+
+  // --- Receipt kind (presentational) ---
+  /** BEM status-badge class for the receipt header — paid vs pending. */
+  receiptStatusClass = computed(() => {
+    const inv = this.invoice();
+    const paid = inv?.status === 'paid';
+    return `receipt__status receipt__status--${paid ? 'paid' : 'pending'}`;
+  });
+
+  /** The invoice issue date, formatted PT-first (empty when no invoice). */
+  receiptDate = computed(() => {
+    const inv = this.invoice();
+    if (!inv) return '';
+    return new Date(inv.issuedAt).toLocaleDateString('pt-PT', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  });
+
+  /**
+   * Format a monetary amount for the receipt. Self-contained (Intl) so the deep
+   * component owns its own formatting — no dependency on `InvoiceService` (the
+   * former wrapper's coupling drops as the presentation folds in).
+   */
+  fmtAmount(amount: number): string {
+    const currency = this.invoice()?.currency ?? 'EUR';
+    try {
+      return new Intl.NumberFormat('pt-PT', { style: 'currency', currency }).format(amount);
+    } catch {
+      return `${amount.toFixed(2)} ${currency}`;
+    }
+  }
+
+  /** Open the browser print dialog for the receipt (no-op outside the browser). */
+  onReceiptPrint(): void {
+    if (typeof window !== 'undefined') window.print();
+  }
+
+  /** Emit the invoice's `pdfUrl` (if any) so a parent handles the download. */
+  onReceiptDownload(): void {
+    const url = this.invoice()?.pdfUrl;
+    if (url) this.receiptDownload.emit(url);
+  }
 
   /**
    * One-shot presentational seed. Applied here (not in the constructor, where
@@ -263,7 +339,13 @@ export class PaymentComponent implements OnInit {
    * from this point on.
    */
   ngOnInit(): void {
-    const seed = this.initialState();
+    // The `receipt` kind is a settled, successful terminal surface — seed
+    // `success` (so the aria-live region announces it) unless a caller already
+    // supplied an explicit seed via `initialState`.
+    const seed =
+      this.kind() === 'receipt' && this.initialState() === 'idle'
+        ? 'success'
+        : this.initialState();
     if (seed !== 'idle') this._state.set(seed);
   }
 

@@ -937,3 +937,136 @@ describe('PaymentComponent (iu-payment) — NG-05 fatia 9: chromeless (bare)', (
     expect(host().classList).toContain('iu-payment');
   });
 });
+
+// ── Onda 9b NG-06: the `receipt` kind, folded in from the former
+//    <iu-payment-receipt> wrapper. Presentational, printable, settled surface. ──
+describe('PaymentComponent (iu-payment) — NG-06 receipt kind', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+  const receiptEl = () =>
+    fixture.nativeElement.querySelector('.receipt') as HTMLElement | null;
+  const q = (sel: string) =>
+    fixture.nativeElement.querySelector(sel) as HTMLElement | null;
+
+  const sampleInvoice = () => ({
+    invoiceRef: 'INV-2026-0042',
+    issuedAt: '2026-09-12T10:00:00.000Z',
+    dueDate: '2026-09-12T10:00:00.000Z',
+    status: 'paid' as const,
+    paymentIntentId: 'pi_test_123',
+    propertyTitle: 'T2 em Alfama',
+    propertyAddress: 'Rua dos Remédios 10, Lisboa',
+    tenantName: 'Maria João',
+    landlordName: 'Carlos Sousa',
+    bookingRef: 'BK-9001',
+    checkIn: '2026-10-01',
+    checkOut: '2026-10-31',
+    lineItems: [
+      { description: 'Renda (1 mês)', quantity: 1, unitPrice: 1200, total: 1200 },
+      { description: 'Taxa de serviço', quantity: 1, unitPrice: 100, total: 100 },
+    ],
+    subtotal: 1300,
+    taxRate: 0.23,
+    taxAmount: 299,
+    total: 1599,
+    currency: 'EUR',
+    pdfUrl: 'https://example.test/inv.pdf',
+  });
+
+  const make = (invoice: unknown = sampleInvoice()) => {
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput('kind', 'receipt');
+    fixture.componentRef.setInput('invoice', invoice);
+    fixture.detectChanges();
+  };
+
+  it('adds the kind-receipt host modifier and renders the receipt article', () => {
+    make();
+    expect(host().classList).toContain('iu-payment--kind-receipt');
+    expect(receiptEl()).not.toBeNull();
+  });
+
+  it('seeds a successful terminal state (so AT announces it) without a flow', () => {
+    make();
+    expect(component.state()).toBe('success');
+    // The interactive flow affordances are not rendered in the receipt kind.
+    expect(fixture.nativeElement.querySelector('.iu-payment__success')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.iu-payment__header')).toBeNull();
+  });
+
+  it('renders the invoice reference, booking ref and property', () => {
+    make();
+    const text = receiptEl()!.textContent ?? '';
+    expect(text).toContain('INV-2026-0042');
+    expect(text).toContain('BK-9001');
+    expect(text).toContain('T2 em Alfama');
+    expect(text).toContain('Maria João');
+    expect(text).toContain('Carlos Sousa');
+  });
+
+  it('renders every line item', () => {
+    make();
+    const rows = fixture.nativeElement.querySelectorAll('.receipt__line-items tbody tr');
+    expect(rows.length).toBe(2);
+    expect((rows[0] as HTMLElement).textContent).toContain('Renda (1 mês)');
+  });
+
+  it('formats amounts as EUR currency (self-contained, no InvoiceService)', () => {
+    make();
+    expect(component.fmtAmount(1599)).toContain('1');
+    expect(component.fmtAmount(1599)).toContain('€');
+  });
+
+  it('marks a paid invoice with the paid status class', () => {
+    make();
+    expect(component.receiptStatusClass()).toContain('receipt__status--paid');
+    expect((q('.receipt__status')!.textContent ?? '')).toContain('Pago');
+  });
+
+  it('marks a pending invoice with the pending status class', () => {
+    make({ ...sampleInvoice(), status: 'pending' });
+    expect(component.receiptStatusClass()).toContain('receipt__status--pending');
+    expect((q('.receipt__status')!.textContent ?? '')).toContain('Pendente');
+  });
+
+  it('emits receiptDownload with the pdfUrl when the download button is clicked', () => {
+    make();
+    let emitted: string | undefined;
+    component.receiptDownload.subscribe((u) => (emitted = u));
+    (q('.receipt__btn--primary') as HTMLButtonElement).click();
+    expect(emitted).toBe('https://example.test/inv.pdf');
+  });
+
+  it('does not render a download button when the invoice has no pdfUrl', () => {
+    const { pdfUrl, ...noPdf } = sampleInvoice();
+    void pdfUrl;
+    make(noPdf);
+    expect(q('.receipt__btn--primary')).toBeNull();
+  });
+
+  it('emits receiptClose when the Fechar button is clicked', () => {
+    make();
+    let closed = false;
+    component.receiptClose.subscribe(() => (closed = true));
+    const buttons = fixture.nativeElement.querySelectorAll('.receipt__btn');
+    (buttons[buttons.length - 1] as HTMLButtonElement).click();
+    expect(closed).toBe(true);
+  });
+
+  it('shows an empty state when no invoice is supplied', () => {
+    make(null);
+    expect(receiptEl()).toBeNull();
+    expect((q('.receipt__empty')!.textContent ?? '')).toContain('Nenhum recibo');
+  });
+
+  it('formats the issue date PT-first', () => {
+    make();
+    expect(component.receiptDate()).toContain('2026');
+    expect(component.receiptDate().length).toBeGreaterThan(4);
+  });
+});

@@ -92,3 +92,50 @@ export const FullFlow: Story = {
   args: { intent: 'checkout', amount: 1200, currency: 'EUR', disabled: false },
   render: (args) => ({ props: args, template: flowTemplate }),
 };
+
+/**
+ * Onda 9b (NG-06) `receipt` kind — a settled, printable post-payment receipt,
+ * folded in from the former `<iu-payment-receipt>` wrapper. Presentational: it
+ * seeds `success` and renders its own card chrome over an {@link Invoice}.
+ */
+const sampleInvoice = {
+  invoiceRef: 'INV-2026-0042',
+  issuedAt: '2026-09-12T10:00:00.000Z',
+  dueDate: '2026-09-12T10:00:00.000Z',
+  status: 'paid',
+  paymentIntentId: 'pi_test_123',
+  propertyTitle: 'T2 em Alfama',
+  propertyAddress: 'Rua dos Remédios 10, Lisboa',
+  tenantName: 'Maria João',
+  landlordName: 'Carlos Sousa',
+  bookingRef: 'BK-9001',
+  checkIn: '2026-10-01',
+  checkOut: '2026-10-31',
+  lineItems: [
+    { description: 'Renda (1 mês)', quantity: 1, unitPrice: 1200, total: 1200 },
+    { description: 'Taxa de serviço', quantity: 1, unitPrice: 100, total: 100 },
+  ],
+  subtotal: 1300,
+  taxRate: 0.23,
+  taxAmount: 299,
+  total: 1599,
+  currency: 'EUR',
+  pdfUrl: 'https://example.test/inv.pdf',
+};
+
+const receiptTemplate = `
+  <iu-payment kind="receipt" [invoice]="invoice" style="display:block;width:640px"></iu-payment>
+`;
+
+// --- Receipt kind (paid) ---
+export const Receipt: Story = {
+  render: () => ({ props: { invoice: sampleInvoice }, template: receiptTemplate }),
+};
+
+// --- Receipt kind (pending status badge) ---
+export const ReceiptPending: Story = {
+  render: () => ({
+    props: { invoice: { ...sampleInvoice, status: 'pending' } },
+    template: receiptTemplate,
+  }),
+};

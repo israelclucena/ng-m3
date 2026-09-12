@@ -1,4 +1,123 @@
 <div [class]="hostClass()" [attr.aria-busy]="ariaBusy()">
+  @if (kind() === 'receipt') {
+    <!-- ── Receipt kind (Onda 9b NG-06): settled, printable post-payment receipt.
+         Folded in from the former <iu-payment-receipt> wrapper. ── -->
+    @if (invoice(); as inv) {
+      <article class="receipt" [attr.aria-label]="'Recibo ' + inv.invoiceRef">
+        <header class="receipt__header">
+          <div class="receipt__icon" aria-hidden="true">✓</div>
+          <h2 class="receipt__title">Pagamento Confirmado</h2>
+          <p class="receipt__subtitle">Recibo de pagamento — {{ inv.bookingRef }}</p>
+          <span class="receipt__status" [class]="receiptStatusClass()">
+            {{ inv.status === 'paid' ? '✅ Pago' : '⏳ Pendente' }}
+          </span>
+        </header>
+
+        <div class="receipt__meta">
+          <div class="receipt__meta-item">
+            <div class="receipt__meta-label">Nº Fatura</div>
+            <div class="receipt__meta-value">{{ inv.invoiceRef }}</div>
+          </div>
+          <div class="receipt__meta-item">
+            <div class="receipt__meta-label">Data</div>
+            <div class="receipt__meta-value">{{ receiptDate() }}</div>
+          </div>
+          <div class="receipt__meta-item">
+            <div class="receipt__meta-label">Ref. Pagamento</div>
+            <div class="receipt__meta-value">{{ inv.paymentIntentId }}</div>
+          </div>
+          <div class="receipt__meta-item">
+            <div class="receipt__meta-label">Check-in</div>
+            <div class="receipt__meta-value">{{ inv.checkIn }}</div>
+          </div>
+        </div>
+
+        <div class="receipt__body">
+          <section class="receipt__section">
+            <h3 class="receipt__section-title">Propriedade</h3>
+            <p class="receipt__property-title">{{ inv.propertyTitle }}</p>
+            <p class="receipt__property-address">{{ inv.propertyAddress }}</p>
+            @if (inv.checkOut) {
+              <span class="receipt__checkin">Check-out: {{ inv.checkOut }}</span>
+            }
+          </section>
+
+          <section class="receipt__section">
+            <h3 class="receipt__section-title">Partes</h3>
+            <div class="receipt__parties">
+              <div>
+                <div class="receipt__party-label">Senhorio</div>
+                <div class="receipt__party-name">{{ inv.landlordName }}</div>
+              </div>
+              @if (inv.tenantName) {
+                <div>
+                  <div class="receipt__party-label">Inquilino</div>
+                  <div class="receipt__party-name">{{ inv.tenantName }}</div>
+                </div>
+              }
+            </div>
+          </section>
+
+          <section class="receipt__section">
+            <h3 class="receipt__section-title">Detalhes do Pagamento</h3>
+            <table class="receipt__line-items">
+              <thead>
+                <tr>
+                  <th>Descrição</th>
+                  <th>Qtd</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of inv.lineItems; track item.description) {
+                  <tr>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ fmtAmount(item.total) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            <div class="receipt__subtotals">
+              <div class="receipt__subtotal-row">
+                <span>Subtotal</span>
+                <span>{{ fmtAmount(inv.subtotal) }}</span>
+              </div>
+              <div class="receipt__subtotal-row">
+                <span>IVA ({{ inv.taxRate * 100 }}%)</span>
+                <span>{{ fmtAmount(inv.taxAmount) }}</span>
+              </div>
+            </div>
+
+            <div class="receipt__total-row">
+              <span>Total Pago</span>
+              <span>{{ fmtAmount(inv.total) }}</span>
+            </div>
+          </section>
+        </div>
+
+        <footer class="receipt__actions">
+          @if (inv.pdfUrl) {
+            <button type="button" class="receipt__btn receipt__btn--primary" (click)="onReceiptDownload()">
+              ⬇ Descarregar PDF
+            </button>
+          }
+          <button type="button" class="receipt__btn receipt__btn--outlined" (click)="onReceiptPrint()">
+            🖨 Imprimir
+          </button>
+          <button type="button" class="receipt__btn receipt__btn--outlined" (click)="receiptClose.emit()">
+            Fechar
+          </button>
+        </footer>
+      </article>
+    } @else {
+      <div class="receipt__empty">Nenhum recibo disponível.</div>
+    }
+
+    <!-- Announced on init; visually hidden but read by AT. -->
+    <p class="iu-payment__status" role="status" aria-live="polite">{{ statusText() }}</p>
+  } @else {
   <header class="iu-payment__header">
     <ng-content select="[slot=header]"></ng-content>
   </header>
@@ -56,4 +175,5 @@
   <p class="iu-payment__status" role="status" aria-live="polite">
     {{ statusText() }}
   </p>
+  }
 </div>
