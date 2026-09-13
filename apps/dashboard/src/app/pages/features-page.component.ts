@@ -93,7 +93,6 @@ import {
   RatingDisplayComponent,
   // Sprint 020
   PaymentSummaryCardComponent,
-  BookingConfirmationComponent,
   PaymentComponent,
   BookingPaymentSummary,
   BookingConfirmationData,
@@ -304,7 +303,6 @@ const SEARCH_DATA: SearchResult[] = [
     RatingDisplayComponent,
     // Sprint 020
     PaymentSummaryCardComponent,
-    BookingConfirmationComponent,
     OccupancyChartComponent,
     RevenueWidgetComponent,
     ListingStatsCardComponent,
@@ -1316,7 +1314,7 @@ const SEARCH_DATA: SearchResult[] = [
         <section class="feature-section" id="payment">
           <h2>💳 Payment / Checkout Flow</h2>
           <p class="desc">
-            <code>iu-payment-summary-card</code> + <code>iu-booking-confirmation</code>.
+            <code>iu-payment-summary-card</code> + <code>&lt;iu-payment kind="confirmation"&gt;</code>.
             Fecha o loop booking → pagamento → confirmação.
             Flag: <code>PAYMENT_MODULE</code>
           </p>
@@ -1331,15 +1329,16 @@ const SEARCH_DATA: SearchResult[] = [
             <div style="display:flex; flex-direction:column; gap:16px;">
               <div>
                 <h4 style="margin:0 0 12px;">Confirmação — ✅ Sucesso</h4>
-                <iu-booking-confirmation
-                  [data]="bookingConfirmed"
+                <iu-payment
+                  kind="confirmation"
+                  [confirmation]="bookingConfirmed"
                   (contactLandlord)="notif.show({message:'📩 Chat com senhorio', type:'info'})"
                   (backToSearch)="notif.show({message:'🔍 De volta à pesquisa', type:'info'})"
                 />
               </div>
               <div>
                 <h4 style="margin:0 0 12px;">Confirmação — ⏳ Pendente</h4>
-                <iu-booking-confirmation [data]="bookingPending" />
+                <iu-payment kind="confirmation" [confirmation]="bookingPending" />
               </div>
             </div>
           </div>

@@ -1070,3 +1070,215 @@ describe('PaymentComponent (iu-payment) — NG-06 receipt kind', () => {
     expect(component.receiptDate().length).toBeGreaterThan(4);
   });
 });
+
+// ── Onda 9b NG-06: the `confirmation` kind, folded in from the former
+//    <iu-booking-confirmation> wrapper. Post-payment booking confirmation. ──
+describe('PaymentComponent (iu-payment) — NG-06 confirmation kind', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  const q = (sel: string) =>
+    fixture.nativeElement.querySelector(sel) as HTMLElement | null;
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+
+  const confirmedData = {
+    bookingRef: 'LR-2026-0042',
+    status: 'confirmed' as const,
+    propertyTitle: 'T2 com varanda em Alvalade',
+    propertyAddress: 'Av. de Roma 14, Lisboa',
+    checkIn: '2026-07-01',
+    landlordName: 'Maria Santos',
+    landlordPhone: '+351 912 345 678',
+    total: 1450,
+    currency: 'EUR',
+    message: 'Obrigado por reservar connosco.',
+  };
+  const pendingData = {
+    bookingRef: 'LR-2026-0043',
+    status: 'pending' as const,
+    propertyTitle: 'Estúdio no Chiado',
+    propertyAddress: 'R. Garrett 88, Lisboa',
+    checkIn: '2026-08-15',
+    landlordName: 'João Pereira',
+    total: 980,
+    currency: 'EUR',
+  };
+  const failedData = {
+    bookingRef: 'LR-2026-0044',
+    status: 'failed' as const,
+    propertyTitle: 'T1 em Benfica',
+    propertyAddress: 'Estr. de Benfica 200, Lisboa',
+    checkIn: '2026-09-01',
+    landlordName: 'Ana Costa',
+    total: 850,
+    currency: 'EUR',
+    message: 'O cartão foi recusado pelo banco.',
+  };
+  const cancelledData = {
+    bookingRef: 'LR-2026-0045',
+    status: 'cancelled' as const,
+    propertyTitle: 'T3 em Cascais',
+    propertyAddress: 'Av. Marginal 5, Cascais',
+    checkIn: '2026-10-10',
+    landlordName: 'Pedro Lima',
+    total: 2100,
+    currency: 'EUR',
+  };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+  });
+
+  // Some tests re-`make()` with a second dataset; `createComponent` may be
+  // called repeatedly, but `configureTestingModule` may not (done once above).
+  const make = (confirmation: unknown) => {
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput('kind', 'confirmation');
+    fixture.componentRef.setInput('confirmation', confirmation);
+    fixture.detectChanges();
+  };
+
+  it('adds the kind-confirmation host modifier and drops the flow chrome', () => {
+    make(confirmedData);
+    expect(host().classList).toContain('iu-payment--kind-confirmation');
+    expect(q('.iu-payment__header')).toBeNull();
+    expect(q('.iu-booking-conf')).not.toBeNull();
+  });
+
+  // ── Status → chrome, icon/title/subtitle, and seeded lifecycle state ──
+  const cases = [
+    { data: confirmedData, mod: 'confirmed', icon: 'check_circle', title: 'Reserva Confirmada! 🎉', sub: 'O seu pagamento foi processado com sucesso.', state: 'success' },
+    { data: pendingData, mod: 'pending', icon: 'hourglass_top', title: 'Reserva em Processamento', sub: 'Aguardamos a confirmação do seu pagamento.', state: 'idle' },
+    { data: failedData, mod: 'failed', icon: 'cancel', title: 'Pagamento Falhado', sub: 'Não foi possível processar o pagamento. Por favor, tente novamente.', state: 'error' },
+    { data: cancelledData, mod: 'cancelled', icon: 'block', title: 'Reserva Cancelada', sub: 'Esta reserva foi cancelada.', state: 'cancelled' },
+  ] as const;
+
+  for (const tc of cases) {
+    it(`carries iu-booking-conf--${tc.mod} and correct copy for ${tc.mod}`, () => {
+      make(tc.data);
+      expect(q('.iu-booking-conf')!.classList).toContain(`iu-booking-conf--${tc.mod}`);
+      expect(component.confIcon()).toBe(tc.icon);
+      expect(component.confTitle()).toBe(tc.title);
+      expect(component.confSubtitle()).toBe(tc.sub);
+      expect((q('.iu-booking-conf__title')!.textContent ?? '')).toContain(tc.title);
+    });
+
+    it(`seeds the lifecycle state ${tc.state} for a ${tc.mod} booking`, () => {
+      make(tc.data);
+      expect(component.state()).toBe(tc.state);
+      expect(host().classList).toContain(`iu-payment--state-${tc.state}`);
+    });
+  }
+
+  // ── Ref box / property / total: present unless failed ──
+  it('renders ref-box, property and total when confirmed', () => {
+    make(confirmedData);
+    expect(q('.iu-booking-conf__ref-box')).not.toBeNull();
+    expect(q('.iu-booking-conf__property')).not.toBeNull();
+    expect(q('.iu-booking-conf__total-row')).not.toBeNull();
+    expect((q('.iu-booking-conf__ref-code')!.textContent ?? '')).toContain('LR-2026-0042');
+  });
+
+  it('omits ref-box, property and total when failed', () => {
+    make(failedData);
+    expect(q('.iu-booking-conf__ref-box')).toBeNull();
+    expect(q('.iu-booking-conf__property')).toBeNull();
+    expect(q('.iu-booking-conf__total-row')).toBeNull();
+  });
+
+  // ── Message + phone conditionals ──
+  it('renders the message block only when a message is present', () => {
+    make(confirmedData);
+    expect((q('.iu-booking-conf__message')!.textContent ?? '')).toContain('Obrigado por reservar connosco.');
+    make(pendingData);
+    expect(q('.iu-booking-conf__message')).toBeNull();
+  });
+
+  it('renders the landlord phone only when present', () => {
+    make(confirmedData);
+    expect((q('.iu-booking-conf__phone')!.textContent ?? '')).toContain('+351 912 345 678');
+    make(pendingData);
+    expect(q('.iu-booking-conf__phone')).toBeNull();
+  });
+
+  // ── Next-steps block ──
+  it('renders next-steps with the confirmed-specific first step', () => {
+    make(confirmedData);
+    const first = q('.iu-booking-conf__step-list li');
+    expect(first!.textContent).toContain('Receberá um email de confirmação em breve.');
+  });
+
+  it('renders next-steps with the pending-specific first step', () => {
+    make(pendingData);
+    const first = q('.iu-booking-conf__step-list li');
+    expect(first!.textContent).toContain('A reserva está a aguardar confirmação do pagamento.');
+  });
+
+  it('omits next-steps for failed and cancelled', () => {
+    make(failedData);
+    expect(q('.iu-booking-conf__steps')).toBeNull();
+    make(cancelledData);
+    expect(q('.iu-booking-conf__steps')).toBeNull();
+  });
+
+  // ── Actions + outputs ──
+  it('shows "Contactar Senhorio" and emits contactLandlord (confirmed)', () => {
+    make(confirmedData);
+    const btn = q('.iu-booking-conf__btn--primary') as HTMLButtonElement;
+    expect(btn.textContent).toContain('Contactar Senhorio');
+    let hit = false;
+    component.contactLandlord.subscribe(() => (hit = true));
+    btn.click();
+    expect(hit).toBe(true);
+  });
+
+  it('shows "Tentar novamente" and emits retryPayment (failed)', () => {
+    make(failedData);
+    const btn = q('.iu-booking-conf__btn--primary') as HTMLButtonElement;
+    expect(btn.textContent).toContain('Tentar novamente');
+    let hit = false;
+    component.retryPayment.subscribe(() => (hit = true));
+    btn.click();
+    expect(hit).toBe(true);
+  });
+
+  it('has no primary button for cancelled', () => {
+    make(cancelledData);
+    expect(q('.iu-booking-conf__btn--primary')).toBeNull();
+  });
+
+  it('always renders "Ver mais imóveis" and emits backToSearch', () => {
+    make(cancelledData);
+    const btn = q('.iu-booking-conf__btn--secondary') as HTMLButtonElement;
+    expect(btn.textContent).toContain('Ver mais imóveis');
+    let hit = false;
+    component.backToSearch.subscribe(() => (hit = true));
+    btn.click();
+    expect(hit).toBe(true);
+  });
+
+  // ── a11y: the delegate's live region survives the fold ──
+  it('keeps the aria-live status region for AT announcements', () => {
+    make(confirmedData);
+    const status = q('.iu-payment__status');
+    expect(status).not.toBeNull();
+    expect(status!.getAttribute('aria-live')).toBe('polite');
+  });
+
+  it('suppresses the built-in flow affordances (presentational)', () => {
+    make(confirmedData);
+    expect(q('.iu-payment__success')).toBeNull();
+    expect(q('.iu-payment__restart')).toBeNull();
+    make(failedData);
+    expect(q('.iu-payment__error')).toBeNull();
+    expect(q('.iu-payment__retry')).toBeNull();
+  });
+
+  it('renders nothing but the status region when confirmation is null', () => {
+    make(null);
+    expect(q('.iu-booking-conf')).toBeNull();
+    expect(q('.iu-payment__status')).not.toBeNull();
+  });
+});

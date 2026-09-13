@@ -35,6 +35,15 @@
     gap: 0;
   }
 
+  // The `confirmation` kind owns its own card chrome (.iu-booking-conf), so the
+  // shell drops its surface to avoid a double-card.
+  &--kind-confirmation {
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    gap: 0;
+  }
+
   &__header:empty,
   &__summary:empty,
   &__body:empty,
@@ -352,4 +361,167 @@
 @media print {
   .receipt__actions { display: none; }
   .receipt { border: none; box-shadow: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Confirmation kind (Onda 9b NG-06) — folded in from the former
+   <iu-booking-confirmation> wrapper. Post-payment booking confirmation card.
+   Class names keep the `.iu-booking-conf*` prefix (no collision with the
+   shell's `.iu-payment*`), so app selectors and the migrated specs stay valid.
+   ───────────────────────────────────────────────────────────────────────── */
+.iu-booking-conf {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px 24px;
+  border-radius: 20px;
+  max-width: 480px;
+  background: var(--md-sys-color-surface-container-low);
+  font-family: var(--md-sys-typescale-body-medium-font, inherit);
+}
+
+/* ── Header ── */
+.iu-booking-conf__header { text-align: center; }
+.iu-booking-conf__status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+.iu-booking-conf__status-icon .material-symbols-outlined { font-size: 40px; }
+.iu-booking-conf--confirmed .iu-booking-conf__status-icon {
+  background: var(--md-sys-color-tertiary-container, #d4edda);
+  color: var(--md-sys-color-tertiary, #2d8a50);
+}
+.iu-booking-conf--pending .iu-booking-conf__status-icon {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-secondary);
+}
+.iu-booking-conf--failed .iu-booking-conf__status-icon {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-error);
+}
+.iu-booking-conf--cancelled .iu-booking-conf__status-icon {
+  background: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.iu-booking-conf__title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface);
+}
+.iu-booking-conf__subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* ── Ref box ── */
+.iu-booking-conf__ref-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px;
+  background: var(--md-sys-color-primary-container);
+  border-radius: 12px;
+}
+.iu-booking-conf__ref-label { font-size: 11px; color: var(--md-sys-color-on-primary-container); text-transform: uppercase; letter-spacing: 0.08em; }
+.iu-booking-conf__ref-code { font-size: 20px; font-weight: 700; color: var(--md-sys-color-primary); letter-spacing: 0.04em; }
+
+/* ── Property ── */
+.iu-booking-conf__property {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--md-sys-color-surface-container);
+  border-radius: 12px;
+}
+.iu-booking-conf__property-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: var(--md-sys-color-on-surface);
+}
+.iu-booking-conf__property-row .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.iu-booking-conf__property-row strong { display: block; font-weight: 600; }
+.iu-booking-conf__property-row p { margin: 2px 0 0; color: var(--md-sys-color-on-surface-variant); font-size: 13px; }
+.iu-booking-conf__phone { color: var(--md-sys-color-primary) !important; }
+.iu-booking-conf__property-address { font-size: 12px; color: var(--md-sys-color-on-surface-variant); }
+.iu-booking-conf__total-row {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  font-weight: 600;
+  font-size: 15px;
+}
+.iu-booking-conf__total-amount { color: var(--md-sys-color-primary); }
+
+/* ── Message ── */
+.iu-booking-conf__message {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--md-sys-color-secondary-container);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--md-sys-color-on-secondary-container);
+}
+.iu-booking-conf__message .material-symbols-outlined { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── Steps ── */
+.iu-booking-conf__steps-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.iu-booking-conf__step-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  color: var(--md-sys-color-on-surface);
+  line-height: 1.6;
+}
+.iu-booking-conf__step-list li { margin-bottom: 4px; }
+
+/* ── Actions ── */
+.iu-booking-conf__actions { display: flex; flex-direction: column; gap: 10px; }
+.iu-booking-conf__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.18s, transform 0.1s;
+}
+.iu-booking-conf__btn:hover { opacity: 0.88; }
+.iu-booking-conf__btn:active { transform: scale(0.98); }
+.iu-booking-conf__btn .material-symbols-outlined { font-size: 18px; }
+.iu-booking-conf__btn--primary {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+.iu-booking-conf__btn--secondary {
+  background: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-on-surface-variant);
 }

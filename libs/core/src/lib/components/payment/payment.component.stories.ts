@@ -139,3 +139,45 @@ export const ReceiptPending: Story = {
     template: receiptTemplate,
   }),
 };
+
+/**
+ * Onda 9b (NG-06) `confirmation` kind — the post-payment booking confirmation
+ * screen, folded in from the former `<iu-booking-confirmation>` wrapper.
+ * Presentational: it seeds the lifecycle from the booking status and renders its
+ * own card chrome over a {@link BookingConfirmationData}.
+ */
+const confirmedBooking = {
+  bookingRef: 'LR-2026-CH045-7F3',
+  status: 'confirmed',
+  propertyTitle: 'Apartamento T2 no Chiado',
+  propertyAddress: 'Rua do Alecrim 45, Lisboa',
+  checkIn: '2026-04-01',
+  landlordName: 'António Ferreira',
+  landlordPhone: '+351 912 345 678',
+  total: 8200,
+  currency: 'EUR',
+};
+
+const confirmationTemplate = `
+  <iu-payment kind="confirmation" [confirmation]="confirmation" style="display:block"></iu-payment>
+`;
+
+// --- Confirmation kind (confirmed) ---
+export const Confirmation: Story = {
+  render: () => ({ props: { confirmation: confirmedBooking }, template: confirmationTemplate }),
+};
+
+// --- Confirmation kind (failed) ---
+export const ConfirmationFailed: Story = {
+  render: () => ({
+    props: {
+      confirmation: {
+        ...confirmedBooking,
+        bookingRef: '',
+        status: 'failed',
+        message: 'O cartão foi recusado pela entidade emissora. Verifique os dados ou tente outro método.',
+      },
+    },
+    template: confirmationTemplate,
+  }),
+};

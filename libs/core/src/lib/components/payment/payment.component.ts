@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { Invoice } from '../../services/invoice.service';
+import type { BookingConfirmationData, BookingStatus } from './payment.types';
 
 /**
  * What the payment surface is *for*. Drives copy/emphasis and (later slices)
@@ -26,14 +27,19 @@ export type PaymentIntentKind = 'checkout' | 'deposit' | 'refund';
  * absorbs the four sibling components as `kind`s of this one component (the
  * same move the `card` module made in NG-02):
  *
- *   - `flow`    → the interactive lifecycle machine + slots (the default).
- *   - `receipt` → a settled, printable post-payment receipt over an
- *                 {@link Invoice} (seeds `success`; presentational — no flow
- *                 affordances). Replaces the former `<iu-payment-receipt>`.
+ *   - `flow`         → the interactive lifecycle machine + slots (the default).
+ *   - `receipt`      → a settled, printable post-payment receipt over an
+ *                      {@link Invoice} (seeds `success`; presentational — no flow
+ *                      affordances). Replaces the former `<iu-payment-receipt>`.
+ *   - `confirmation` → a post-payment booking confirmation screen over a
+ *                      {@link BookingConfirmationData} (status header, booking
+ *                      ref, property summary, next steps, actions). Seeds the
+ *                      lifecycle from the booking status; presentational.
+ *                      Replaces the former `<iu-booking-confirmation>`.
  *
- * More kinds (`confirmation`, `summary`) land in later NG-06 slices.
+ * More kinds (`summary`) land in later NG-06 slices.
  */
-export type PaymentKind = 'flow' | 'receipt';
+export type PaymentKind = 'flow' | 'receipt' | 'confirmation';
 
 /**
  * The full lifecycle of a payment attempt. Resolved as an explicit state
@@ -203,6 +209,11 @@ export class PaymentComponent implements OnInit {
    * `flow` kind. `null` renders the receipt's empty state.
    */
   invoice = input<Invoice | null>(null);
+  /**
+   * The booking to render when {@link kind} is `confirmation`. Ignored by the
+   * other kinds. `null` renders nothing (the confirmation is data-driven).
+   */
+  confirmation = input<BookingConfirmationData | null>(null);
 
   // --- Outputs ---
   /** Fires on every state transition with the new state. */
@@ -211,6 +222,12 @@ export class PaymentComponent implements OnInit {
   receiptDownload = output<string>();
   /** `receipt` kind: fires when the user dismisses the receipt (Fechar). */
   receiptClose = output<void>();
+  /** `confirmation` kind: fires when the user wants to contact the landlord. */
+  contactLandlord = output<void>();
+  /** `confirmation` kind: fires when the user clicks "Ver mais imóveis". */
+  backToSearch = output<void>();
+  /** `confirmation` kind: fires when the user retries a failed payment. */
+  retryPayment = output<void>();
 
   // --- Injected seam ---
   /** Test-mode money-move seam; the root default never touches a live API. */
@@ -331,6 +348,54 @@ export class PaymentComponent implements OnInit {
     if (url) this.receiptDownload.emit(url);
   }
 
+  // --- Confirmation kind (presentational) ---
+  /**
+   * Map the booking status onto the canonical {@link PaymentState} the machine
+   * seeds at init: `confirmed → success`, `failed → error`,
+   * `cancelled → cancelled`. A booking `pending` has no terminal payment-machine
+   * equivalent, so it seeds `idle` — the `--pending` chrome is data-driven and
+   * stays visible regardless of the (suppressed) lifecycle affordances.
+   */
+  private static readonly CONFIRMATION_STATE: Record<BookingStatus, PaymentState> = {
+    confirmed: 'success',
+    failed: 'error',
+    cancelled: 'cancelled',
+    pending: 'idle',
+  };
+
+  /** Status → Material icon name for the confirmation header. */
+  confIcon = computed(() => {
+    const icons: Record<BookingStatus, string> = {
+      confirmed: 'check_circle',
+      pending: 'hourglass_top',
+      failed: 'cancel',
+      cancelled: 'block',
+    };
+    return icons[this.confirmation()?.status ?? 'pending'];
+  });
+
+  /** Status → confirmation title copy (PT-first). */
+  confTitle = computed(() => {
+    const titles: Record<BookingStatus, string> = {
+      confirmed: 'Reserva Confirmada! 🎉',
+      pending: 'Reserva em Processamento',
+      failed: 'Pagamento Falhado',
+      cancelled: 'Reserva Cancelada',
+    };
+    return titles[this.confirmation()?.status ?? 'pending'];
+  });
+
+  /** Status → confirmation subtitle copy (PT-first). */
+  confSubtitle = computed(() => {
+    const subtitles: Record<BookingStatus, string> = {
+      confirmed: 'O seu pagamento foi processado com sucesso.',
+      pending: 'Aguardamos a confirmação do seu pagamento.',
+      failed: 'Não foi possível processar o pagamento. Por favor, tente novamente.',
+      cancelled: 'Esta reserva foi cancelada.',
+    };
+    return subtitles[this.confirmation()?.status ?? 'pending'];
+  });
+
   /**
    * One-shot presentational seed. Applied here (not in the constructor, where
    * bound inputs aren't yet available) and set directly on the state signal so
@@ -339,13 +404,20 @@ export class PaymentComponent implements OnInit {
    * from this point on.
    */
   ngOnInit(): void {
-    // The `receipt` kind is a settled, successful terminal surface — seed
-    // `success` (so the aria-live region announces it) unless a caller already
-    // supplied an explicit seed via `initialState`.
-    const seed =
-      this.kind() === 'receipt' && this.initialState() === 'idle'
-        ? 'success'
-        : this.initialState();
+    // Presentational kinds seed the machine once from the data they render (so
+    // the aria-live region announces the settled state) unless a caller already
+    // supplied an explicit seed via `initialState`:
+    //   - `receipt`      → always a settled success.
+    //   - `confirmation` → mapped from the booking status.
+    let seed = this.initialState();
+    if (seed === 'idle') {
+      if (this.kind() === 'receipt') {
+        seed = 'success';
+      } else if (this.kind() === 'confirmation') {
+        const status = this.confirmation()?.status ?? 'pending';
+        seed = PaymentComponent.CONFIRMATION_STATE[status];
+      }
+    }
     if (seed !== 'idle') this._state.set(seed);
   }
 

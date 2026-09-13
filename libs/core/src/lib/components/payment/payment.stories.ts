@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PaymentSummaryCardComponent } from './payment-summary-card.component';
-import { BookingConfirmationComponent } from './booking-confirmation.component';
+import { PaymentComponent } from './payment.component';
 import type { BookingPaymentSummary, BookingConfirmationData } from './payment.types';
 
 // ─── Shared mock data ─────────────────────────────────────────────────────────
@@ -62,7 +62,7 @@ const meta: Meta = {
 
 Three components:
 - \`PaymentSummaryCardComponent\` (\`iu-payment-summary-card\`) — checkout form with line-item breakdown and payment method selector (card, MBWay, bank transfer, PayPal).
-- \`BookingConfirmationComponent\` (\`iu-booking-confirmation\`) — post-payment confirmation with status (confirmed/pending/failed/cancelled), booking ref, and next steps.
+- \`PaymentComponent\` (\`<iu-payment kind="confirmation">\`) — post-payment confirmation with status (confirmed/pending/failed/cancelled), booking ref, and next steps. Folded in from the former \`iu-booking-confirmation\` (Onda 9b NG-06).
 
 Feature flag: \`PAYMENT_MODULE\`
         `.trim(),
@@ -110,11 +110,12 @@ export const Checkout: StoryObj = {
 @Component({
   selector: 'story-booking-confirmed',
   standalone: true,
-  imports: [CommonModule, BookingConfirmationComponent],
+  imports: [CommonModule, PaymentComponent],
   template: `
     <div style="padding: 24px; background: var(--md-sys-color-surface, #f8f9fa);">
-      <iu-booking-confirmation
-        [data]="data"
+      <iu-payment
+        kind="confirmation"
+        [confirmation]="data"
         (contactLandlord)="log.set('contactLandlord emitted')"
         (backToSearch)="log.set('backToSearch emitted')"
       />
@@ -139,16 +140,16 @@ export const ConfirmationSuccess: StoryObj = {
 @Component({
   selector: 'story-booking-states',
   standalone: true,
-  imports: [CommonModule, BookingConfirmationComponent],
+  imports: [CommonModule, PaymentComponent],
   template: `
     <div style="padding:24px; display:flex; gap:24px; flex-wrap:wrap; background: var(--md-sys-color-surface, #f8f9fa);">
       <div>
         <p style="font-family:sans-serif; margin:0 0 12px; font-size:13px; color:#555;">Pending</p>
-        <iu-booking-confirmation [data]="pending" />
+        <iu-payment kind="confirmation" [confirmation]="pending" />
       </div>
       <div>
         <p style="font-family:sans-serif; margin:0 0 12px; font-size:13px; color:#555;">Failed</p>
-        <iu-booking-confirmation [data]="failed" />
+        <iu-payment kind="confirmation" [confirmation]="failed" />
       </div>
     </div>
   `,

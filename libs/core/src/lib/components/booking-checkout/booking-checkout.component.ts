@@ -6,7 +6,8 @@
  *
  *   1. **Review** — shows booking summary (dates, property, price breakdown)
  *   2. **Payment** — collects payment method + card/MBWay details via createSignalForm()
- *   3. **Confirmation** — renders iu-booking-confirmation with the final status
+ *   3. **Confirmation** — renders its own inline confirmation screen (status
+ *      header, booking ref, summary, next steps) over BookingConfirmationData
  *
  * Bridges `PropertyAvailabilityComponent` (Sprint 027) → `PaymentSummaryCard`
  * (Sprint 020) → `BookingConfirmation` (Sprint 020) in a single orchestrator.

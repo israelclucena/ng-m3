@@ -117,6 +117,118 @@
 
     <!-- Announced on init; visually hidden but read by AT. -->
     <p class="iu-payment__status" role="status" aria-live="polite">{{ statusText() }}</p>
+  } @else if (kind() === 'confirmation') {
+    <!-- ── Confirmation kind (Onda 9b NG-06): post-payment booking confirmation
+         screen. Folded in from the former <iu-booking-confirmation> wrapper. It
+         owns its own card chrome (.iu-booking-conf); the shell drops its surface
+         via &--kind-confirmation to avoid a double-card. ── -->
+    @if (confirmation(); as data) {
+      <div class="iu-booking-conf" [class]="'iu-booking-conf--' + data.status">
+
+        <!-- ── Status Header ── -->
+        <div class="iu-booking-conf__header">
+          <div class="iu-booking-conf__status-icon">
+            <span class="material-symbols-outlined">{{ confIcon() }}</span>
+          </div>
+          <h2 class="iu-booking-conf__title">{{ confTitle() }}</h2>
+          <p class="iu-booking-conf__subtitle">{{ confSubtitle() }}</p>
+        </div>
+
+        <!-- ── Booking Reference ── -->
+        @if (data.status !== 'failed') {
+          <div class="iu-booking-conf__ref-box">
+            <span class="iu-booking-conf__ref-label">Referência da reserva</span>
+            <span class="iu-booking-conf__ref-code">{{ data.bookingRef }}</span>
+          </div>
+        }
+
+        <!-- ── Property Summary ── -->
+        @if (data.status !== 'failed') {
+          <div class="iu-booking-conf__property">
+            <div class="iu-booking-conf__property-row">
+              <span class="material-symbols-outlined" aria-hidden="true">apartment</span>
+              <div>
+                <strong>{{ data.propertyTitle }}</strong>
+                <p class="iu-booking-conf__property-address">{{ data.propertyAddress }}</p>
+              </div>
+            </div>
+            <div class="iu-booking-conf__property-row">
+              <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+              <div>
+                <strong>Entrada prevista</strong>
+                <p>{{ data.checkIn | date:'EEEE, d MMMM yyyy' }}</p>
+              </div>
+            </div>
+            <div class="iu-booking-conf__property-row">
+              <span class="material-symbols-outlined" aria-hidden="true">person</span>
+              <div>
+                <strong>Senhorio</strong>
+                <p>{{ data.landlordName }}</p>
+                @if (data.landlordPhone) {
+                  <p class="iu-booking-conf__phone">{{ data.landlordPhone }}</p>
+                }
+              </div>
+            </div>
+            <div class="iu-booking-conf__total-row">
+              <span>Total pago</span>
+              <span class="iu-booking-conf__total-amount">
+                {{ data.total | currency:data.currency:'symbol':'1.0-0' }}
+              </span>
+            </div>
+          </div>
+        }
+
+        <!-- ── Message ── -->
+        @if (data.message) {
+          <div class="iu-booking-conf__message">
+            <span class="material-symbols-outlined" aria-hidden="true">info</span>
+            <p>{{ data.message }}</p>
+          </div>
+        }
+
+        <!-- ── Next Steps ── -->
+        @if (data.status === 'confirmed' || data.status === 'pending') {
+          <div class="iu-booking-conf__steps">
+            <h4 class="iu-booking-conf__steps-title">Próximos passos</h4>
+            <ol class="iu-booking-conf__step-list">
+              @if (data.status === 'confirmed') {
+                <li>Receberá um email de confirmação em breve.</li>
+                <li>O senhorio irá entrar em contacto para coordenar a entrada.</li>
+                <li>Certifique-se de ter os documentos necessários (BI/passaporte, NIF).</li>
+              } @else {
+                <li>A reserva está a aguardar confirmação do pagamento.</li>
+                <li>Será notificado assim que a transferência for recebida (1–2 dias úteis).</li>
+                <li>Em caso de dúvida, contacte o suporte LisboaRent.</li>
+              }
+            </ol>
+          </div>
+        }
+
+        <!-- ── Actions ── -->
+        <div class="iu-booking-conf__actions">
+          @if (data.status === 'confirmed' || data.status === 'pending') {
+            <button class="iu-booking-conf__btn iu-booking-conf__btn--primary" (click)="contactLandlord.emit()">
+              <span class="material-symbols-outlined">chat</span>
+              Contactar Senhorio
+            </button>
+          }
+          @if (data.status === 'failed') {
+            <button class="iu-booking-conf__btn iu-booking-conf__btn--primary" (click)="retryPayment.emit()">
+              <span class="material-symbols-outlined">refresh</span>
+              Tentar novamente
+            </button>
+          }
+          <button class="iu-booking-conf__btn iu-booking-conf__btn--secondary" (click)="backToSearch.emit()">
+            <span class="material-symbols-outlined">search</span>
+            Ver mais imóveis
+          </button>
+        </div>
+
+      </div>
+    }
+
+    <!-- Announced on init; visually hidden but read by AT. -->
+    <p class="iu-payment__status" role="status" aria-live="polite">{{ statusText() }}</p>
   } @else {
   <header class="iu-payment__header">
     <ng-content select="[slot=header]"></ng-content>
