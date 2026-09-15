@@ -181,3 +181,63 @@ export const ConfirmationFailed: Story = {
     template: confirmationTemplate,
   }),
 };
+
+/**
+ * Onda 9b (NG-06) `summary` kind — the checkout collection form, folded in from
+ * the former `<iu-payment-summary-card>` wrapper. Unlike the presentational
+ * kinds this one *is the flow*: it renders the booking breakdown + method
+ * selector and drives the component's own lifecycle machine on **Confirmar e
+ * Pagar** (via the inert test-mode gateway stub). No money moves.
+ */
+const summaryData = {
+  propertyTitle: 'Apartamento T2 no Chiado',
+  propertyAddress: 'Rua do Alecrim 45, Lisboa',
+  propertyImage: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=320',
+  checkIn: '2026-04-01',
+  months: 6,
+  currency: 'EUR',
+  depositAmount: 1200,
+  total: 8200,
+  lineItems: [
+    { label: 'Renda mensal × 6 meses', amount: 7200, type: 'charge' },
+    { label: 'Taxa de serviço LisboaRent', amount: 200, type: 'fee' },
+    { label: 'Depósito de garantia (1 mês)', amount: 1200, type: 'deposit' },
+    { label: 'Desconto de longa-duração (5%)', amount: 400, type: 'discount' },
+  ],
+};
+
+const summaryTemplate = `
+  <iu-payment kind="summary" [summary]="summary" style="display:block"></iu-payment>
+`;
+
+// --- Summary kind (checkout form) ---
+export const Summary: Story = {
+  render: () => ({ props: { summary: summaryData }, template: summaryTemplate }),
+};
+
+// --- Summary kind (no property image → placeholder) ---
+export const SummaryNoImage: Story = {
+  render: () => ({
+    props: { summary: { ...summaryData, propertyImage: undefined } },
+    template: summaryTemplate,
+  }),
+};
+
+// --- Summary kind (short-stay deposit, no discount) ---
+export const SummaryDeposit: Story = {
+  render: () => ({
+    props: {
+      summary: {
+        ...summaryData,
+        months: 1,
+        total: 1400,
+        depositAmount: 1200,
+        lineItems: [
+          { label: 'Renda (1 mês)', amount: 1200, type: 'charge' },
+          { label: 'Taxa de serviço', amount: 200, type: 'fee' },
+        ],
+      },
+    },
+    template: summaryTemplate,
+  }),
+};

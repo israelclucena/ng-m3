@@ -12,7 +12,15 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { Invoice } from '../../services/invoice.service';
-import type { BookingConfirmationData, BookingStatus } from './payment.types';
+import type {
+  BookingConfirmationData,
+  BookingPaymentSummary,
+  BookingStatus,
+  PaymentFormData,
+  PaymentMethod,
+  PaymentMethodType,
+  PaymentSubmitEvent,
+} from './payment.types';
 
 /**
  * What the payment surface is *for*. Drives copy/emphasis and (later slices)
@@ -36,10 +44,14 @@ export type PaymentIntentKind = 'checkout' | 'deposit' | 'refund';
  *                      ref, property summary, next steps, actions). Seeds the
  *                      lifecycle from the booking status; presentational.
  *                      Replaces the former `<iu-booking-confirmation>`.
- *
- * More kinds (`summary`) land in later NG-06 slices.
+ *   - `summary`      → the checkout collection form over a
+ *                      {@link BookingPaymentSummary} (property breakdown, line
+ *                      items, method selection). Unlike the presentational
+ *                      kinds this one *is the flow*: it drives this component's
+ *                      own lifecycle machine on confirm. Replaces the former
+ *                      `<iu-payment-summary-card>`.
  */
-export type PaymentKind = 'flow' | 'receipt' | 'confirmation';
+export type PaymentKind = 'flow' | 'receipt' | 'confirmation' | 'summary';
 
 /**
  * The full lifecycle of a payment attempt. Resolved as an explicit state
@@ -214,6 +226,14 @@ export class PaymentComponent implements OnInit {
    * other kinds. `null` renders nothing (the confirmation is data-driven).
    */
   confirmation = input<BookingConfirmationData | null>(null);
+  /**
+   * The booking + payment breakdown to render when {@link kind} is `summary`.
+   * Ignored by the other kinds. Drives the checkout collection form (property
+   * summary, line items, method selection) and seeds the flow's validated
+   * amount/currency from its `total`/`currency` — so the `summary` kind's whole
+   * public contract is this single structured input. `null` renders nothing.
+   */
+  summary = input<BookingPaymentSummary | null>(null);
 
   // --- Outputs ---
   /** Fires on every state transition with the new state. */
@@ -228,6 +248,8 @@ export class PaymentComponent implements OnInit {
   backToSearch = output<void>();
   /** `confirmation` kind: fires when the user retries a failed payment. */
   retryPayment = output<void>();
+  /** `summary` kind: fires when the checkout form is confirmed and submitted. */
+  paymentSubmit = output<PaymentSubmitEvent>();
 
   // --- Injected seam ---
   /** Test-mode money-move seam; the root default never touches a live API. */
@@ -252,11 +274,29 @@ export class PaymentComponent implements OnInit {
    */
   readonly idempotencyKey = this._idempotencyKey.asReadonly();
 
+  /**
+   * The amount actually validated/charged. For the `summary` kind it comes from
+   * the bound {@link summary} breakdown (`total`); every other kind uses the
+   * {@link amount} input directly — so a `summary` caller only supplies
+   * `[summary]`, not a duplicate `[amount]`.
+   */
+  private readonly effectiveAmount = computed(() =>
+    this.kind() === 'summary' && this.summary()
+      ? this.summary()!.total
+      : this.amount(),
+  );
+  /** The currency actually validated/charged — see {@link effectiveAmount}. */
+  private readonly effectiveCurrency = computed(() =>
+    this.kind() === 'summary' && this.summary()
+      ? this.summary()!.currency
+      : this.currency(),
+  );
+
   // --- Computed validation ---
   /** Amount is a real, positive number. */
-  amountValid   = computed(() => Number.isFinite(this.amount()) && this.amount() > 0);
+  amountValid   = computed(() => Number.isFinite(this.effectiveAmount()) && this.effectiveAmount() > 0);
   /** Currency is a well-formed ISO-4217 code. */
-  currencyValid = computed(() => /^[A-Z]{3}$/.test(this.currency()));
+  currencyValid = computed(() => /^[A-Z]{3}$/.test(this.effectiveCurrency()));
   /** Both pre-conditions hold — the flow may advance. */
   isValid       = computed(() => this.amountValid() && this.currencyValid());
 
@@ -396,6 +436,74 @@ export class PaymentComponent implements OnInit {
     return subtitles[this.confirmation()?.status ?? 'pending'];
   });
 
+  // --- Summary kind (checkout collection form) ---
+  /** Selected payment method in the `summary` checkout form. */
+  readonly selectedMethod = signal<PaymentMethodType>('card');
+  /** Card holder name (card method). */
+  readonly cardHolder = signal('');
+  /** Card number — masked display only (card method). */
+  readonly cardNumber = signal('');
+  /** Card expiry MM/AA (card method). */
+  readonly cardExpiry = signal('');
+  /** MBWay phone number (mbway method). */
+  readonly mbwayPhone = signal('');
+  /** Whether the user accepted the terms & conditions. */
+  readonly termsAccepted = signal(false);
+
+  /** Payment methods offered by the `summary` checkout form. */
+  readonly paymentMethods: PaymentMethod[] = [
+    { id: 'card', label: 'Cartão', icon: 'credit_card', description: 'Visa, MC, Amex' },
+    { id: 'mbway', label: 'MBWay', icon: 'smartphone', description: 'Pagamento por telemóvel' },
+    { id: 'bank_transfer', label: 'Transferência', icon: 'account_balance', description: 'SEPA / MB' },
+    { id: 'paypal', label: 'PayPal', icon: 'account_balance_wallet', description: 'Conta PayPal' },
+  ];
+
+  /**
+   * Whether the `summary` checkout form has enough to submit — terms accepted
+   * plus the required fields for the selected method (card needs holder+number,
+   * mbway needs a phone; bank transfer and paypal need only the terms).
+   */
+  readonly canSubmit = computed(() => {
+    if (!this.termsAccepted()) return false;
+    const m = this.selectedMethod();
+    if (m === 'card') return this.cardHolder().trim().length > 0 && this.cardNumber().trim().length > 0;
+    if (m === 'mbway') return this.mbwayPhone().trim().length > 0;
+    return true; // bank_transfer and paypal have no inline validation
+  });
+
+  /** Select a payment method in the `summary` checkout form. */
+  selectMethod(method: PaymentMethodType): void {
+    this.selectedMethod.set(method);
+  }
+
+  /**
+   * Confirm and submit the `summary` checkout form: emit {@link paymentSubmit}
+   * with the collected form (so the app contract is unchanged), then drive this
+   * component's own lifecycle machine (`validate() → submit()`) through the
+   * test-mode {@link IU_PAYMENT_GATEWAY} seam. No-op while the form is invalid,
+   * a run is already in flight/settled, or no {@link summary} is bound. Never
+   * moves real money — the gateway runs in test mode.
+   */
+  async onSummarySubmit(): Promise<void> {
+    if (!this.canSubmit() || this.isBusy() || this.isTerminal()) return;
+    const summary = this.summary();
+    if (!summary) return;
+
+    const form: PaymentFormData = {
+      method: this.selectedMethod(),
+      cardHolder: this.cardHolder() || undefined,
+      cardNumber: this.cardNumber() || undefined,
+      cardExpiry: this.cardExpiry() || undefined,
+      mbwayPhone: this.mbwayPhone() || undefined,
+      termsAccepted: true,
+    };
+    this.paymentSubmit.emit({ summary, form, timestamp: new Date().toISOString() });
+
+    // Advance this component's own lifecycle machine (test-mode only).
+    this.reset();
+    if (this.validate()) await this.submit();
+  }
+
   /**
    * One-shot presentational seed. Applied here (not in the constructor, where
    * bound inputs aren't yet available) and set directly on the state signal so
@@ -476,8 +584,8 @@ export class PaymentComponent implements OnInit {
     try {
       const result = await this.withTimeout(
         this.gateway.authorize({
-          amount: this.amount(),
-          currency: this.currency(),
+          amount: this.effectiveAmount(),
+          currency: this.effectiveCurrency(),
           intent: this.intent(),
           idempotencyKey: key,
         }),

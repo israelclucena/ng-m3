@@ -171,7 +171,10 @@ export * from './lib/components/reviews/property-reviews.component';
 
 // Sprint 020 — Night Shift 2026-03-14
 export * from './lib/components/payment/payment.types';
-export * from './lib/components/payment/payment-summary-card.component';
+// Onda 9b (NG-06): `PaymentSummaryCardComponent` was folded into `<iu-payment>`
+// as its `summary` kind (see PaymentComponent / PaymentKind) — the barrel
+// shrinks. `BookingPaymentSummary`/`PaymentSubmitEvent` stay exported from
+// `payment.types`.
 // Onda 9b (NG-06): `BookingConfirmationComponent` was folded into `<iu-payment>`
 // as its `confirmation` kind (see PaymentComponent / PaymentKind) — the barrel
 // shrinks. `BookingConfirmationData` stays exported from `payment.types`.

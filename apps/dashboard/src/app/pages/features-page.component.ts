@@ -92,7 +92,6 @@ import {
   PropertyReview,
   RatingDisplayComponent,
   // Sprint 020
-  PaymentSummaryCardComponent,
   PaymentComponent,
   BookingPaymentSummary,
   BookingConfirmationData,
@@ -302,7 +301,6 @@ const SEARCH_DATA: SearchResult[] = [
     PropertyReviewsComponent,
     RatingDisplayComponent,
     // Sprint 020
-    PaymentSummaryCardComponent,
     OccupancyChartComponent,
     RevenueWidgetComponent,
     ListingStatsCardComponent,
@@ -1314,14 +1312,15 @@ const SEARCH_DATA: SearchResult[] = [
         <section class="feature-section" id="payment">
           <h2>💳 Payment / Checkout Flow</h2>
           <p class="desc">
-            <code>iu-payment-summary-card</code> + <code>&lt;iu-payment kind="confirmation"&gt;</code>.
+            <code>&lt;iu-payment kind="summary"&gt;</code> + <code>&lt;iu-payment kind="confirmation"&gt;</code>.
             Fecha o loop booking → pagamento → confirmação.
             Flag: <code>PAYMENT_MODULE</code>
           </p>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; flex-wrap:wrap;">
             <div>
               <h4 style="margin:0 0 12px;">Checkout</h4>
-              <iu-payment-summary-card
+              <iu-payment
+                kind="summary"
                 [summary]="paymentSummary"
                 (paymentSubmit)="onPaymentSubmit($event)"
               />

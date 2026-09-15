@@ -7,6 +7,7 @@ import {
   PaymentGatewayRequest,
   PaymentState,
 } from './payment.component';
+import type { BookingPaymentSummary, PaymentSubmitEvent } from './payment.types';
 
 describe('PaymentComponent (iu-payment) — NG-05 fatia 1', () => {
   let fixture: ComponentFixture<PaymentComponent>;
@@ -1279,6 +1280,276 @@ describe('PaymentComponent (iu-payment) — NG-06 confirmation kind', () => {
   it('renders nothing but the status region when confirmation is null', () => {
     make(null);
     expect(q('.iu-booking-conf')).toBeNull();
+    expect(q('.iu-payment__status')).not.toBeNull();
+  });
+});
+
+// ── Onda 9b NG-06: the `summary` kind, folded in from the former
+//    <iu-payment-summary-card> wrapper. Unlike receipt/confirmation this kind
+//    IS the flow — it renders the checkout collection form and drives this
+//    component's own lifecycle machine on confirm. ──
+describe('PaymentComponent (iu-payment) — NG-06 summary kind', () => {
+  let fixture: ComponentFixture<PaymentComponent>;
+  let component: PaymentComponent;
+
+  const makeSummary = (
+    overrides: Partial<BookingPaymentSummary> = {},
+  ): BookingPaymentSummary => ({
+    propertyTitle: 'Apartamento T2 na Graça',
+    propertyAddress: 'Rua da Voz do Operário 12, Lisboa',
+    propertyImage: 'https://example.com/apt.jpg',
+    checkIn: '2026-07-01',
+    checkOut: '2026-12-31',
+    months: 6,
+    lineItems: [
+      { label: 'Renda mensal', amount: 1200, type: 'charge' },
+      { label: 'Desconto de fidelização', amount: 100, type: 'discount' },
+      { label: 'Taxa de serviço', amount: 80, type: 'fee' },
+    ],
+    total: 1180,
+    currency: 'EUR',
+    depositAmount: 1200,
+    ...overrides,
+  });
+
+  const q = (sel: string) =>
+    fixture.nativeElement.querySelector(sel) as HTMLElement | null;
+  const host = () =>
+    fixture.nativeElement.querySelector('.iu-payment') as HTMLElement;
+
+  const make = (summary: BookingPaymentSummary | null = makeSummary()): void => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ imports: [PaymentComponent] });
+    fixture = TestBed.createComponent(PaymentComponent);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput('kind', 'summary');
+    fixture.componentRef.setInput('summary', summary);
+    fixture.detectChanges();
+  };
+
+  beforeEach(() => make());
+
+  // ── Host + chrome ─────────────────────────────────────────────────────────
+  it('adds the kind-summary host modifier and renders the checkout card', () => {
+    expect(host().classList).toContain('iu-payment--kind-summary');
+    expect(q('.iu-payment-card')).not.toBeNull();
+  });
+
+  it('starts idle (the summary kind is a real flow, not a seeded terminal)', () => {
+    expect(component.state()).toBe('idle');
+  });
+
+  // ── Property summary ──────────────────────────────────────────────────────
+  it('renders the property title and address', () => {
+    expect(q('.iu-payment-card__property-title')!.textContent).toContain('Apartamento T2 na Graça');
+    expect(q('.iu-payment-card__property-address')!.textContent).toContain('Rua da Voz do Operário 12, Lisboa');
+  });
+
+  it('renders the property image when propertyImage is set', () => {
+    const img = q('img.iu-payment-card__property-img') as HTMLImageElement | null;
+    expect(img).toBeTruthy();
+    expect(img!.getAttribute('src')).toBe('https://example.com/apt.jpg');
+    expect(q('.iu-payment-card__property-img--placeholder')).toBeNull();
+  });
+
+  it('renders a placeholder when no propertyImage is provided', () => {
+    make(makeSummary({ propertyImage: undefined }));
+    expect(q('img.iu-payment-card__property-img')).toBeNull();
+    expect(q('.iu-payment-card__property-img--placeholder')).not.toBeNull();
+  });
+
+  // ── Line items ──────────────────────────────────────────────────────────
+  it('renders one line per lineItem', () => {
+    expect(fixture.nativeElement.querySelectorAll('.iu-payment-card__line').length).toBe(3);
+  });
+
+  it('applies a type modifier class to each line', () => {
+    const lines = fixture.nativeElement.querySelectorAll('.iu-payment-card__line');
+    expect((lines[0] as HTMLElement).classList).toContain('iu-payment-card__line--charge');
+    expect((lines[1] as HTMLElement).classList).toContain('iu-payment-card__line--discount');
+  });
+
+  it('renders the total amount', () => {
+    expect(q('.iu-payment-card__total-amount')!.textContent).toContain('1,180');
+  });
+
+  it('renders the refundable deposit note', () => {
+    const note = q('.iu-payment-card__deposit-note')!;
+    expect(note.textContent).toContain('Depósito de garantia');
+    expect(note.textContent).toContain('reembolsável');
+    expect(note.textContent).toContain('1,200');
+  });
+
+  // ── Payment methods ───────────────────────────────────────────────────────
+  it('renders four payment method buttons, card active by default', () => {
+    const btns = fixture.nativeElement.querySelectorAll('.iu-payment-card__method-btn');
+    expect(btns.length).toBe(4);
+    expect(component.selectedMethod()).toBe('card');
+    expect((btns[0] as HTMLElement).classList).toContain('iu-payment-card__method-btn--active');
+    expect((btns[0] as HTMLElement).getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('selectMethod sets the active class + aria-pressed on the chosen button', () => {
+    const btns = fixture.nativeElement.querySelectorAll('.iu-payment-card__method-btn');
+    (btns[1] as HTMLButtonElement).click(); // mbway
+    fixture.detectChanges();
+    expect(component.selectedMethod()).toBe('mbway');
+    expect((btns[1] as HTMLElement).getAttribute('aria-pressed')).toBe('true');
+    expect((btns[0] as HTMLElement).getAttribute('aria-pressed')).toBe('false');
+  });
+
+  // ── Conditional method fields ─────────────────────────────────────────────
+  it('shows card fields only when method is card', () => {
+    expect(q('input[autocomplete="cc-name"]')).not.toBeNull();
+    component.selectMethod('mbway');
+    fixture.detectChanges();
+    expect(q('input[autocomplete="cc-name"]')).toBeNull();
+  });
+
+  it('shows the mbway phone field only when method is mbway', () => {
+    expect(q('input[autocomplete="tel"]')).toBeNull();
+    component.selectMethod('mbway');
+    fixture.detectChanges();
+    expect(q('input[autocomplete="tel"]')).not.toBeNull();
+  });
+
+  it('shows bank info only when method is bank_transfer', () => {
+    expect(q('.iu-payment-card__bank-info')).toBeNull();
+    component.selectMethod('bank_transfer');
+    fixture.detectChanges();
+    expect(q('.iu-payment-card__bank-info')!.textContent).toContain('IBAN');
+  });
+
+  it('shows no method-specific fields for paypal', () => {
+    component.selectMethod('paypal');
+    fixture.detectChanges();
+    expect(q('.iu-payment-card__card-fields')).toBeNull();
+    expect(q('.iu-payment-card__bank-info')).toBeNull();
+  });
+
+  // ── canSubmit logic ───────────────────────────────────────────────────────
+  it('canSubmit is false without accepting terms', () => {
+    component.cardHolder.set('Maria João');
+    component.cardNumber.set('4111111111111111');
+    expect(component.canSubmit()).toBe(false);
+  });
+
+  it('canSubmit (card) needs holder, number and terms', () => {
+    component.termsAccepted.set(true);
+    expect(component.canSubmit()).toBe(false);
+    component.cardHolder.set('Maria João');
+    expect(component.canSubmit()).toBe(false);
+    component.cardNumber.set('4111111111111111');
+    expect(component.canSubmit()).toBe(true);
+  });
+
+  it('canSubmit (mbway) needs phone and terms', () => {
+    component.selectMethod('mbway');
+    component.termsAccepted.set(true);
+    expect(component.canSubmit()).toBe(false);
+    component.mbwayPhone.set('+351912345678');
+    expect(component.canSubmit()).toBe(true);
+  });
+
+  it('canSubmit (bank_transfer / paypal) needs only terms', () => {
+    component.selectMethod('bank_transfer');
+    expect(component.canSubmit()).toBe(false);
+    component.termsAccepted.set(true);
+    expect(component.canSubmit()).toBe(true);
+    component.selectMethod('paypal');
+    expect(component.canSubmit()).toBe(true);
+  });
+
+  it('treats whitespace-only card fields as empty', () => {
+    component.termsAccepted.set(true);
+    component.cardHolder.set('   ');
+    component.cardNumber.set('   ');
+    expect(component.canSubmit()).toBe(false);
+  });
+
+  it('submit button disabled mirrors canSubmit()', () => {
+    const btn = q('.iu-payment-card__submit') as HTMLButtonElement;
+    expect(btn.disabled).toBe(true);
+    component.termsAccepted.set(true);
+    component.cardHolder.set('Maria João');
+    component.cardNumber.set('4111111111111111');
+    fixture.detectChanges();
+    expect(btn.disabled).toBe(false);
+  });
+
+  // ── onSummarySubmit emissions + machine ────────────────────────────────────
+  it('onSummarySubmit emits paymentSubmit with the collected form payload', async () => {
+    let emitted: PaymentSubmitEvent | undefined;
+    component.paymentSubmit.subscribe((e) => (emitted = e));
+    component.termsAccepted.set(true);
+    component.cardHolder.set('Maria João');
+    component.cardNumber.set('4111111111111111');
+    component.cardExpiry.set('12/28');
+    await component.onSummarySubmit();
+    expect(emitted).toBeTruthy();
+    expect(emitted!.form.method).toBe('card');
+    expect(emitted!.form.cardHolder).toBe('Maria João');
+    expect(emitted!.form.cardNumber).toBe('4111111111111111');
+    expect(emitted!.form.cardExpiry).toBe('12/28');
+    expect(emitted!.form.termsAccepted).toBe(true);
+    expect(emitted!.summary.propertyTitle).toBe('Apartamento T2 na Graça');
+    expect(typeof emitted!.timestamp).toBe('string');
+  });
+
+  it('onSummarySubmit emits the selected method (mbway) in the payload', async () => {
+    const spy = jest.fn();
+    component.paymentSubmit.subscribe(spy);
+    component.selectMethod('mbway');
+    component.termsAccepted.set(true);
+    component.mbwayPhone.set('+351912345678');
+    await component.onSummarySubmit();
+    expect(spy).toHaveBeenCalledTimes(1);
+    const payload = spy.mock.calls[0][0] as PaymentSubmitEvent;
+    expect(payload.form.method).toBe('mbway');
+    expect(payload.form.mbwayPhone).toBe('+351912345678');
+  });
+
+  it('onSummarySubmit does nothing when the form is invalid', async () => {
+    const spy = jest.fn();
+    component.paymentSubmit.subscribe(spy);
+    expect(component.canSubmit()).toBe(false);
+    await component.onSummarySubmit();
+    expect(spy).not.toHaveBeenCalled();
+    expect(component.state()).toBe('idle');
+  });
+
+  it('drives its own machine through to success on a valid submit', async () => {
+    component.termsAccepted.set(true);
+    component.cardHolder.set('Maria João');
+    component.cardNumber.set('4111111111111111');
+    await component.onSummarySubmit();
+    // Amount/currency are read from the bound summary (total 1180 / EUR), so the
+    // machine validates and settles success against the default test-mode gateway.
+    expect(component.state()).toBe('success');
+  });
+
+  it('clicking the submit button confirms the checkout when the form is valid', () => {
+    const spy = jest.fn();
+    component.paymentSubmit.subscribe(spy);
+    component.termsAccepted.set(true);
+    component.cardHolder.set('Maria João');
+    component.cardNumber.set('4111111111111111');
+    fixture.detectChanges();
+    // `paymentSubmit` is emitted synchronously at the top of onSummarySubmit,
+    // before the (async) machine advance — so it has fired by the time click returns.
+    (q('.iu-payment-card__submit') as HTMLButtonElement).click();
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps an accessible polite live region', () => {
+    const status = q('.iu-payment__status');
+    expect(status).not.toBeNull();
+    expect(status!.getAttribute('aria-live')).toBe('polite');
+  });
+
+  it('renders nothing but the status region when summary is null', () => {
+    make(null);
+    expect(q('.iu-payment-card')).toBeNull();
     expect(q('.iu-payment__status')).not.toBeNull();
   });
 });

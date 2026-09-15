@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PaymentSummaryCardComponent } from './payment-summary-card.component';
 import { PaymentComponent } from './payment.component';
 import type { BookingPaymentSummary, BookingConfirmationData } from './payment.types';
 
@@ -60,8 +59,8 @@ const meta: Meta = {
         component: `
 **Payment/Checkout Flow** — Closes the booking loop for LisboaRent.
 
-Three components:
-- \`PaymentSummaryCardComponent\` (\`iu-payment-summary-card\`) — checkout form with line-item breakdown and payment method selector (card, MBWay, bank transfer, PayPal).
+One deep component, several kinds:
+- \`PaymentComponent\` (\`<iu-payment kind="summary">\`) — checkout form with line-item breakdown and payment method selector (card, MBWay, bank transfer, PayPal). Folded in from the former \`iu-payment-summary-card\` (Onda 9b NG-06).
 - \`PaymentComponent\` (\`<iu-payment kind="confirmation">\`) — post-payment confirmation with status (confirmed/pending/failed/cancelled), booking ref, and next steps. Folded in from the former \`iu-booking-confirmation\` (Onda 9b NG-06).
 
 Feature flag: \`PAYMENT_MODULE\`
@@ -78,11 +77,12 @@ export default meta;
 @Component({
   selector: 'story-payment-checkout',
   standalone: true,
-  imports: [CommonModule, PaymentSummaryCardComponent],
+  imports: [CommonModule, PaymentComponent],
   template: `
     <div style="padding: 24px; background: var(--md-sys-color-surface, #f8f9fa);">
       <h3 style="margin: 0 0 20px; font-family: sans-serif;">Checkout — Confirmar Reserva</h3>
-      <iu-payment-summary-card
+      <iu-payment
+        kind="summary"
         [summary]="summary"
         (paymentSubmit)="onSubmit($event)"
       />

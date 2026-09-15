@@ -229,6 +229,216 @@
 
     <!-- Announced on init; visually hidden but read by AT. -->
     <p class="iu-payment__status" role="status" aria-live="polite">{{ statusText() }}</p>
+  } @else if (kind() === 'summary') {
+    <!-- ── Summary kind (Onda 9b NG-06): the checkout collection form + booking
+         breakdown, folded in from the former <iu-payment-summary-card> wrapper.
+         Unlike receipt/confirmation this kind IS the flow — it drives this
+         component's own lifecycle machine (validate → submit) on confirm. The
+         shell drops its surface via &--kind-summary; the card owns its chrome. ── -->
+    @if (summary(); as s) {
+      <div class="iu-payment-card">
+
+        <!-- ── Property Summary ── -->
+        <div class="iu-payment-card__property">
+          @if (s.propertyImage) {
+            <img
+              class="iu-payment-card__property-img"
+              [src]="s.propertyImage"
+              [alt]="s.propertyTitle"
+            />
+          } @else {
+            <div class="iu-payment-card__property-img iu-payment-card__property-img--placeholder">
+              <span class="material-symbols-outlined">apartment</span>
+            </div>
+          }
+          <div class="iu-payment-card__property-info">
+            <h3 class="iu-payment-card__property-title">{{ s.propertyTitle }}</h3>
+            <p class="iu-payment-card__property-address">
+              <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+              {{ s.propertyAddress }}
+            </p>
+            <p class="iu-payment-card__property-dates">
+              <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+              Entrada: {{ s.checkIn | date:'dd MMM yyyy' }}
+              @if (s.months) {
+                · {{ s.months }} {{ s.months === 1 ? 'mês' : 'meses' }}
+              }
+            </p>
+          </div>
+        </div>
+
+        <!-- ── Line Items ── -->
+        <div class="iu-payment-card__breakdown">
+          <h4 class="iu-payment-card__section-label">Resumo do pagamento</h4>
+          @for (item of s.lineItems; track item.label) {
+            <div class="iu-payment-card__line" [class]="'iu-payment-card__line--' + item.type">
+              <span class="iu-payment-card__line-label">{{ item.label }}</span>
+              <span class="iu-payment-card__line-amount">
+                {{ item.type === 'discount' ? '-' : '' }}{{ item.amount | currency:s.currency:'symbol':'1.0-0' }}
+              </span>
+            </div>
+          }
+          <div class="iu-payment-card__total">
+            <span>Total</span>
+            <span class="iu-payment-card__total-amount">
+              {{ s.total | currency:s.currency:'symbol':'1.0-0' }}
+            </span>
+          </div>
+          <p class="iu-payment-card__deposit-note">
+            <span class="material-symbols-outlined" aria-hidden="true">info</span>
+            Depósito de garantia: {{ s.depositAmount | currency:s.currency:'symbol':'1.0-0' }}
+            (reembolsável)
+          </p>
+        </div>
+
+        <!-- ── Payment Method ── -->
+        <div class="iu-payment-card__methods">
+          <h4 class="iu-payment-card__section-label">Método de pagamento</h4>
+          <div class="iu-payment-card__method-list">
+            @for (method of paymentMethods; track method.id) {
+              <button
+                class="iu-payment-card__method-btn"
+                [class.iu-payment-card__method-btn--active]="selectedMethod() === method.id"
+                (click)="selectMethod(method.id)"
+                type="button"
+                [attr.aria-pressed]="selectedMethod() === method.id"
+              >
+                <span class="material-symbols-outlined" aria-hidden="true">{{ method.icon }}</span>
+                <span class="iu-payment-card__method-label">{{ method.label }}</span>
+              </button>
+            }
+          </div>
+
+          <!-- Card Fields -->
+          @if (selectedMethod() === 'card') {
+            <div class="iu-payment-card__card-fields">
+              <div class="iu-payment-card__field">
+                <label class="iu-payment-card__label" for="iu-pay-holder">Nome no cartão</label>
+                <input
+                  id="iu-pay-holder"
+                  class="iu-payment-card__input"
+                  type="text"
+                  placeholder="Ex: Maria João Silva"
+                  [value]="cardHolder()"
+                  (input)="cardHolder.set($any($event.target).value)"
+                  autocomplete="cc-name"
+                />
+              </div>
+              <div class="iu-payment-card__field">
+                <label class="iu-payment-card__label" for="iu-pay-number">Número do cartão</label>
+                <input
+                  id="iu-pay-number"
+                  class="iu-payment-card__input"
+                  type="text"
+                  placeholder="•••• •••• •••• ••••"
+                  [value]="cardNumber()"
+                  (input)="cardNumber.set($any($event.target).value)"
+                  maxlength="19"
+                  autocomplete="cc-number"
+                />
+              </div>
+              <div class="iu-payment-card__field">
+                <label class="iu-payment-card__label" for="iu-pay-expiry">Validade</label>
+                <input
+                  id="iu-pay-expiry"
+                  class="iu-payment-card__input iu-payment-card__input--half"
+                  type="text"
+                  placeholder="MM/AA"
+                  [value]="cardExpiry()"
+                  (input)="cardExpiry.set($any($event.target).value)"
+                  maxlength="5"
+                  autocomplete="cc-exp"
+                />
+              </div>
+            </div>
+          }
+
+          <!-- MBWay field -->
+          @if (selectedMethod() === 'mbway') {
+            <div class="iu-payment-card__card-fields">
+              <div class="iu-payment-card__field">
+                <label class="iu-payment-card__label" for="iu-pay-mbway">Número de telemóvel (MBWay)</label>
+                <input
+                  id="iu-pay-mbway"
+                  class="iu-payment-card__input"
+                  type="tel"
+                  placeholder="+351 9XX XXX XXX"
+                  [value]="mbwayPhone()"
+                  (input)="mbwayPhone.set($any($event.target).value)"
+                  autocomplete="tel"
+                />
+              </div>
+            </div>
+          }
+
+          <!-- Bank transfer info -->
+          @if (selectedMethod() === 'bank_transfer') {
+            <div class="iu-payment-card__bank-info">
+              <p class="iu-payment-card__bank-detail">
+                <strong>IBAN:</strong> PT50 0001 0000 0012 3456 7890 2
+              </p>
+              <p class="iu-payment-card__bank-detail">
+                <strong>Referência:</strong> LR-{{ s.propertyTitle.slice(0,4).toUpperCase() }}-2026
+              </p>
+              <p class="iu-payment-card__bank-note">
+                A reserva será confirmada após receção da transferência (1–2 dias úteis).
+              </p>
+            </div>
+          }
+        </div>
+
+        <!-- ── Terms ── -->
+        <label class="iu-payment-card__terms">
+          <input
+            type="checkbox"
+            [checked]="termsAccepted()"
+            (change)="termsAccepted.set($any($event.target).checked)"
+          />
+          <span>
+            Aceito os
+            <a href="#" class="iu-payment-card__terms-link">Termos e Condições</a>
+            e a
+            <a href="#" class="iu-payment-card__terms-link">Política de Privacidade</a>
+            da LisboaRent.
+          </span>
+        </label>
+
+        <!-- ── Submit ── -->
+        <button
+          class="iu-payment-card__submit"
+          [disabled]="!canSubmit() || isBusy() || isTerminal()"
+          (click)="onSummarySubmit()"
+          type="button"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+          Confirmar e Pagar {{ s.total | currency:s.currency:'symbol':'1.0-0' }}
+        </button>
+
+        <p class="iu-payment-card__secure-note">
+          <span class="material-symbols-outlined" aria-hidden="true">verified_user</span>
+          Pagamento seguro e encriptado — LisboaRent não armazena dados de cartão.
+        </p>
+
+      </div>
+    }
+
+    <!-- Lifecycle affordances from this component's own machine. -->
+    @if (state() === 'error') {
+      <div class="iu-payment__error" role="alert">
+        <span class="iu-payment__error-text">{{ statusText() }}</span>
+        <button type="button" class="iu-payment__retry" (click)="retry()">Tentar de novo</button>
+      </div>
+    }
+
+    @if (state() === 'success') {
+      <div class="iu-payment__success" role="status">
+        <span class="iu-payment__success-text">{{ statusText() }}</span>
+        <button type="button" class="iu-payment__restart" (click)="reset()">Recomeçar</button>
+      </div>
+    }
+
+    <!-- Announced on every transition; visually hidden but read by AT. -->
+    <p class="iu-payment__status" role="status" aria-live="polite">{{ statusText() }}</p>
   } @else {
   <header class="iu-payment__header">
     <ng-content select="[slot=header]"></ng-content>
