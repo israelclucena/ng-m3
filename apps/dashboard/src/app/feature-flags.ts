@@ -121,7 +121,7 @@ export const FeatureFlags = {
   // Sprint 029 — Night Shift 2026-03-24
   STORYBOOK_PATCH_1033: true,      // Storybook upgraded from 10.3.1 to 10.3.3
   TS60_COMPAT: true,               // TS 6.0.2 — Angular 21.2 peer deps: >=5.9 <6.1 — ACTIVATED sprint-032
-  PAYMENT_GATEWAY: true,           // PaymentService mock Stripe gateway + PaymentGatewayDemoComponent
+  PAYMENT_GATEWAY: true,           // PaymentService mock Stripe gateway (demo harness retired NG-06 → /payment-showcase)
 
   // Sprint 030 — Night Shift 2026-03-25
   PAYMENT_RECEIPT: true,           // InvoiceService + PaymentReceiptComponent — post-payment receipt with printable M3 layout

@@ -222,7 +222,10 @@ export * from './lib/components/booking-checkout-signal-form/booking-checkout-si
 // Sprint 029 — Night Shift 2026-03-24
 export { PaymentService } from './lib/services/payment.service';
 export type { PaymentIntent, PaymentResult, ProcessPaymentOptions, PaymentStatus } from './lib/services/payment.service';
-export { PaymentGatewayDemoComponent } from './lib/components/payment/payment-gateway-demo.component';
+// Onda 9b (NG-06): `PaymentGatewayDemoComponent` — a dev harness for the mock
+// gateway, superseded by the gated `/payment-showcase` proof page — was retired
+// to `archive/payment-gateway-demo/` (moved, not deleted) and dropped from the
+// barrel. The live money-move seam is `IU_PAYMENT_GATEWAY` inside <iu-payment>.
 
 // Sprint 030 — Night Shift 2026-03-25
 export { InvoiceService } from './lib/services/invoice.service';

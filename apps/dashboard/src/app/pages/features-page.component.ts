@@ -1,5 +1,6 @@
 import { Component, signal, inject, computed, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import {
   DataTableComponent,
   DataTableColumn,
@@ -127,7 +128,6 @@ import {
   AvailabilityResourceService,
   // Sprint 029
   PaymentService,
-  PaymentGatewayDemoComponent,
   // Sprint 030
   LandlordRevenueComponent,
   InvoiceService,
@@ -246,6 +246,7 @@ const SEARCH_DATA: SearchResult[] = [
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     DataTableComponent,
     SearchComponent,
     EmptyStateComponent,
@@ -317,7 +318,6 @@ const SEARCH_DATA: SearchResult[] = [
     // Sprint 028
     BookingCheckoutComponent,
     // Sprint 029
-    PaymentGatewayDemoComponent,
     PaymentComponent,
     // Sprint 030
     LandlordRevenueComponent,
@@ -1559,7 +1559,7 @@ const SEARCH_DATA: SearchResult[] = [
         </section>
       }
 
-      <!-- ── Sprint 029 — Payment Gateway Demo ────────────────────────────── -->
+      <!-- ── Sprint 029 — Payment Gateway (Mock Stripe) ───────────────────── -->
       @if (flags.PAYMENT_GATEWAY) {
         <iu-divider></iu-divider>
         <section class="feature-section" id="payment-gateway">
@@ -1573,7 +1573,14 @@ const SEARCH_DATA: SearchResult[] = [
           <p class="payment-gateway-status">
             Gateway status: <strong>{{ paymentStatus() }}</strong>
           </p>
-          <iu-payment-gateway-demo />
+          <p class="desc">
+            Onda 9b (NG-06): the standalone <code>iu-payment-gateway-demo</code> dev harness was
+            retired (archived) — the gateway now drives the unified <code>&lt;iu-payment&gt;</code>
+            lifecycle end-to-end. See the full proof surface:
+          </p>
+          <a class="payment-showcase-link" routerLink="/payment-showcase">
+            Abrir Payment Showcase →
+          </a>
         </section>
       }
 
@@ -2450,6 +2457,21 @@ const SEARCH_DATA: SearchResult[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host { display: block; }
+    .payment-showcase-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: opacity 0.18s, transform 0.1s;
+    }
+    .payment-showcase-link:hover { opacity: 0.92; }
+    .payment-showcase-link:active { transform: scale(0.98); }
     .features-layout {
       max-width: 1440px;
       margin: 0 auto;
