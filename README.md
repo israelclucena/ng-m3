@@ -59,6 +59,15 @@ lines up the three intents and seeds every lifecycle state on one screen:
 |---|---|
 | ![payment showcase — desktop](docs/portfolio/payment-showcase-desktop.png) | <img src="docs/portfolio/payment-showcase-mobile.png" alt="payment showcase — mobile" width="220"> |
 
+**Four `kind`s, one component.** Onda 9b (NG-06) folded the former sibling components into `<iu-payment>`
+as `kind`s (`flow` · `receipt` · `confirmation` · `summary`), so the barrel shrinks while the behaviour
+grows. The `summary` kind is the checkout collection form (was `iu-payment-summary-card`) and, unlike the
+presentational kinds, it *drives the real lifecycle machine* on confirm:
+
+| `kind="summary"` — desktop | Mobile |
+|---|---|
+| <img src="docs/portfolio/payment-summary-desktop.png" alt="payment summary kind — desktop" width="380"> | <img src="docs/portfolio/payment-summary-mobile.png" alt="payment summary kind — mobile" width="220"> |
+
 > 🔒 **Test-mode only.** The money-move seam is an inert stub — no keys, no network, no real charge.
 > Production adoption is gated behind the `PAYMENT_V2` flag (OFF); the showcase rides its own
 > `PAYMENT_SHOWCASE` flag so the proof is visible without touching real payments.

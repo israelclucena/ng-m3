@@ -4,7 +4,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { ButtonComponent, DividerComponent, PaymentComponent } from '@israel-ui/core';
-import type { PaymentIntentKind, PaymentState } from '@israel-ui/core';
+import type { BookingPaymentSummary, PaymentIntentKind, PaymentState } from '@israel-ui/core';
 import { FeatureFlags } from '../feature-flags';
 
 /**
@@ -189,6 +189,31 @@ import { FeatureFlags } from '../feature-flags';
             </div>
           </div>
         </section>
+
+        <iu-divider></iu-divider>
+
+        <!-- ═══ PRESENTATIONAL / FLOW KINDS ═══ -->
+        <section aria-labelledby="sc-kinds">
+          <h2 id="sc-kinds">Kinds — one component, four presentations</h2>
+          <p class="subtitle">
+            The same <code>&lt;iu-payment&gt;</code> renders four
+            <code>kind</code>s. Onda 9b (NG-06) folded the former sibling
+            components in: <code>summary</code> is the checkout collection form
+            (was <code>iu-payment-summary-card</code>) and, unlike the
+            presentational kinds, it drives the real lifecycle machine on
+            confirm — still test-mode, no real charge.
+          </p>
+          <div class="group" data-testid="kinds">
+            <div class="row">
+              <iu-payment
+                kind="summary"
+                [summary]="demoSummary"
+                class="cell--wide"
+                data-testid="kind-summary"
+              />
+            </div>
+          </div>
+        </section>
       </div>
     }
   `,
@@ -316,6 +341,23 @@ export class PaymentShowcasePageComponent {
     'expired',
     'cancelled',
   ];
+
+  /** Demo booking breakdown for the `summary` (checkout) kind. Test-mode data. */
+  protected readonly demoSummary: BookingPaymentSummary = {
+    propertyTitle: 'Apartamento T2 no Chiado',
+    propertyAddress: 'Rua do Alecrim 45, Lisboa',
+    checkIn: '2026-04-01',
+    months: 6,
+    currency: 'EUR',
+    depositAmount: 1200,
+    total: 8200,
+    lineItems: [
+      { label: 'Renda mensal × 6 meses', amount: 7200, type: 'charge' },
+      { label: 'Taxa de serviço LisboaRent', amount: 200, type: 'fee' },
+      { label: 'Depósito de garantia (1 mês)', amount: 1200, type: 'deposit' },
+      { label: 'Desconto de longa-duração (5%)', amount: 400, type: 'discount' },
+    ],
+  };
 
   /** Last state the live-flow card emitted — kept for future telemetry/debug. */
   protected lastState: PaymentState = 'idle';
