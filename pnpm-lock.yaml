@@ -76,8 +76,8 @@ importers:
         specifier: ^1.9.22
         version: 1.9.22
       es-module-shims:
-        specifier: ^1.10.1
-        version: 1.10.1
+        specifier: ^2.8.4
+        version: 2.8.4
       express:
         specifier: ^4.22.2
         version: 4.22.2
@@ -6136,11 +6136,8 @@ packages:
   es-module-lexer@2.3.1:
     resolution: {integrity: sha512-shc1dbU90Yl/xq1QrC7QRtfcwURZuVRfPhZbDoldJ1cn1gzDvBaBWlv0eFolj5+0znnPJz5TXLxsN77X/12KTA==}
 
-  es-module-shims@1.10.1:
-    resolution: {integrity: sha512-HSSkRLkqFEyX6GrCAHrSOR5iz/QzQJRqZUF7bFJOZ4aoSw0WoSggfsTIGN2yFbF8v6xjQFhT4HGP6b+0qQZmEQ==}
-
-  es-module-shims@2.8.2:
-    resolution: {integrity: sha512-Re3rc7Fu8zrN2lD6ExQo+9SS1o2hai0DSLuC/m6R09A84DTL6SSKO+/s3JzKN648yxxdjJfuyFLSpsgr5kb0KA==}
+  es-module-shims@2.8.4:
+    resolution: {integrity: sha512-ea5srn5L89PWVad6Qle6r2kg+HvvLiL/GHqgNx06eFrkERHkrTFWaqo1w8Sd+XI3Xr0iAG5x3ZQ7mQ/hnQzNpA==}
 
   es-object-atoms@1.1.1:
     resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
@@ -9754,7 +9751,7 @@ snapshots:
       '@chialab/esbuild-plugin-commonjs': 0.19.1
       '@softarc/native-federation': 4.5.0(typescript@6.0.3)
       '@softarc/native-federation-orchestrator': 4.5.2
-      es-module-shims: 2.8.2
+      es-module-shims: 2.8.4
       esbuild: 0.28.2
       mrmime: 2.0.1
       watchpack: 2.5.2
@@ -15833,9 +15830,7 @@ snapshots:
 
   es-module-lexer@2.3.1: {}
 
-  es-module-shims@1.10.1: {}
-
-  es-module-shims@2.8.2: {}
+  es-module-shims@2.8.4: {}
 
   es-object-atoms@1.1.1:
     dependencies:
