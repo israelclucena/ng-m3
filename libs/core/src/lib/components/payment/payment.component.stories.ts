@@ -63,7 +63,7 @@ export const InvalidAmount: Story = {
 /**
  * Drive the whole lifecycle by hand: **Validar** (`idle → ready`), **Pagar**
  * (`ready → processing → success`, via the inert test-mode stub), or drop into a
- * terminal state with **Cancelar**/**Expirar**. **Recomeçar** (`reset()`) returns
+ * terminal state with **Cancelar** / **Expirar**. **Recomeçar** (`reset()`) returns
  * to `idle`. The live `state` label mirrors the machine; the component's own
  * error/terminal/success regions render inline. No money moves.
  */
