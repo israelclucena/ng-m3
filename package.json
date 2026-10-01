@@ -54,7 +54,7 @@
     "@storybook/addon-a11y": "^10.6.1",
     "@storybook/angular": "^10.6.1",
     "@storybook/angular-vite": "10.6.1",
-    "@storybook/test-runner": "^0.24.5",
+    "@storybook/test-runner": "^0.26.0",
     "@swc-node/register": "~1.12.1",
     "@swc/core": "~1.16.13",
     "@swc/helpers": "~0.5.23",
