@@ -10,7 +10,7 @@
   "dependencies": {
     "@angular-architects/module-federation": "^22.0.0",
     "@angular-architects/module-federation-runtime": "^22.0.0",
-    "@angular-architects/native-federation": "^22.2.1",
+    "@angular-architects/native-federation": "^22.2.2",
     "@angular/common": "22.2.1",
     "@angular/compiler": "22.2.1",
     "@angular/core": "22.2.1",
