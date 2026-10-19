@@ -37,8 +37,8 @@ importers:
         specifier: ^22.0.0
         version: 22.0.0(@angular/common@22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(@module-federation/enhanced@2.4.0(@rspack/core@2.1.4(@module-federation/runtime-tools@2.4.0(node-fetch@3.3.2))(@swc/helpers@0.5.23))(node-fetch@3.3.2)(typescript@6.0.3)(webpack@5.109.1(@swc/core@1.16.18(@swc/helpers@0.5.23))(esbuild@0.28.2)(postcss@8.5.29)))(@module-federation/runtime-core@2.4.0(node-fetch@3.3.2))
       '@angular-architects/native-federation':
-        specifier: ^22.2.2
-        version: 22.2.2(@angular/build@22.2.3(393e3cabce947e2d59bf99be99ad73cb))(chokidar@5.0.0)
+        specifier: ^22.2.3
+        version: 22.2.3(@angular/build@22.2.3(393e3cabce947e2d59bf99be99ad73cb))(chokidar@5.0.0)
       '@angular/common':
         specifier: 22.2.3
         version: 22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -273,8 +273,8 @@ packages:
   '@angular-architects/module-federation@22.0.0':
     resolution: {integrity: sha512-nXpt1MIzwU6F2A2CikO+wmLds4rA5L9E/MIax7P3Z6+MH8neKcno5WHgZh2xZBt4d0xcT/Pb1oY1MbH/dVNi2w==}
 
-  '@angular-architects/native-federation@22.2.2':
-    resolution: {integrity: sha512-/NRFpdJlHAELIzt/8D+cjTGgjqcpw3qS6OJlHzSCY6PelV981a5sG4vk3wBIvSYqxKF1QzYEOXGXw/ioJhRlNA==}
+  '@angular-architects/native-federation@22.2.3':
+    resolution: {integrity: sha512-/e7LbQdbOFcRUEg0obIBoqPFy1TtrflA/J7HjJZtzBCZhxIgwL5yqMpysRBkdV7aUrOWcZkd6lgmb0SP3lPoCw==}
     peerDependencies:
       '@angular/build': ~22.2.0
 
@@ -4275,15 +4275,20 @@ packages:
   '@softarc/native-federation-node@3.5.6':
     resolution: {integrity: sha512-fGkoqpu9tZnoHDJ6WgUPxikDSlmbW797ETDPl9i+6CpNf3/IQlqbdjx1l3l2WoZ0Iqq3pIKrqw6yUCPx6DJrIA==}
 
-  '@softarc/native-federation-orchestrator@4.6.1':
-    resolution: {integrity: sha512-n5XZvWCFPeLvZ5y42fH79X9L1MG+BMBLlbhKOxIVXbju+52BAQL6D+NoYOuOPTwtX5wFafwhzAs15bkggF3VSw==}
+  '@softarc/native-federation-orchestrator@4.8.0':
+    resolution: {integrity: sha512-v08zatjHuQMSsFbd78cyeFbncr+L2yPPoMiUk0lNlYBsXVNq7MGJaPwCSEPjqiY63u+FOeHqF4y+ZvQJxbz18A==}
     engines: {node: '>=24.16.0'}
+    peerDependencies:
+      '@softarc/native-federation': ^4.8.0
+    peerDependenciesMeta:
+      '@softarc/native-federation':
+        optional: true
 
   '@softarc/native-federation-runtime@3.5.5':
     resolution: {integrity: sha512-CNn1b9LtZvhxica0h4Yoj3zngIaTuYvm/ZSL8KqL696E6NL1nX5rkzFE6NONg1q14kbZ87lWYiy1SyDXFj60Bg==}
 
-  '@softarc/native-federation@4.7.1':
-    resolution: {integrity: sha512-HweqMCrm0JSxh/66MqXWH16+EdnxUc+nOEjBmcVz/yXJbedyh19T4YQ7KVg+ZmvHLD+n6wGijZ0CCAt7T2WePw==}
+  '@softarc/native-federation@4.8.0':
+    resolution: {integrity: sha512-BqkXagXM6N6nNrbPKobevuP4dZOeuQdaIa4vcsA4L9hxyM+jEQvSWT9H6ra/vWFy43Ay0ViXEC9LvuLx+XMD8w==}
 
   '@softarc/sheriff-core@0.20.0':
     resolution: {integrity: sha512-dTm5dOUMOGTV3ql7ZIuI8rE+gZawIcJLEluqRYX3KDVJ215vfUzpC9LlSL4pTW0lAAeNLelmPZBzY57jLvOPpg==}
@@ -9787,15 +9792,15 @@ snapshots:
       - '@module-federation/enhanced'
       - '@module-federation/runtime-core'
 
-  '@angular-architects/native-federation@22.2.2(@angular/build@22.2.3(393e3cabce947e2d59bf99be99ad73cb))(chokidar@5.0.0)':
+  '@angular-architects/native-federation@22.2.3(@angular/build@22.2.3(393e3cabce947e2d59bf99be99ad73cb))(chokidar@5.0.0)':
     dependencies:
       '@angular-devkit/architect': 0.2202.3(chokidar@5.0.0)
       '@angular-devkit/core': 22.2.3(chokidar@5.0.0)
       '@angular-devkit/schematics': 22.2.3(chokidar@5.0.0)
       '@angular/build': 22.2.3(393e3cabce947e2d59bf99be99ad73cb)
       '@chialab/esbuild-plugin-commonjs': 0.19.1
-      '@softarc/native-federation': 4.7.1
-      '@softarc/native-federation-orchestrator': 4.6.1
+      '@softarc/native-federation': 4.8.0
+      '@softarc/native-federation-orchestrator': 4.8.0(@softarc/native-federation@4.8.0)
       es-module-shims: 2.8.4
       esbuild: 0.28.2
       jsonc-parser: 3.3.1
@@ -13833,15 +13838,17 @@ snapshots:
       '@softarc/native-federation-runtime': 3.5.5
       tslib: 2.8.1
 
-  '@softarc/native-federation-orchestrator@4.6.1':
+  '@softarc/native-federation-orchestrator@4.8.0(@softarc/native-federation@4.8.0)':
     dependencies:
       semver: 7.8.5
+    optionalDependencies:
+      '@softarc/native-federation': 4.8.0
 
   '@softarc/native-federation-runtime@3.5.5':
     dependencies:
       tslib: 2.8.1
 
-  '@softarc/native-federation@4.7.1':
+  '@softarc/native-federation@4.8.0':
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
       '@softarc/sheriff-core': 0.20.0(typescript@6.0.3)
