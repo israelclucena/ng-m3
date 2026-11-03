@@ -64,6 +64,9 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
+      "readyWhen": {
+        "signal": true
+      },
       "configurations": {
         "production": {
           "buildTarget": "remote-properties:esbuild:production"
@@ -72,9 +75,6 @@
           "buildTarget": "remote-properties:esbuild:development"
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     },
     "test": {
       "options": {
@@ -94,7 +94,11 @@
         "buildTarget": "remote-properties:build",
         "staticFilePath": "dist/remote-properties/browser",
         "spa": true
-      }
+      },
+      "readyWhen": {
+        "signal": true
+      },
+      "dependsOn": ["build"]
     }
   }
 }

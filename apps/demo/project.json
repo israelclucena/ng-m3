@@ -55,6 +55,9 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
+      "readyWhen": {
+        "signal": true
+      },
       "configurations": {
         "production": {
           "buildTarget": "demo:build:production"
@@ -63,9 +66,6 @@
           "buildTarget": "demo:build:development"
         }
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     },
     "test": {
       "options": {
@@ -85,7 +85,11 @@
         "buildTarget": "demo:build",
         "staticFilePath": "dist/apps/demo/browser",
         "spa": true
-      }
+      },
+      "readyWhen": {
+        "signal": true
+      },
+      "dependsOn": ["build"]
     }
   }
 }

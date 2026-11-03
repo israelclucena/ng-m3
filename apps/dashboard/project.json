@@ -8,6 +8,7 @@
   "targets": {
     "build": {
       "executor": "@angular-architects/native-federation:build",
+      "defaultConfiguration": "production",
       "options": {},
       "configurations": {
         "production": {
@@ -17,8 +18,7 @@
           "target": "dashboard:esbuild:development",
           "dev": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "executor": "@angular-architects/native-federation:build",
@@ -30,14 +30,10 @@
         "port": 0
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
     "esbuild": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/dashboard",
         "browser": "apps/dashboard/src/main.ts",
@@ -49,12 +45,8 @@
             "input": "apps/dashboard/public"
           }
         ],
-        "styles": [
-          "apps/dashboard/src/styles.scss"
-        ],
-        "polyfills": [
-          "es-module-shims"
-        ]
+        "styles": ["apps/dashboard/src/styles.scss"],
+        "polyfills": ["es-module-shims"]
       },
       "configurations": {
         "production": {
@@ -78,14 +70,12 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "esbuild-ssr": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/dashboard",
         "browser": "apps/dashboard/src/main.ts",
@@ -100,12 +90,8 @@
             "input": "apps/dashboard/public"
           }
         ],
-        "styles": [
-          "apps/dashboard/src/styles.scss"
-        ],
-        "polyfills": [
-          "es-module-shims"
-        ]
+        "styles": ["apps/dashboard/src/styles.scss"],
+        "polyfills": ["es-module-shims"]
       },
       "configurations": {
         "production": {
@@ -129,16 +115,14 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve-original": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
       "options": {
-        "allowedHosts": [
-          ".trycloudflare.com"
-        ],
+        "allowedHosts": [".trycloudflare.com"],
         "port": 4200
       },
       "configurations": {
@@ -149,7 +133,9 @@
           "buildTarget": "dashboard:esbuild:development"
         }
       },
-      "defaultConfiguration": "development"
+      "readyWhen": {
+        "signal": true
+      }
     }
   }
 }
