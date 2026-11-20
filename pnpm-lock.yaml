@@ -164,8 +164,8 @@ importers:
         specifier: 10.6.7
         version: 10.6.7(5f3a6dd6682bfdd95137444c0d6129f0)
       '@storybook/test-runner':
-        specifier: ^0.26.0
-        version: 0.26.0(@swc/helpers@0.5.24)(@types/node@22.20.4)(babel-plugin-macros@3.1.0)(storybook@10.6.7(prettier@3.10.1)(react@19.2.5))(ts-node@10.9.2(@swc/core@1.16.22(@swc/helpers@0.5.24))(@types/node@22.20.4)(typescript@6.0.3))
+        specifier: ^0.26.1
+        version: 0.26.1(@swc/helpers@0.5.24)(@types/node@22.20.4)(babel-plugin-macros@3.1.0)(storybook@10.6.7(prettier@3.10.1)(react@19.2.5))(ts-node@10.9.2(@swc/core@1.16.22(@swc/helpers@0.5.24))(@types/node@22.20.4)(typescript@6.0.3))
       '@swc-node/register':
         specifier: ~1.12.1
         version: 1.12.1(@emnapi/core@2.0.0-alpha.6)(@emnapi/runtime@2.0.0-alpha.6)(@swc/core@1.16.22(@swc/helpers@0.5.24))(@swc/types@0.1.28)(typescript@6.0.3)
@@ -4387,12 +4387,12 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@storybook/test-runner@0.26.0':
-    resolution: {integrity: sha512-q/B3Mf5QQuYAQ99AKcxTnNzPBso2OctLy13mEA23kYM8vW+Sz3WysdZIiQvNQ0bQFI9MDRkcLQVGIBcnnkaZXA==}
+  '@storybook/test-runner@0.26.1':
+    resolution: {integrity: sha512-S1606NlO45+6k9Tnc2MV6pz7/s64nF5HpJL66EptPCpUPIvuykggjYIziIcNALOpnESCJZybgD4lxOABnBxwvQ==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
-      storybook: ^0.0.0-0 || ^10.0.0 || ^10.0.0-0 || ^10.1.0-0 || ^10.2.0-0 || ^10.3.0-0 || ^10.4.0-0 || ^10.5.0-0 || ^10.6.0-0 || ^11.0.0-0 || >=11
+      storybook: ^0.0.0-0 || ^10.0.0 || ^10.0.0-0 || ^10.1.0-0 || ^10.2.0-0 || ^10.3.0-0 || ^10.4.0-0 || ^10.5.0-0 || ^10.6.0-0
 
   '@swc-node/core@1.15.0':
     resolution: {integrity: sha512-WAerrrl087WgenB92XG4Th2t0NQFfMNLYSe0sW2cEMMqM/LQmP4rozsDJl0vuzTrbewjpKQryxFXI+aYig/dBg==}
@@ -8105,18 +8105,8 @@ packages:
     resolution: {integrity: sha512-Oo/NZcSWccq8KyoG7gLE9fnltgHns+pNCjCAp/WmjsUySi+sX7y4z4Xqu4fVb42CDHzRPl33fjzT15V1wvcyhA==}
     engines: {node: '>=16.0.0'}
 
-  playwright-core@1.63.0:
-    resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
-    engines: {node: '>=20'}
-    hasBin: true
-
   playwright-core@1.65.1:
     resolution: {integrity: sha512-hqPpz7blSMPxWVdoeE1yiBSzXsKiVOd2k+kjCvmUywD2GPO2Dd9HfcWnq9NN0GHbNZDFgZ9JfBFr+X5/BLo0qw==}
-    engines: {node: '>=20'}
-    hasBin: true
-
-  playwright@1.63.0:
-    resolution: {integrity: sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -13758,7 +13748,7 @@ snapshots:
     dependencies:
       react: 19.2.5
 
-  '@storybook/test-runner@0.26.0(@swc/helpers@0.5.24)(@types/node@22.20.4)(babel-plugin-macros@3.1.0)(storybook@10.6.7(prettier@3.10.1)(react@19.2.5))(ts-node@10.9.2(@swc/core@1.16.22(@swc/helpers@0.5.24))(@types/node@22.20.4)(typescript@6.0.3))':
+  '@storybook/test-runner@0.26.1(@swc/helpers@0.5.24)(@types/node@22.20.4)(babel-plugin-macros@3.1.0)(storybook@10.6.7(prettier@3.10.1)(react@19.2.5))(ts-node@10.9.2(@swc/core@1.16.22(@swc/helpers@0.5.24))(@types/node@22.20.4)(typescript@6.0.3))':
     dependencies:
       '@babel/core': 8.0.6
       '@babel/generator': 7.29.7
@@ -13777,8 +13767,8 @@ snapshots:
       jest-serializer-html: 7.1.0
       jest-watch-typeahead: 3.0.1(jest@30.5.2(@types/node@22.20.4)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.16.22(@swc/helpers@0.5.24))(@types/node@22.20.4)(typescript@6.0.3)))
       nyc: 15.1.0
-      playwright: 1.63.0
-      playwright-core: 1.63.0
+      playwright: 1.65.1
+      playwright-core: 1.65.1
       rimraf: 3.0.2
       storybook: 10.6.7(prettier@3.10.1)(react@19.2.5)
       uuid: 14.0.1
@@ -18099,13 +18089,7 @@ snapshots:
       pvutils: 1.2.0
       tslib: 2.9.1
 
-  playwright-core@1.63.0: {}
-
   playwright-core@1.65.1: {}
-
-  playwright@1.63.0:
-    dependencies:
-      playwright-core: 1.63.0
 
   playwright@1.65.1:
     dependencies:
